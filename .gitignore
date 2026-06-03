@@ -16,5 +16,5 @@ node_modules/
 # pi sessions
 .pi/sessions/
 
-# PDFs (generated artifacts)
-*.pdf
+# PDFs (version-controlled artifacts)
+# game-taste-profile-v3.pdf is tracked
