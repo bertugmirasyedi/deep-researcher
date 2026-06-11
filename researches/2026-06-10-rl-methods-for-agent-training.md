@@ -345,3 +345,35 @@ Phase 1 and Phase 2 are independent enough to prototype separately. Phase 3 is t
 **SQ4 — Self-Referential Agents (9 sources):** DGM, DGM-H/HyperAgents, SEAL, Prometheus, Gödel Agent, SRWM, MetODS, SICA, Backpropamine.
 
 **Confidence:** High — 31 unique sources across three sub-questions, with multiple independent research groups converging on the combined evolution + RL paradigm.
+
+---
+
+## Follow-ups
+
+### Polar trajectory-capture spike on a real Deep Researcher run — GO (conditional) [BER-137, 2026-06-11]
+
+Ran an unmodified Deep Researcher `researcher` worker (pi harness + `pi-web-access`) through Polar (NVIDIA ProRL-Agent-Server) on a single AWS `g5.2xlarge` (A10G 24 GB), vLLM serving `Qwen/Qwen3-4B-Instruct-2507`, builder `prefix_merging`, evaluator `session_completed`. Four sessions captured across three conditions; raw `ses_*.json` trajectories inspected by hand and with a token-faithfulness verifier. Cost: **~$0.80** (~40 min GPU; budget was $25–50).
+
+**Verdict: GO for the GRPO phase — Polar reconstructs token-faithful, trainer-ready traces from the Deep Researcher harness with zero harness changes.** Validated the two previously-unvalidated conditions (parallel sessions, long context) and surfaced concrete integration work below. This confirms Cross-Cutting Theme 3 for *research* (not just SWE-bench) tasks and closes the "Polar + Deep Researcher integration" knowledge gap.
+
+**Acceptance results**
+
+1. **Token-faithful reconstruction — VERIFIED.** Across all 4 sessions: `response_ids`/`loss_mask`/`response_logprobs` lengths aligned; every sampled span re-encoded to identical token ids on decode→re-encode (**DRIFT 0**, the core `prefix_merging` claim); `prompt_ids` decode to the researcher system prompt and `response_ids` to the real `web_search`/`fetch_content` calls and tool responses; interstitial (tool-result/glue) positions correctly carry `loss_mask=0` and `0.0` logprob placeholders. Real logprobs are captured (spectrum 0.0 → −2.34); the high count of exactly-0.0 sampled logprobs is legitimate near-deterministic JSON tool-call scaffolding, not a capture gap. Every captured completion merged (`completions_merged == completions_total`), 0 prefix-break truncations.
+
+**Known failure modes (acceptance #2)**
+
+2. **Parallel worker sessions — CLEAN.** 3 concurrent identical-system-prompt episodes were demuxed by Polar's per-session API key (`*_API_KEY = session id`) into independent `CompletionSession`s and each reconstructed fully (19/19, 12/12, 11/11). The prefix-collision risk in `_find_extendable_chain` (parallel chains with identical prefixes → longest-tip tie-break mis-routes) **does not fire** for the Deep Researcher dispatch because each Orca worker is a *separate pi process = separate session*. Risk remains only for a harness that runs concurrent sub-agents inside *one* process/API key — not our case.
+
+3. **Context length / "200+ turns" — REAL LIMIT, different mechanism than expected.** pi does **not** auto-compact in non-interactive `--print --no-session` mode. A long episode grows until it hits the *served model's* hard context window (32 768 here): the turn returns `400` and the episode ends. The dominant driver is **large `fetch_content` bodies, not turn count** — one full-page fetch jumped the prompt to 28 673 tokens. The hypothesized "compaction rewrites history → `prefix_merging` canonical-prefix break → chain truncation" was **not** observed (0 truncations) precisely *because* compaction never runs. Reconstruction stays faithful up to the break.
+
+4. **Tool-result handling — correct but signal-sparse.** `fetch_content` full pages dominate the token stream: e.g. the long episode had **848 sampled vs 22 434 interstitial tokens (~3–4% trainable)**. They are tokenized as canonical interstitials with `loss_mask=0`/`0.0` logprobs and merged correctly. One worker episode reconstructs into ~3 traces (not 1) — pi emits some completions whose prompts are not strict prefix-extensions (e.g. the `web_search` workflow's auxiliary calls), starting fresh chains; each chain is independently valid for training, but **1 episode ≠ 1 trace**.
+
+**Integration work required before GRPO (BER-146)**
+
+- **Context budget is the #1 blocker.** Serve the policy model with a window ≥ the longest expected episode, and/or truncate/summarize `fetch_content` output, and/or add compaction (pi print-mode won't). Without this, full-depth deep-research episodes truncate at the context ceiling.
+- **Expect very long, tool-result-dominated sequences** (~3–4% trainable tokens). Budget sequence length / GPU memory accordingly; the `loss_mask` already isolates trainable tokens.
+- **Reward signal:** spike used the `session_completed` no-op. Real GRPO needs the ResearchRubrics evaluator wired as a Polar `evaluator` strategy (see [evaluation-integration.md](../docs/exec-plans/evaluation-integration.md)).
+- **Environment determinism:** `pi-web-access` requires the `typebox` peer dep baked into the runtime image (else the extension silently fails to load → zero completions). `web_search` hit live Exa (rate-limit/cost/nondeterminism) — for GRPO replace with the local search corpus (SQ5) for determinism and zero API cost.
+- **Scope:** only single *worker* episodes were captured (the GRPO training unit per the refined Evolution→SFT→RL plan). The Orca planner orchestration does not run inside Polar's runtime container; training drives individual worker episodes directly, which is what BER-146 needs.
+
+Spike artifacts (topology, custom `DeepResearcherPiHarness`, runtime Dockerfile, run/verify scripts, raw `ses_*.json` trajectories) are archived outside the repo under `scratch/prorl-spike/dr-spike/`.
