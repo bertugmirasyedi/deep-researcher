@@ -11,20 +11,22 @@ Multi-source research pipeline that produces structured, citation-backed reports
 
 ```
 /skill:deep-researcher <topic>
-/skill:deep-researcher <topic> --depth shallow|standard|deep
+/skill:deep-researcher <topic> --depth quick|deep
 /skill:deep-researcher <topic> --format brief|full|academic
 ```
 
 Arguments after the command are parsed as:
 - First positional argument: research topic (required)
-- `--depth`: shallow (3 sub-Qs, fast), standard (5 sub-Qs, thorough), deep (7–8 sub-Qs, comprehensive)
+- `--depth`: **deep** (default — parallel fan-out, full-text reads, iteration; real research) or **quick** (3 sub-Qs, snippet scan, no fetch/iteration; fast lookup). If omitted, default to **deep**.
 - `--format`: brief (summary only), full (default), academic (formal citations)
+
+The two modes differ in *behavior*, not just search count. `quick` is an honest fast lookup — a few `web_search` calls, snippets only. `deep` is the real pipeline: it **must** read full source content (`fetch_content`) and run **at least one refinement round** seeded by first-round findings. That mandatory read-and-iterate step is what separates research from a snippet skim.
 
 ## Pipeline
 
 The research follows four sequential stages. Execute them in order.
 
-> **Required orchestration**: For `standard` and `deep` research, Stages 2–3 (Search + Evaluate) **must** be parallelised by dispatching one **Orca worker terminal** per sub-question via `orca orchestration`. Each worker runs `ORCA_ROLE=worker pi` with its system prompt set to `.pi/agents/researcher.md` (loaded via `--system-prompt`) to handle Search + Evaluate for its assigned sub-question. Single-threaded execution (researcher agent runs inline in the planner pi) is **only** for `shallow` depth. The `researcher.md` file itself is unchanged — only the dispatch envelope changes.
+> **Required orchestration**: For `deep` research, Stages 2–3 (Search + Evaluate) **must** be parallelised by dispatching one **Orca worker terminal** per sub-question via `orca orchestration`. Each worker runs `ORCA_ROLE=worker pi` with its system prompt set to `.pi/agents/researcher.md` (loaded via `--system-prompt`) to handle Search + Evaluate for its assigned sub-question. Single-threaded execution (researcher agent runs inline in the planner pi) is **only** for `quick` depth. The `researcher.md` file itself is unchanged — only the dispatch envelope changes.
 
 ### Stage 1: Plan
 
@@ -36,9 +38,8 @@ Decompose the topic into 3–8 sub-questions:
 4. Assign expected source types per sub-question
 
 Depth controls:
-- **Shallow**: 3 sub-questions, 2 searches each, **minimum 5**, target 5–8 sources
-- **Standard**: 5 sub-questions, 3 searches each, **minimum 10**, target 10–15 sources
-- **Deep**: 7–8 sub-questions, 4 searches each, **minimum 200**, target 200–300 sources
+- **Quick**: 3 sub-questions, 2 searches each, snippets only (no required `fetch_content`), no refinement round, **minimum 5**, target 5–10 sources. Runs inline in the planner pi.
+- **Deep** (default): 6–8 sub-questions, 4 searches each, **`fetch_content` required** on the top 4+ results per sub-question, **at least one refinement round required** (re-query seeded by first-round findings), **minimum 30**, target 30–50 sources. Runs as parallel Orca workers.
 
 If the minimum source count for the selected depth cannot be met after all searches are exhausted, the report must disclose this in **Knowledge Gaps** and every affected conclusion must have its confidence grade lowered and justified.
 
@@ -58,7 +59,7 @@ Present the full plan (sub-questions + dispatch map) to the user before proceedi
 
 ### Stage 2: Search
 
-**Parallel execution is the default for standard and deep research.** Dispatch one Orca worker terminal per sub-question. Each worker runs `ORCA_ROLE=worker pi` with the isolation envelope (see snippet below). The worker's system prompt **is** `.pi/agents/researcher.md`, loaded via `--system-prompt`; the worker is not 'told to activate' an agent — pi has no such mechanism, so the agent file is wired in as the system prompt directly. Workers run Stages 2–3 (Search + Evaluate) for their assigned sub-question independently. Workers report back via `orca orchestration send --type worker_done` with a JSON payload containing scored sources and credibility tiers. The planner collects all findings and proceeds to Stage 4 (Write).
+**Parallel execution is the default for `deep` research.** Dispatch one Orca worker terminal per sub-question. Each worker runs `ORCA_ROLE=worker pi` with the isolation envelope (see snippet below). The worker's system prompt **is** `.pi/agents/researcher.md`, loaded via `--system-prompt`; the worker is not 'told to activate' an agent — pi has no such mechanism, so the agent file is wired in as the system prompt directly. Workers run Stages 2–3 (Search + Evaluate) for their assigned sub-question independently, and for `deep` each worker **must** `fetch_content` the top results (not snippets) and run at least one refinement round. Workers report back via `orca orchestration send --type worker_done` with a JSON payload containing scored sources and credibility tiers. The planner collects all findings and proceeds to Stage 4 (Write).
 
 ```bash
 # Orca worker dispatch loop (planner side)
@@ -98,7 +99,7 @@ for h in "${HANDLES[@]}"; do
 done
 ```
 
-> Single-threaded (sequential) search is **only** for `shallow` depth — run the researcher agent inline in the planner pi.
+> Single-threaded (sequential) search is **only** for `quick` depth — run the researcher agent inline in the planner pi.
 
 **Why `bash` is in the tools allowlist**: `bash` is whitelisted only so the worker can call `orca orchestration send --type worker_done` (and `linear issue show` if the dispatch preamble references the issue). The per-task preamble explicitly instructs the worker not to use `bash` for file mutation, code editing, or any other mutation operation. All research-worker tooling is read-only (`read`, `grep`, `find`, `ls`, `web_search`, `fetch_content`).
 
@@ -111,8 +112,9 @@ Each `researcher` subagent performs these steps internally:
    - Vary angle (technical → business → social)
    - Vary recency (historical → recent)
 2. If a search/content tool (`web_search`, `fetch_content`, etc.) is available, use it for live web research. If no search tool is installed, rely on user-provided sources, local files, and the agent's training knowledge — but **never fabricate citations**; state explicitly which claims lack verifiable sources.
-3. Use content-fetching tools for the most promising URLs (if available)
-4. Collect metadata: author, date, domain, publication type, URL
+3. Use content-fetching tools for the most promising URLs. For `deep`, this is **required** — read full content (`fetch_content`) for the top 4+ results per sub-question rather than relying on search snippets. For `quick`, snippets are acceptable.
+4. For `deep`, run **at least one refinement round**: after the first pass, issue follow-up queries seeded by what surfaced (named entities, contradictions, cited works) before handing off. `quick` does a single pass.
+5. Collect metadata: author, date, domain, publication type, URL
 
 ### Stage 3: Evaluate
 
@@ -149,15 +151,16 @@ Output format details: see [output-format.md](references/output-format.md)
 
 ## Critical Rules
 
-1. **Parallel execution is the default** — For `standard` and `deep` research, always dispatch Orca worker terminals (one per sub-question) via `orca orchestration`. Each worker runs `ORCA_ROLE=worker pi` with its system prompt set to `.pi/agents/researcher.md` (loaded via `--system-prompt`) and handles Search + Evaluate for its assigned sub-question. Single-threaded execution is only for `shallow` depth.
+1. **Parallel execution is the default** — For `deep` research, always dispatch Orca worker terminals (one per sub-question) via `orca orchestration`. Each worker runs `ORCA_ROLE=worker pi` with its system prompt set to `.pi/agents/researcher.md` (loaded via `--system-prompt`) and handles Search + Evaluate for its assigned sub-question, including the required `fetch_content` reads and refinement round. Single-threaded execution is only for `quick` depth.
 2. **Cite everything** — Every factual claim must link to a source
 3. **Evaluate before trusting** — No source is used without quality scoring
 4. **Synthesize, don't summarize** — Cross-reference, identify agreements/conflicts/gaps
 5. **Declare confidence** — Every conclusion gets a grade with reasoning
 6. **Present the plan first** — Show the research plan (including worker dispatch map) and get implicit/explicit go-ahead before searching
-7. **Create a Linear issue for tracking** — **Always** for `deep` runs, **recommended** for `standard` runs, **skip** for `shallow`. Use `linear issue update <id> --check ...` against sub-question checklist items as workers complete. The Linear issue provides durable intent across sessions.
-8. **Enforce minimum source counts** — Each depth level has a minimum (shallow: 5, standard: 10, deep: 200). If unmet, disclose in Knowledge Gaps and lower/justify confidence on affected conclusions
-9. **Save final report to `researches/`** — After synthesis, write the Markdown report to `researches/YYYY-MM-DD-<topic-slug>.md` before summarizing to the user
+7. **Create a Linear issue for tracking** — **Always** for `deep` runs, **skip** for `quick`. Use `linear issue update <id> --check ...` against sub-question checklist items as workers complete. The Linear issue provides durable intent across sessions.
+8. **Enforce minimum source counts** — Each depth level has a minimum (quick: 5, deep: 30). If unmet, disclose in Knowledge Gaps and lower/justify confidence on affected conclusions
+9. **`deep` must read and iterate** — A `deep` run that only skimmed snippets or did a single pass is non-compliant. `fetch_content` on top results and ≥1 refinement round are mandatory; if either was skipped, downgrade the run to `quick` in the report header rather than labeling it `deep`.
+10. **Save final report to `researches/`** — After synthesis, write the Markdown report to `researches/YYYY-MM-DD-<topic-slug>.md` before summarizing to the user
 
 ## Decision Log
 

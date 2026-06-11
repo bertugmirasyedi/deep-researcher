@@ -2,7 +2,7 @@
 
 The complete pipeline from topic to report. See [ARCHITECTURE.md](../ARCHITECTURE.md) for system-level context.
 
-> **Orchestration**: This pipeline is executed by the pi-coding-agent skill inside a planner pi. For `standard`/`deep` research, Stages 2-3 (Search + Evaluate) are parallelised by dispatching one **Orca worker terminal** per sub-question. Each worker runs `ORCA_ROLE=worker pi` with its system prompt set to `.pi/agents/researcher.md` (loaded via `--system-prompt`). The planner creates tasks via `orca orchestration task-create`, spawns worker terminals, injects dispatch preambles, and waits for `worker_done` payloads. For durable intent tracking, a **Linear issue** is created per research run (`--depth deep` always; `standard` recommended; `shallow` skipped).
+> **Orchestration**: This pipeline is executed by the pi-coding-agent skill inside a planner pi. For `deep` research, Stages 2-3 (Search + Evaluate) are parallelised by dispatching one **Orca worker terminal** per sub-question. Each worker runs `ORCA_ROLE=worker pi` with its system prompt set to `.pi/agents/researcher.md` (loaded via `--system-prompt`), and each worker must `fetch_content` the top results and run at least one refinement round. The planner creates tasks via `orca orchestration task-create`, spawns worker terminals, injects dispatch preambles, and waits for `worker_done` payloads. For durable intent tracking, a **Linear issue** is created per `deep` run (skipped for `quick`).
 
 ## Stage 1: Plan
 
@@ -22,18 +22,19 @@ The complete pipeline from topic to report. See [ARCHITECTURE.md](../ARCHITECTUR
 
 ### Depth Settings
 
-| Depth | Sub-questions | Searches per sub-Q | Minimum sources | Target sources |
-|-------|--------------|-------------------|-----------------|----------------|
-| Shallow | 3 | 2 | **5** | 5-8 |
-| Standard | 5 | 3 | **10** | 10-15 |
-| Deep | 7-8 | 4 | **200** | 200-300 |
+| Depth | Sub-questions | Searches per sub-Q | Read full content | Refinement round | Minimum sources | Target sources |
+|-------|--------------|-------------------|-------------------|------------------|-----------------|----------------|
+| Quick | 3 | 2 | optional (snippets ok) | no | **5** | 5-10 |
+| Deep (default) | 6-8 | 4 | **required** (top 4+/sub-Q) | **≥1 required** | **30** | 30-50 |
+
+`quick` is a fast snippet-level lookup that runs inline. `deep` is the full pipeline: parallel workers, mandatory full-text reads, and at least one refinement round seeded by first-round findings. The read-and-iterate requirement — not the raw search count — is what makes `deep` research rather than a search skim.
 
 ### Output
 
 ```markdown
 ## Research Plan: <topic>
 
-**Depth**: standard
+**Depth**: deep
 **Scope**: <one-line scope statement>
 
 ### Sub-questions
@@ -48,7 +49,7 @@ The complete pipeline from topic to report. See [ARCHITECTURE.md](../ARCHITECTUR
 
 ### Parallel Execution with Researcher Subagents (default)
 
-**Standard and deep research must use parallel execution.** The planner dispatches one Orca worker per sub-question. Each worker runs `pi` with the isolation envelope (see snippet below); the worker's system prompt **is** `.pi/agents/researcher.md`, loaded via `--system-prompt`. Each worker executes the full Search → Evaluate cycle (Stages 2–3) for its assigned sub-question. The planner collects all `worker_done` payloads and proceeds to Stage 4 (Synthesize).
+**Deep research must use parallel execution.** The planner dispatches one Orca worker per sub-question. Each worker runs `pi` with the isolation envelope (see snippet below); the worker's system prompt **is** `.pi/agents/researcher.md`, loaded via `--system-prompt`. Each worker executes the full Search → Evaluate cycle (Stages 2–3) for its assigned sub-question — including the mandatory `fetch_content` reads and refinement round. The planner collects all `worker_done` payloads and proceeds to Stage 4 (Synthesize).
 
 ```bash
 # Orca dispatch pattern - one worker per sub-question
@@ -97,14 +98,15 @@ orca terminal close --terminal "$TERM_SQ2" --json
 
 The auto-injected dispatch preamble tells each worker to run Search + Evaluate for its assigned sub-question and send `worker_done` with the structured findings JSON. The worker's system prompt is already `.pi/agents/researcher.md` (loaded via `--system-prompt` at terminal creation), so the injected preamble only needs to carry the sub-question and any run-specific instructions.
 
-> **Exception**: Single-threaded (sequential) search is only for `shallow` depth, executed directly in the planner pi.
+> **Exception**: Single-threaded (sequential) search is only for `quick` depth, executed directly in the planner pi.
 
 ### Steps (per sub-question, inside each `researcher` worker)
 
 1. **Craft queries** - For each sub-question, generate 2-4 search queries with varied phrasing and scope
 2. **Execute searches** - If a search tool (`web_search`, etc.) is available, run queries via batched execution. If no search tool is installed, use user-provided sources, local files, and training knowledge - but never fabricate citations; mark claims without verifiable sources.
-3. **Fetch content** - If a content tool (`fetch_content`, etc.) is available, extract readable markdown from the most promising URLs. Otherwise, work with search snippets and user-provided materials.
-4. **Collect metadata** - For each source: author, date, domain, publication type, URL
+3. **Fetch content** - For `deep`, **required**: extract readable markdown via `fetch_content` from the top 4+ URLs per sub-question and work from full text. For `quick`, search snippets are acceptable. If no content tool is available, work with snippets and user-provided materials and note the limitation.
+4. **Refine** - For `deep`, **required**: run at least one follow-up query round seeded by first-round findings (named entities, contradictions, cited works) before handing off. `quick` does a single pass.
+5. **Collect metadata** - For each source: author, date, domain, publication type, URL
 
 ### Query Variation Strategy
 

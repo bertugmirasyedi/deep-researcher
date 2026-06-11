@@ -5,7 +5,7 @@
 Deep Researcher is a **context-and-skills pack** for [pi-coding-agent](https://github.com/MarioZechner/pi-coding-agent). It provides a research skill, pipeline documentation, and quality standards — no application code. The heavy lifting (parallel execution, progress tracking) is done by two tools:
 
 - **Orca orchestration** — `orca orchestration` task DAG + Orca worker terminals for parallel `researcher` subagent dispatch
-- **Linear** — durable per-run intent for `deep` (always) and `standard` (recommended) research depth
+- **Linear** — durable per-run intent for `deep` runs (always; skipped for `quick`)
 
 ## Quick Start
 
@@ -13,7 +13,7 @@ Inside **pi** interactive mode:
 
 ```
 /skill:deep-researcher <topic>
-/skill:deep-researcher <topic> --depth shallow|standard|deep
+/skill:deep-researcher <topic> --depth quick|deep
 /skill:deep-researcher <topic> --format brief|full|academic
 ```
 
@@ -43,13 +43,13 @@ See [ARCHITECTURE.md](ARCHITECTURE.md) for pipeline stages and data flow.
 2. **Dispatch** Orca worker terminals — each runs Search + Evaluate for its sub-question
 3. **Collect** findings from `worker_done` payloads and synthesize into the final report, saved under `researches/`
 
-> Single-threaded execution is the **exception**, reserved for `shallow` depth only.
+> Single-threaded execution is the **exception**, reserved for `quick` depth only.
 
 ## Tracking with Linear
 
 Use **Linear issues** to track research runs:
 
-- **`deep`** — always create a Linear issue. **`standard`** — recommended. **`shallow`** — skip.
+- **`deep`** — always create a Linear issue. **`quick`** — skip.
 - Issue body should contain: topic, sub-questions as checklist (one per SQ), dispatch map, source-count target, final report path placeholder.
 - As workers complete, `linear issue update <id> --check "..."` ticks each sub-question.
 - Final report path is recorded in a Linear comment when archived under `researches/`.

@@ -12,7 +12,7 @@ Given a research topic, the deep-researcher skill guides the agent to:
 4. **Synthesize** — Cross-reference findings, identify agreements/conflicts/gaps
 5. **Report** — Produce a structured report with citations and confidence grades
 
-For standard and deep research, sub-questions are searched in parallel by **`researcher` subagents** running in dedicated Orca worker terminals, dispatched via `orca orchestration`. Multi-session research is tracked with a per-run **Linear issue**.
+For `deep` research, sub-questions are searched in parallel by **`researcher` subagents** running in dedicated Orca worker terminals, dispatched via `orca orchestration`; each worker reads full source content and runs at least one refinement round. Multi-session research is tracked with a per-run **Linear issue**.
 
 ## Usage
 
@@ -27,7 +27,7 @@ Inside **pi** interactive mode:
 
 | Flag | Values | Default | Description |
 |------|--------|---------|-------------|
-| `--depth` | `shallow`, `standard`, `deep` | `standard` | Research thoroughness. Minimum sources: shallow=5, standard=10, deep=200 |
+| `--depth` | `quick`, `deep` | `deep` | `quick` = fast snippet scan (min 5 sources, inline). `deep` = parallel workers + required full-text reads + ≥1 refinement round (min 30 sources). |
 | `--format` | `brief`, `full`, `academic` | `full` | Output report format |
 
 ## Documentation

@@ -2,7 +2,7 @@
 
 ## System Overview
 
-Deep Researcher is a **context-and-skills pack** for pi-coding-agent — not a standalone application. The skill defines a pipeline-based research workflow; Orca orchestration handles parallel `researcher` worker dispatch; Linear handles durable per-run intent for deep/standard runs.
+Deep Researcher is a **context-and-skills pack** for pi-coding-agent — not a standalone application. The skill defines a pipeline-based research workflow; Orca orchestration handles parallel `researcher` worker dispatch; Linear handles durable per-run intent for `deep` runs.
 
 ```
                             ┌──────────────────────────────────────────────┐
@@ -117,7 +117,7 @@ Full decision log: [docs/decisions.md](docs/decisions.md)
 |------|--------|-----|
 | Runtime | pi-coding-agent | Agent orchestration, tool access, skill system |
 | Parallel execution | Orca orchestration + worker terminals with isolation envelope (`--system-prompt researcher.md`, `--no-context-files`, `--no-skills`, etc.) | Each researcher worker is a sealed process whose system prompt is `researcher.md`; context leak is blocked by the isolation flags |
-| Per-run intent | Linear issue (always for `deep`, recommended for `standard`) | Sub-questions become checklist items; durable across sessions; supersedes `progress.md`/`features.json` |
+| Per-run intent | Linear issue (always for `deep`, skipped for `quick`) | Sub-questions become checklist items; durable across sessions; supersedes `progress.md`/`features.json` |
 | Search | web_search tool (multi-query) | Requires installed search skill or extension; not a stock pi tool |
 | Content extraction | fetch_content tool | Requires installed content skill or extension; not a stock pi tool |
 | Output | Markdown | Universal, versionable, human-readable, archived under `researches/` |
