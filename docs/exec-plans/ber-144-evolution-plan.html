@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BER-144 — Harness evolution with the student in the loop</title>
+  <!-- apply theme before paint -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('ber144-theme');
+        var dark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (dark) document.documentElement.classList.add('dark');
+      } catch (e) {}
+    })();
+  </script>
+  <style>
+    :root {
+      --ivory:    #FAF9F5;
+      --slate:    #141413;
+      --clay:     #D97757;
+      --oat:      #E3DACC;
+      --olive:    #788C5D;
+      --gray-150: #F0EEE6;
+      --gray-300: #D1CFC5;
+      --gray-500: #87867F;
+      --gray-700: #3D3D3A;
+      --white:    #FFFFFF;
+      --code-bg:  #141413;
+      --code-fg:  #E8E6DE;
+      --sev-high-bg: #F3D9CC; --sev-high-fg: #8A3B1E;
+      --sev-low-bg:  #E4E9DC; --sev-low-fg:  #4B5C39;
+
+      --serif: ui-serif, Georgia, 'Times New Roman', serif;
+      --sans:  system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      --mono:  ui-monospace, 'SF Mono', Menlo, Monaco, monospace;
+    }
+
+    html.dark {
+      --ivory:    #1A1A18;
+      --slate:    #F3F1EA;
+      --clay:     #E08A6B;
+      --oat:      #3A3730;
+      --olive:    #9CB079;
+      --gray-150: #232320;
+      --gray-300: #3A3A36;
+      --gray-500: #9C9B92;
+      --gray-700: #D4D2C8;
+      --white:    #222220;
+      --code-bg:  #0F0F0E;
+      --code-fg:  #E8E6DE;
+      --sev-high-bg: #4A2417; --sev-high-fg: #F0B79C;
+      --sev-low-bg:  #283322; --sev-low-fg:  #B6CDA0;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: var(--sans);
+      background: var(--ivory);
+      color: var(--gray-700);
+      line-height: 1.55;
+      padding: 56px 32px 120px;
+      -webkit-font-smoothing: antialiased;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .page { max-width: 1120px; margin: 0 auto; }
+
+    /* theme toggle */
+    .theme-toggle {
+      position: fixed; top: 18px; right: 18px; z-index: 50;
+      font-family: var(--mono); font-size: 12px;
+      background: var(--white); color: var(--gray-700);
+      border: 1.5px solid var(--gray-300); border-radius: 8px;
+      padding: 7px 12px; cursor: pointer;
+      display: flex; align-items: center; gap: 7px;
+    }
+    .theme-toggle:hover { border-color: var(--clay); color: var(--slate); }
+
+    /* header */
+    header.page-head { margin-bottom: 48px; max-width: 860px; }
+    .eyebrow {
+      font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--gray-500); margin-bottom: 12px;
+    }
+    h1 {
+      font-family: var(--serif); font-weight: 500; font-size: 38px; line-height: 1.15;
+      color: var(--slate); margin-bottom: 18px; letter-spacing: -0.01em;
+    }
+    .prompt-box {
+      background: var(--gray-150); border: 1.5px solid var(--gray-300);
+      border-radius: 12px; padding: 16px 20px; font-size: 14.5px; color: var(--gray-700);
+    }
+    .prompt-box .label {
+      font-family: var(--mono); font-size: 11px; text-transform: uppercase;
+      letter-spacing: 0.06em; color: var(--gray-500); display: block; margin-bottom: 6px;
+    }
+    .prompt-box code { font-family: var(--mono); font-size: 12.5px; color: var(--clay); }
+
+    /* section chrome */
+    section { margin-bottom: 64px; }
+    .sec-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 8px; }
+    .sec-head .num {
+      font-family: var(--mono); font-size: 12px; background: var(--oat);
+      color: var(--slate); padding: 3px 9px; border-radius: 8px;
+    }
+    .sec-head h2 {
+      font-family: var(--serif); font-weight: 500; font-size: 26px;
+      color: var(--slate); letter-spacing: -0.01em;
+    }
+    .sec-intro { font-size: 14.5px; color: var(--gray-500); max-width: 760px; margin-bottom: 28px; }
+    code { font-family: var(--mono); font-size: 0.92em; }
+
+    /* summary strip */
+    .summary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 64px; }
+    @media (max-width: 900px) { .summary { grid-template-columns: repeat(2, 1fr); } }
+    .summary .cell {
+      background: var(--white); border: 1.5px solid var(--gray-300);
+      border-radius: 12px; padding: 18px 20px;
+    }
+    .summary .k {
+      font-family: var(--mono); font-size: 11px; text-transform: uppercase;
+      letter-spacing: 0.06em; color: var(--gray-500); margin-bottom: 6px;
+    }
+    .summary .v { font-size: 16px; color: var(--slate); font-weight: 600; }
+    .summary .v.accent { color: var(--clay); }
+    .summary .v small { display: block; font-size: 12px; font-weight: 400; color: var(--gray-500); margin-top: 3px; }
+
+    /* fixed vs evolvable */
+    .split { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media (max-width: 820px) { .split { grid-template-columns: 1fr; } }
+    .panel { background: var(--white); border: 1.5px solid var(--gray-300); border-radius: 12px; padding: 20px 22px; }
+    .panel h4 {
+      font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em;
+      margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+    }
+    .panel h4 .pill { font-size: 10px; padding: 2px 7px; border-radius: 5px; }
+    .panel.fixed h4 { color: var(--gray-500); }
+    .panel.fixed .pill { background: var(--gray-150); color: var(--gray-500); border: 1px solid var(--gray-300); }
+    .panel.evolve h4 { color: var(--clay); }
+    .panel.evolve .pill { background: var(--oat); color: var(--slate); }
+    .panel ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .panel li { font-size: 13.5px; color: var(--gray-700); padding-left: 18px; position: relative; }
+    .panel li::before { content: '·'; position: absolute; left: 4px; color: var(--clay); font-weight: 700; }
+    .panel li b { color: var(--slate); }
+
+    /* milestone timeline */
+    .milestones { display: flex; flex-direction: column; }
+    .milestone { display: grid; grid-template-columns: 132px 28px 1fr; gap: 0 18px; position: relative; }
+    .milestone .when { text-align: right; font-family: var(--mono); font-size: 12px; color: var(--gray-500); padding-top: 4px; }
+    .milestone .dot-col { display: flex; flex-direction: column; align-items: center; }
+    .milestone .dot {
+      width: 14px; height: 14px; border-radius: 50%; background: var(--white);
+      border: 3px solid var(--clay); margin-top: 4px; flex-shrink: 0;
+    }
+    .milestone .dot.done { background: var(--olive); border-color: var(--olive); }
+    .milestone .dot.gate { background: var(--white); border-color: var(--gray-500); border-style: dashed; }
+    .milestone .line { width: 2px; flex: 1; background: var(--gray-300); margin: 4px 0; }
+    .milestone:last-child .line { display: none; }
+    .milestone .body { padding-bottom: 36px; }
+    .milestone .body h3 { font-family: var(--serif); font-weight: 500; font-size: 19px; color: var(--slate); margin-bottom: 4px; }
+    .milestone .body p { font-size: 14px; color: var(--gray-500); margin-bottom: 10px; max-width: 640px; }
+    .milestone .body p b { color: var(--gray-700); }
+    .milestone .tags { display: flex; gap: 8px; flex-wrap: wrap; }
+    .milestone .tag {
+      font-family: var(--mono); font-size: 11.5px; background: var(--gray-150);
+      border: 1px solid var(--gray-300); border-radius: 6px; padding: 3px 8px; color: var(--gray-700);
+    }
+    .milestone .tag.exit { background: var(--oat); color: var(--slate); border-color: var(--oat); }
+
+    /* diagram */
+    .diagram { background: var(--white); border: 1.5px solid var(--gray-300); border-radius: 12px; padding: 28px; overflow-x: auto; }
+    .diagram svg { display: block; min-width: 780px; }
+    .diagram .box { fill: var(--white); stroke: var(--gray-300); stroke-width: 1.5; }
+    .diagram .box.fixed { fill: var(--gray-150); }
+    .diagram .box.dark { fill: var(--code-bg); stroke: var(--code-bg); }
+    .diagram .lbl { fill: var(--slate); font-family: var(--sans); font-weight: 600; font-size: 12px; }
+    .diagram .sub { fill: var(--gray-500); font-family: var(--mono); font-size: 10px; }
+    .diagram .sub.on-dark { fill: #C9B98A; }
+    .diagram .lbl.on-dark { fill: var(--ivory); }
+    .diagram .flow { stroke: var(--gray-500); stroke-width: 1.5; fill: none; }
+    .diagram .flow.accent { stroke: var(--clay); stroke-dasharray: 5 4; }
+    .diagram .edge { fill: var(--gray-500); font-family: var(--mono); font-size: 10px; }
+    .diagram .edge.accent { fill: var(--clay); }
+    .caption { font-size: 13px; color: var(--gray-500); margin-top: 14px; }
+
+    /* code */
+    .code-block { display: flex; flex-direction: column; gap: 10px; }
+    .code-block .file-label { font-family: var(--mono); font-size: 12px; color: var(--gray-500); }
+    .code { background: var(--code-bg); border-radius: 12px; padding: 18px 20px; overflow-x: auto; }
+    .code pre { font-family: var(--mono); font-size: 12.5px; line-height: 1.7; color: var(--code-fg); white-space: pre; }
+    .code .kw { color: var(--clay); }
+    .code .str { color: var(--olive); }
+    .code .cm { color: #87867F; }
+    .code .fn { color: #C9B98A; }
+
+    /* risk table */
+    .risks { border: 1.5px solid var(--gray-300); border-radius: 12px; overflow: hidden; background: var(--white); }
+    .risks .row { display: grid; grid-template-columns: 1.6fr 90px 1.7fr; gap: 0; }
+    @media (max-width: 780px) { .risks .row { grid-template-columns: 1fr; } }
+    .risks .row + .row { border-top: 1.5px solid var(--gray-300); }
+    .risks .cell { padding: 14px 18px; font-size: 13.5px; color: var(--gray-700); }
+    .risks .cell + .cell { border-left: 1.5px solid var(--gray-300); }
+    @media (max-width: 780px) { .risks .cell + .cell { border-left: none; border-top: 1px dashed var(--gray-300); } }
+    .risks .head { background: var(--gray-150); font-weight: 600; color: var(--slate); font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; }
+    .risks .cell b { color: var(--slate); }
+    .sev { display: inline-block; font-family: var(--mono); font-size: 11px; padding: 2px 8px; border-radius: 6px; font-weight: 600; }
+    .sev.high { background: var(--sev-high-bg); color: var(--sev-high-fg); }
+    .sev.med  { background: var(--oat); color: var(--slate); }
+    .sev.low  { background: var(--sev-low-bg); color: var(--sev-low-fg); }
+
+    /* open questions */
+    .open-q { display: flex; flex-direction: column; gap: 14px; max-width: 860px; }
+    .q { background: var(--white); border: 1.5px solid var(--gray-300); border-left: 4px solid var(--clay); border-radius: 10px; padding: 16px 20px; }
+    .q .qt { font-weight: 600; font-size: 15px; color: var(--slate); margin-bottom: 4px; }
+    .q .qd { font-size: 13.5px; color: var(--gray-500); }
+    .q .qd b { color: var(--gray-700); }
+    .q .owner { font-family: var(--mono); font-size: 11.5px; color: var(--gray-500); margin-top: 8px; }
+
+    .footnote { font-size: 12.5px; color: var(--gray-500); max-width: 860px; margin-top: 8px; }
+    .footnote code { color: var(--clay); }
+  </style>
+</head>
+<body>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme"><span id="themeIcon">☾</span><span id="themeText">Dark</span></button>
+
+  <div class="page">
+
+    <header class="page-head">
+      <div class="eyebrow">Implementation plan · Deep Researcher · Evolution → SFT → RL</div>
+      <h1>BER-144 — Harness evolution with the student in the loop</h1>
+      <div class="prompt-box">
+        <span class="label">Task</span>
+        Run hyperagent's evolutionary loop (meta-agent + NSGA-II) over the Deep Researcher
+        organism, with the <b>student</b> (<code>Qwen3.6-35B-A3B-AWQ</code>) as the fixed task
+        policy from day one. Find an organism on the Pareto front that beats the gen-0
+        single-agent baseline on quality without a cost regression, validated on a held-out set.
+      </div>
+    </header>
+
+    <div class="summary">
+      <div class="cell"><div class="k">Task policy</div><div class="v accent">Student — fixed<small>Qwen3.6-35B-A3B vLLM · free</small></div></div>
+      <div class="cell"><div class="k">Search</div><div class="v">NSGA-II<small>3 objectives · Pareto</small></div></div>
+      <div class="cell"><div class="k">Eval unit</div><div class="v">5 prompts × repeats<small>+ held-out validation</small></div></div>
+      <div class="cell"><div class="k">Baseline floor</div><div class="v">0.47 mean<small>gen-0, 5/5 (D013)</small></div></div>
+    </div>
+
+    <!-- ============================================================= -->
+    <section>
+      <div class="sec-head"><span class="num">01</span><h2>Where this sits</h2></div>
+      <p class="sec-intro">
+        The eval harness (BER-151), the single-agent organism (BER-140), and the floor check (BER-139)
+        are done. D013 landed a <b>clean outcome 1</b> — the raw student is reliable on the harness
+        (mean 0.47, 5/5, quality varied 0.21–0.85) once the web-tool output bug was fixed. We now turn
+        on evolution. The student stays fixed so the evolved scaffold is tuned for the exact model that
+        later gets SFT (BER-145) and RL (BER-146); a clean ablation chain follows.
+      </p>
+
+      <div class="split">
+        <div class="panel fixed">
+          <h4><span class="pill">Fixed</span> Integrity boundary</h4>
+          <ul>
+            <li><b>Task policy</b> — the student model; non-evolvable (already wired as the <code>deep-researcher-student</code> alias).</li>
+            <li><b>Evaluator + judge</b> — <code>evaluate()</code>, the BER-150 Bedrock Opus 4.8 rubric judge, and the prompt set.</li>
+            <li><b>Evolution loop</b> — <code>evolve.ts</code>, NSGA-II ranking, archive, promotion gate.</li>
+            <li><b>Meta-agent model</b> — frontier mutation proposer; never sees per-criterion rubric detail (hidden-mode redaction).</li>
+          </ul>
+        </div>
+        <div class="panel evolve">
+          <h4><span class="pill">Evolvable</span> The organism</h4>
+          <ul>
+            <li><b>SYSTEM.md</b> — research strategy, source-tiering, citation rules, report structure.</li>
+            <li><b>Toolset wiring</b> — when/how to call web_search / fetch_content; the 30 KB content cap is fixed, the usage policy is not.</li>
+            <li><b>Thresholds</b> — sub-question count, search depth, refinement triggers (capabilities, not mandates).</li>
+            <li><b>Model config</b> — student <code>max_tokens</code>, thinking level, per-stage budgets.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================= -->
+    <section>
+      <div class="sec-head"><span class="num">02</span><h2>Objectives &amp; promotion</h2></div>
+      <p class="sec-intro">
+        Multi-objective: don't collapse quality, cost, and latency into one number — keep the Pareto front
+        so we can pick a point afterward. The held-out set is the guardrail against the meta-agent overfitting
+        the five evolution prompts.
+      </p>
+      <div class="risks">
+        <div class="row">
+          <div class="cell head">Objective</div><div class="cell head">Dir</div><div class="cell head">Measure</div>
+        </div>
+        <div class="row">
+          <div class="cell"><b>Quality</b></div><div class="cell"><span class="sev low">MAX</span></div>
+          <div class="cell">Composite weighted-rubric score (0–1) from the BER-150 judge — same one the floor check used.</div>
+        </div>
+        <div class="row">
+          <div class="cell"><b>Cost</b></div><div class="cell"><span class="sev high">MIN</span></div>
+          <div class="cell">Total tokens per run. Student is free on vLLM, but tokens still proxy latency/context pressure — keep it honest.</div>
+        </div>
+        <div class="row">
+          <div class="cell"><b>Latency</b></div><div class="cell"><span class="sev high">MIN</span></div>
+          <div class="cell">Wall-clock per run. The 30 KB cap already tamed the 600 s stalls; this keeps organisms from drifting back to bloat.</div>
+        </div>
+      </div>
+      <p class="footnote">
+        <b>Promotion gate:</b> an archive organism is promoted only if its held-out composite is within 5% of its
+        evolution-set composite (no overfit) <b>and</b> ≥ the gen-0 baseline held-out composite (no regression).
+        Held-out scores are aggregate-only and never fed back to the meta-agent.
+      </p>
+    </section>
+
+    <!-- ============================================================= -->
+    <section>
+      <div class="sec-head"><span class="num">03</span><h2>Slices</h2></div>
+      <p class="sec-intro">Four reviewable slices on <code>bm/feat/deep-researcher-evolution</code>. Each ends at a checkpoint; the run only proceeds past slice 3 if the gate in slice 2 is green.</p>
+
+      <div class="milestones">
+        <div class="milestone">
+          <div class="when">Slice 1</div>
+          <div class="dot-col"><span class="dot"></span><span class="line"></span></div>
+          <div class="body">
+            <h3>Turn on the meta-agent loop</h3>
+            <p>Today the deep-researcher kind runs <b>eval-only</b>. Wire <code>evolve.ts</code> + the meta-agent for it: seed the archive with the gen-0 organism, confirm a single mutate→eval→rank→archive cycle completes, and that the meta-agent's feedback excludes per-criterion rubric detail (integrity check).</p>
+            <div class="tags"><span class="tag">evolve.ts</span><span class="tag">strategy</span><span class="tag">meta-system-prompt</span><span class="tag exit">exit: 1 clean generation</span></div>
+          </div>
+        </div>
+
+        <div class="milestone">
+          <div class="when">Slice 2 · gate</div>
+          <div class="dot-col"><span class="dot gate"></span><span class="line"></span></div>
+          <div class="body">
+            <h3>Noise control &amp; budget guardrails</h3>
+            <p>Within-prompt reward variance is real (BER-150: sd ≈ 0.07–0.10). Use hyperagent's <b>racing</b> to repeat-eval each organism until fitness separates, so the meta-agent optimizes signal not draw-luck. Set per-run token + timeout caps and a total judge-call budget cap (re-cost in BER-141). <b>Gate:</b> group advantages are non-degenerate and a re-eval of gen-0 reproduces ~0.47 ± noise.</p>
+            <div class="tags"><span class="tag">src/racing</span><span class="tag">stageGate</span><span class="tag exit">exit: stable gen-0 fitness</span></div>
+          </div>
+        </div>
+
+        <div class="milestone">
+          <div class="when">Slice 3</div>
+          <div class="dot-col"><span class="dot"></span><span class="line"></span></div>
+          <div class="body">
+            <h3>Run the evolution</h3>
+            <p>Small population (≈10/gen), a handful of generations, on the evolution prompts. After each generation, validate the top-Pareto organisms on the <b>held-out</b> set (logged, not shown to the meta-agent). Stop on budget cap or when generation-over-generation held-out gain &lt; noise.</p>
+            <div class="tags"><span class="tag">iterations</span><span class="tag">archiveSize</span><span class="tag">held-out log</span><span class="tag exit">exit: ≥1 organism beats gen-0</span></div>
+          </div>
+        </div>
+
+        <div class="milestone">
+          <div class="when">Slice 4</div>
+          <div class="dot-col"><span class="dot"></span><span class="line"></span></div>
+          <div class="body">
+            <h3>Freeze, ablate, write up</h3>
+            <p>Promote the winner through the gate, freeze + archive it, and record the one-number-per-stage ablation: <b>gen-0 → evolved harness</b> (the +SFT / +RL stages come later). Note any crutches the student-tuned scaffold baked in — input for the P2O re-evolution after RL (BER-147).</p>
+            <div class="tags"><span class="tag">frozen organism</span><span class="tag">ablation row</span><span class="tag exit">exit: BER-145 unblocked</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================= -->
+    <section>
+      <div class="sec-head"><span class="num">04</span><h2>The loop</h2></div>
+      <p class="sec-intro">One generation. Grey boxes are the fixed integrity boundary; the only thing that changes between organisms is the clay box. The judge's per-criterion detail never crosses back to the meta-agent.</p>
+      <div class="diagram">
+        <svg viewBox="0 0 860 320" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#87867F"/></marker>
+            <marker id="ac" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#D97757"/></marker>
+          </defs>
+
+          <rect class="box fixed" x="20"  y="130" width="170" height="60" rx="10"/>
+          <text class="lbl" x="105" y="155" text-anchor="middle">Meta-agent</text>
+          <text class="sub" x="105" y="173" text-anchor="middle">frontier · proposes mutation</text>
+
+          <rect class="box" x="250" y="130" width="170" height="60" rx="10"/>
+          <text class="lbl" x="335" y="150" text-anchor="middle" style="fill:var(--clay)">Organism</text>
+          <text class="sub" x="335" y="168" text-anchor="middle">SYSTEM.md · tools · thresholds</text>
+          <text class="sub" x="335" y="182" text-anchor="middle">(evolvable)</text>
+
+          <rect class="box fixed" x="480" y="30"  width="180" height="76" rx="10"/>
+          <text class="lbl" x="570" y="55" text-anchor="middle">Eval · student×5</text>
+          <text class="sub" x="570" y="73" text-anchor="middle">vLLM + web tools → report.md</text>
+          <text class="sub" x="570" y="90" text-anchor="middle">× racing repeats</text>
+
+          <rect class="box dark" x="480" y="214" width="180" height="64" rx="10"/>
+          <text class="lbl on-dark" x="570" y="240" text-anchor="middle">Rubric judge</text>
+          <text class="sub on-dark" x="570" y="258" text-anchor="middle">Bedrock Opus 4.8 · composite</text>
+
+          <rect class="box fixed" x="700" y="130" width="150" height="60" rx="10"/>
+          <text class="lbl" x="775" y="150" text-anchor="middle">NSGA-II</text>
+          <text class="sub" x="775" y="168" text-anchor="middle">Pareto + archive</text>
+          <text class="sub" x="775" y="182" text-anchor="middle">held-out gate</text>
+
+          <g>
+            <path class="flow" d="M190 160 L250 160" marker-end="url(#a)"/>
+            <path class="flow" d="M420 150 C 450 120, 455 110, 480 90" marker-end="url(#a)"/>
+            <path class="flow" d="M570 106 L570 214" marker-end="url(#a)"/>
+            <path class="flow" d="M660 250 C 690 240, 700 210, 720 190" marker-end="url(#a)"/>
+            <path class="flow accent" d="M775 130 C 775 70, 700 50, 540 60 M520 64 C 470 80, 420 110, 405 130" marker-end="url(#ac)"/>
+          </g>
+          <g>
+            <text class="edge" x="200" y="150">mutate</text>
+            <text class="edge" x="430" y="108">run</text>
+            <text class="edge" x="578" y="170">report</text>
+            <text class="edge" x="675" y="215">objectives</text>
+            <text class="edge accent" x="560" y="118">next parent (no rubric detail)</text>
+          </g>
+        </svg>
+        <p class="caption">Solid = one organism's evaluation. Dashed clay = selection feeding the next parent. Quality/cost/latency cross to NSGA-II; the judge's reasoning does not cross back to the meta-agent.</p>
+      </div>
+    </section>
+
+    <!-- ============================================================= -->
+    <section>
+      <div class="sec-head"><span class="num">05</span><h2>Run config</h2></div>
+      <p class="sec-intro">The knobs that matter, against hyperagent's <code>EvolutionConfig</code>. Student/judge/web env are already proven from the floor check — carry them through.</p>
+      <div class="code-block">
+        <div class="file-label">evolve config (deep-researcher kind)</div>
+        <div class="code"><pre><span class="cm">// fixed integrity boundary</span>
+benchmark:        <span class="str">"deep-researcher"</span>,   <span class="cm">// 5 prompts + held-out</span>
+initialOrganism:  <span class="str">"organisms/deep-researcher-single-agent"</span>,
+taskModel:        <span class="str">"deep-researcher-student"</span>, <span class="cm">// vLLM, NON-evolvable</span>
+metaModel:        <span class="str">"&lt;frontier&gt;"</span>,            <span class="cm">// mutation proposer</span>
+
+<span class="cm">// search</span>
+population:       <span class="kw">10</span>,        <span class="cm">// organisms / generation</span>
+iterations:      <span class="kw">5</span>,         <span class="cm">// generations (budget-capped)</span>
+archiveSize:     <span class="kw">20</span>,
+
+<span class="cm">// noise + budget guardrails (slice 2)</span>
+racingMaxEvals:  <span class="kw">4</span>,         <span class="cm">// repeat-eval until fitness separates</span>
+stageGateSize:   <span class="kw">2</span>,         <span class="cm">// cheap subset before full eval</span>
+taskTimeoutMs:   <span class="kw">360_000</span>,   <span class="cm">// matches HYPERAGENT_RESEARCH_TASK_TIMEOUT_MS</span>
+
+<span class="cm">// env carried from the floor check</span>
+<span class="fn">HYPERAGENT_STUDENT_MAX_TOKENS</span>=8192
+<span class="fn">EXA_API_KEY</span>=…   <span class="fn">AWS</span> us-east-1 (judge)</pre></div>
+      </div>
+      <p class="footnote">
+        The dominant cost is <b>judge calls</b>, not the student: ≈ prompts × population × generations × racing-repeats.
+        At 5 × 10 × 5 × 4 that is ~1,000 judge calls — must be priced and capped under BER-141 before slice 3 launches.
+      </p>
+    </section>
+
+    <!-- ============================================================= -->
+    <section>
+      <div class="sec-head"><span class="num">06</span><h2>Risks &amp; mitigations</h2></div>
+      <div class="risks">
+        <div class="row">
+          <div class="cell head">Risk</div><div class="cell head">Sev</div><div class="cell head">Mitigation</div>
+        </div>
+        <div class="row">
+          <div class="cell"><b>Overfit to 5 prompts.</b> Only five evolution prompts exist; the meta-agent can game them.</div>
+          <div class="cell"><span class="sev high">HIGH</span></div>
+          <div class="cell">Held-out gate (within-5% + ≥ baseline). But the held-out set itself is thin — <b>pull more prompts from <code>processed_data.jsonl</code></b> (full ResearchRubrics on EC2) before slice 3. See open questions.</div>
+        </div>
+        <div class="row">
+          <div class="cell"><b>Reward noise drowns the gradient.</b> Within-prompt sd ≈ 0.07–0.10 vs gen-to-gen gains.</div>
+          <div class="cell"><span class="sev high">HIGH</span></div>
+          <div class="cell">Racing repeat-evals (slice 2 gate); require non-degenerate group advantages before spending generations. Pair the rubric with cheap verifiable signals (citation validity, source counts) per BER-150.</div>
+        </div>
+        <div class="row">
+          <div class="cell"><b>Judge-call cost blow-up.</b> ~1,000 Opus-4.8 calls if unbounded.</div>
+          <div class="cell"><span class="sev med">MED</span></div>
+          <div class="cell">Stage-gate cheap subset first; hard generation + total-call caps from BER-141; student inference is free so the cap is purely judge spend.</div>
+        </div>
+        <div class="row">
+          <div class="cell"><b>Student-only scaffold bakes in crutches.</b> Defensive over-instruction the post-RL policy won't need (P2O staleness).</div>
+          <div class="cell"><span class="sev low">LOW</span></div>
+          <div class="cell">Expected, not avoided — it's why BER-147 re-evolves on the trained checkpoint. Just note the crutches in slice 4 so they're revisited.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================= -->
+    <section>
+      <div class="sec-head"><span class="num">07</span><h2>Open questions</h2></div>
+      <div class="open-q">
+        <div class="q">
+          <div class="qt">Held-out set — how many prompts, and from where?</div>
+          <div class="qd">We currently ship only 5 ResearchRubrics samples (all used for the floor check). Evolution needs a separate held-out split. The full dataset (<code>processed_data.jsonl</code>) is on EC2 <code>i-0a631da4ab15ce886</code>; selecting ~8 more held-out prompts (varied domains, no overlap) is a prerequisite for a trustworthy gate. <b>Decide before slice 3.</b></div>
+          <div class="owner">Decide with · user · before slice 3</div>
+        </div>
+        <div class="q">
+          <div class="qt">Generations × population × repeats vs budget</div>
+          <div class="qd">The 10×5×4 strawman is ~1,000 judge calls. <b>Need the BER-141 judge-call cost</b> to set the real caps; if it's pricey, drop to 6/gen and 3 generations, or lean harder on the stage gate.</div>
+          <div class="owner">Decide with · BER-141 re-costing</div>
+        </div>
+        <div class="q">
+          <div class="qt">Which frontier model proposes mutations?</div>
+          <div class="qd">The meta-agent is the only frontier-quality cost in the inner loop (student is free). Pick a strong-but-affordable proposer; it sees archive traces but not per-criterion rubric detail. Tie this into the BER-141 model-config reconciliation.</div>
+          <div class="owner">Decide with · BER-141</div>
+        </div>
+      </div>
+    </section>
+
+    <p class="footnote">Plan for <b>BER-144</b> · Evolution → SFT → RL milestone · branch <code>bm/feat/deep-researcher-evolution</code> · builds on D013 (BER-139 clean outcome 1).</p>
+
+  </div>
+
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var btn = document.getElementById('themeToggle');
+      var icon = document.getElementById('themeIcon');
+      var text = document.getElementById('themeText');
+      function sync() {
+        var dark = root.classList.contains('dark');
+        icon.textContent = dark ? '☀' : '☾';
+        text.textContent = dark ? 'Light' : 'Dark';
+      }
+      sync();
+      btn.addEventListener('click', function () {
+        root.classList.toggle('dark');
+        try { localStorage.setItem('ber144-theme', root.classList.contains('dark') ? 'dark' : 'light'); } catch (e) {}
+        sync();
+      });
+    })();
+  </script>
+</body>
+</html>
