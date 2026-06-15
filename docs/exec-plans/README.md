@@ -13,7 +13,8 @@ Execution plans record **future or in-progress work** that goes beyond a single 
 | Plan | File | Status | Summary |
 |------|------|--------|---------|
 | Browser-Native Curriculum | [browser-native-curriculum.md](browser-native-curriculum.md) | Draft | BER-163 plan for Playwright-backed single-agent browser curriculum, visible evidence/context primitives, verifier gates, data bank taxonomy, and SFT-A/B schedule |
-| Browser Task Bank | [browser-task-bank.md](browser-task-bank.md) | Draft | BER-171 benchmark-informed browser-agent task bank, bootstrap data mix, and raw-student difficulty-probe sample |
+| Real Benchmark Browser Mix | [real-benchmark-browser-mix.md](real-benchmark-browser-mix.md) | Draft | BER-172 final browser-agent curriculum mix anchored in real benchmark families, contamination policy, split rules, first 50-100 trace proportions, and raw-student probe proposal |
+| Browser Task Bank | [browser-task-bank.md](browser-task-bank.md) | Historical draft | BER-171 synthetic/template-heavy task bank retained for augmentation patterns and negative-fixture generation, not the final curriculum backbone |
 | Evaluation Integration | [evaluation-integration.md](evaluation-integration.md) | Draft | Integrate ResearchRubrics and DeepResearch Bench II as evaluation benchmarks; A/B testing protocol; internal metrics; regression suite |
 | Hyperagent Benchmark Plan | [hyperagent-benchmark-plan.md](hyperagent-benchmark-plan.md) | Draft | Use Hyperagent as an evolution harness for Deep Researcher variants; NSGA-II Pareto scoring; three-phase rollout |
 | Hyperagent Customization | [hyperagent-customization.md](hyperagent-customization.md) | Draft | Concrete code gap to drive hyperagent on research tasks: graded reward (vs binary pass/fail), LLM-judge verifier (recover BER-150 scorer), research benchmark loader, student/judge model wiring. Branch off hyperagent `main`. Blocks BER-139/BER-144 (BER-151) |
