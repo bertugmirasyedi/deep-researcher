@@ -4,12 +4,12 @@
 - **Status**: Curated registry, no browser/model runs
 - **Registry**: [`data/browser-task-bank/benchmark-browser-tasks.json`](../../data/browser-task-bank/benchmark-browser-tasks.json)
 - **Raw-student pilots**: [BER-173 Raw-Student Ranking Pilot Results](ber-173-raw-student-ranking-results.md)
-- **Decision source**: [D019](../decisions.md#d019-benchmark-anchored-browser-agent-data-mix-over-synthetic-templates) and [Real Benchmark-Derived Browser-Agent Mix](real-benchmark-browser-mix.md)
+- **Decision source**: [D019](../decisions.md#d019-benchmark-anchored-browser-agent-data-mix-over-synthetic-templates), [D020](../decisions.md#d020-benchmark-first-data-imports-over-clone-heavy-purity), [Real Benchmark-Derived Browser-Agent Mix](real-benchmark-browser-mix.md), and [HF Benchmark Data Import](hf-benchmark-data-import.md)
 - **Last updated**: 2026-06-15
 
 ## Scope
 
-This registry is a concrete, machine-readable browser-agent task bank for mid-training curation. It does **not** contain raw model traces, browser runs, hidden benchmark items, credentials, leaderboard/test prompts, or raw page dumps. Public benchmark families are used as skill-shape anchors; trainable entries are either permitted split references or fresh non-overlapping clones with changed entities, sources, and answer tuples.
+This registry is a concrete, machine-readable browser-agent task bank for mid-training curation. It does **not** contain raw model traces, browser runs, hidden benchmark items, credentials, leaderboard/test prompts, or raw page dumps. Public benchmark families are used as skill-shape anchors; after BER-175, future importer work should also populate this schema directly from licensed public train/dev datasets rather than defaulting to hand-authored clones.
 
 ## Schema
 
@@ -56,8 +56,8 @@ Stage assignment:
 
 ## Split and contamination policy
 
-- Public benchmark items are eval/probe only unless an explicit train split and license/access status permits training.
-- Actual BrowseComp prompts/items are not included as train candidates; trainable entries use fresh BrowseComp-style clones.
+- Public benchmark train/dev items may be used for training when license/access and split status permit it; hidden, encrypted, leaderboard, test, or restricted eval items remain eval/probe only.
+- Actual encrypted/eval-oriented BrowseComp prompts/items are not included as train candidates; trainable exact-answer entries use permitted public splits or fresh BrowseComp-style clones.
 - Dedupe is by normalized prompt, entity tuple, answer key, canonical domains/source ids, benchmark id, and constraint tuple.
 - Stage-4 entries are references/placeholders for eval selection and carry `train_allowed: false` and `sft_role: eval_only`.
 - Negative/verifier fixtures are synthetic and intentionally not positive imitation targets.

@@ -2,7 +2,7 @@
 
 - **Issue**: BER-172
 - **Status**: Draft final mix plan
-- **Decision source**: [D018](../decisions.md#d018-browser-native-single-agent-curriculum-over-plain-teacher-distillation), [browser-native curriculum](browser-native-curriculum.md), and the historical [browser task bank](browser-task-bank.md)
+- **Decision source**: [D018](../decisions.md#d018-browser-native-single-agent-curriculum-over-plain-teacher-distillation), [D020](../decisions.md#d020-benchmark-first-data-imports-over-clone-heavy-purity), [browser-native curriculum](browser-native-curriculum.md), [HF benchmark data import](hf-benchmark-data-import.md), and the historical [browser task bank](browser-task-bank.md)
 - **Last updated**: 2026-06-15
 
 ## 1. Correction and scope
@@ -17,12 +17,12 @@ This document does not run a browser, student model, SFT, RL, or ResearchRubrics
 
 ## 2. Contamination policy
 
-Default rule: **public benchmark items are eval-only unless the benchmark explicitly provides a train split, license/access permits training, and the item is isolated from any held-out leaderboard/test split**.
+Updated by BER-175: **public benchmark train/dev items may be used directly for training when license/access permits and the item is isolated from hidden/test/leaderboard splits**. The old clone-first rule now applies only when license, split, leaderboard status, or contamination uncertainty makes direct training unsafe.
 
 Operational policy:
 
-- **No training on held-out eval or leaderboard items.** This includes BrowseComp released benchmark items unless an explicitly training-licensed split is identified and isolated.
-- **Train only from permitted train/dev splits or fresh non-overlapping clones.** Fresh clones must change entities, sources, answer keys, dates, domains, and surface wording.
+- **No training on hidden, held-out test, restricted eval, or leaderboard items.** This includes encrypted/eval-oriented BrowseComp and XBench configurations unless an explicitly training-licensed split is identified and isolated.
+- **Train from permitted train/dev splits, then supplement with fresh non-overlapping clones.** Fresh clones must change entities, sources, answer keys, dates, domains, and surface wording.
 - **Split by semantic key, not rendered trace.** Dedupe on normalized prompt, target entity/entities, answer string, source URLs/canonical domains, constraint tuple, and any benchmark item id.
 - **Keep public benchmark evals quarantined.** Store item ids and hashes in an eval registry; never reuse those entities/answer/source tuples in train.
 - **Use rubric/eval frameworks as eval inspiration unless split/licensing says otherwise.** DeepResearch Bench / ResearchRubrics-style prompts are primarily eval-only or internal prompt-shape references.
@@ -83,9 +83,9 @@ Target the first **80 traces** as a verifier-debuggable, benchmark-derived boots
 
 Sampling notes:
 
-- Use **real benchmark train splits first** only when licensing and split policy allow it.
-- Otherwise generate fresh clones from the benchmark's skill shape and record `clone_source_family`, not `benchmark_item_id`.
-- Keep actual BrowseComp, GAIA held-out/test, DRB/DRB-II prompts, and leaderboard eval items out of SFT-A/SFT-B training.
+- Use **real benchmark train/dev splits first** when licensing and split policy allow it.
+- Generate fresh clones only for gaps, hard negatives, or families whose useful items are hidden/test/restricted.
+- Keep encrypted/eval-oriented BrowseComp/XBench, GAIA held-out/test, DRB/DRB-II leaderboard/test prompts, and other restricted eval items out of SFT-A/SFT-B training.
 - Include negative fixtures in both SFT-A repair/rewrite targets and SFT-B bad-action/process auxiliary targets.
 
 ## 6. Train / validation / evaluation split

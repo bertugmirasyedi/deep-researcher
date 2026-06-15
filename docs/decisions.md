@@ -208,3 +208,23 @@ Architectural and design decisions with rationale. Append new decisions to the e
 - **Implication**: Raw-student probes and bootstrap generation should use benchmark-derived, dev-safe samples or fresh non-overlapping clones, not the synthetic BER-171 task bank as the backbone.
 - **References**: `docs/exec-plans/real-benchmark-browser-mix.md`; BER-172.
 
+### D020: Benchmark-first data imports over clone-heavy purity
+
+- **Date**: 2026-06-15
+- **Context**: BER-175 simplified the browser-agent data strategy. The previous BER-172/173 posture was appropriately contamination-conscious but too clone-heavy for this pet-project training program. We need honest train/validation/test accounting, not a public leaderboard-clean claim for every source family. Several useful Hugging Face/public datasets can be imported directly where licenses and splits allow it: OpenResearcher `web-bench`, Mind2Web, MiroVerse, WebAppEval, and PSAI computer-use/browser data.
+- **Alternatives**: (A) Keep fresh clones/templates as the primary training backbone. (B) Train freely on all public benchmark items without provenance or split constraints. (C) Use established benchmark datasets directly where license/access/split status allows, validate on held-out same-family items, and keep a small untouched custom/fresh test set.
+- **Decision**: Option C. Benchmark imports are the first-class data source; clones and synthetic tasks are supplements. Public train/dev records may be used for SFT/midtraining when license and access terms permit it. Hidden, encrypted, official test, leaderboard, or license-restricted items remain eval/probe-only.
+- **Dataset roles**:
+  - **OpenResearcher/web-bench**: import WebWalkerQA-ref and GAIA-text for traversal and multi-step QA; use SealQA/SealQA-ref where split/license notes are clear; keep encrypted/eval-oriented BrowseComp/XBench as eval/probe unless safe train use is established.
+  - **Mind2Web**: Phase-A import for browser/action grounding from train metadata and action traces under CC-BY-4.0-compatible use.
+  - **MiroVerse-v0.1**: optional gated Phase-C source for full trajectories, browse traces, short synthesis, and context pressure after license/access acceptance.
+  - **WebAppEval**: deterministic workflow/outcome tasks if its environments and evaluator specs are reproducible.
+  - **PSAI computer-use data**: browser action/process patterns after size, multimodal, and privacy filtering.
+- **Split policy**: Split and dedupe by dataset item id, domain/site, entity tuple, answer string, source URL/domain cluster, benchmark family/config, and normalized prompt. Validation can come from held-out items in the same imported families. Keep a small custom/fresh test set untouched and sampled without replacement for honest sanity checks.
+- **Provenance policy**: Every imported record must carry dataset/config/split/id, license/access notes, `train_allowed`, source status, and contamination/eval labels. Public benchmark evals must be labeled honestly as public or family-contaminated when related train/dev data was used; do not claim leaderboard-clean performance.
+- **Synthetic/negative policy**: Synthetic data remains useful for gap/abstention, repair, verifier, and reward-hacking fixtures, but it is not the backbone. Bad traces are `repair_target_only` or `verifier_only`, not positive imitation, unless explicitly converted into corrected targets.
+- **Rationale**: Established datasets provide real task distributions and cheaper scale than authoring fresh clones for every bucket. The honest boundary is provenance and split discipline, plus the untouched custom test set, not blanket avoidance of public benchmark train/dev data.
+- **Tradeoff**: Direct imports increase license/split bookkeeping and may produce public-benchmark familiarity rather than leaderboard-clean generalization. This is acceptable for the training program as long as reports state the boundary clearly.
+- **Implication**: Future registry/importer work should populate the BrowserTask schema from HF datasets first, then fill gaps with fresh clones and synthetic fixtures. BER-173's hand-curated registry remains a schema and capability map, not the long-term data source of record.
+- **References**: `docs/exec-plans/hf-benchmark-data-import.md`; BER-175.
+
