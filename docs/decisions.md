@@ -186,3 +186,25 @@ Architectural and design decisions with rationale. Append new decisions to the e
 - **Tradeoff**: This delays GRPO and raw-student evolution in favor of a less glamorous browser-baseline curriculum, but it lowers credit-assignment, retrieval-interface, and data-quality risk before expensive training.
 - **Implication**: BER-145 data generation should prioritize labeled browser/process traces and visible primitive supervision; BER-146 should wait for clean/high-reward bootstrap rollouts before GRPOTrainer is wired for real weight updates.
 
+### D019: Benchmark-anchored browser-agent data mix over synthetic templates
+
+- **Date**: 2026-06-15
+- **Context**: BER-171's first browser task bank was template/synthetic-heavy. The user corrected the direction: the final browser-agent curriculum should be anchored in real benchmark families, including BrowseComp, while synthetic/template tasks are demoted to augmentation, fresh non-overlapping clones, and negative/verifier fixtures.
+- **Alternatives**: (A) Use a synthetic/template task bank as the curriculum backbone. (B) Put public benchmark items directly into train. (C) Use a real benchmark-derived curriculum with strict split/contamination policy; synthetic examples are only augmentation and negative fixtures.
+- **Decision**: Option C. Anchor the first data mix in real benchmark families and their task distributions, with synthetic data used only where it preserves benchmark skill shape without copying held-out items or where it deliberately tests verifier/reward-hacking failures.
+- **Benchmark roles**:
+  - **BrowseComp**: hard exact-answer browser research and held-out eval anchor; train only on a safe train split if one is identified/licensed, or on fresh non-overlapping BrowseComp-style clones.
+  - **WebWalkerQA**: website traversal QA, navigation, retry, and evidence extraction from root-site browsing.
+  - **WebVoyager, Mind2Web, WebLINX**: real/offline website navigation and action grounding; use permitted train splits or clone patterns for browser-process SFT.
+  - **WebArena / WorkArena**: self-hosted/workflow action reliability and deterministic outcome checks; useful for verifier sanity and robustness, secondary to research synthesis.
+  - **MiniWoB++**: primitive browser action warmup only; cap it so toy UI control does not dominate the research policy.
+  - **GAIA / FRAMES-like**: multi-step web reasoning and multi-source reasoning patterns; contamination-sensitive and mostly dev/eval-safe or clone-derived.
+  - **DeepResearch Bench / ResearchRubrics-style**: long-horizon synthesis and evaluation inspiration; mostly eval-only unless a split-safe, license-safe training subset exists.
+- **Mix policy**: The initial 50-100 traces should follow the approximate proportions in `docs/exec-plans/real-benchmark-browser-mix.md`, anchored in benchmark families across browser basics, navigation/retry, BrowseComp-style exact-answer research, multi-source reasoning, short synthesis, context pressure, gap/abstention, and outcome-checked workflows. Synthetic negative and reward-hacking fixtures remain a small 5-10% slice and must be derived from observed benchmark failure modes, not treated as positive task-bank backbone.
+- **Contamination policy**: Public benchmark items are eval-only unless a train split and license explicitly permit training. Dedupe by normalized prompt, entity tuple, source URL/domain cluster, answer string, benchmark id, and constraint tuple; keep frozen eval sampled without replacement and never use it to select or replace training examples.
+- **SFT labels**: SFT-A trains on positive browser-process traces. SFT-B is auxiliary for selected navigation, gap/abstention, hard-task, and verifier-relevant behaviors. Negative fixtures are not positive imitation targets unless explicitly rendered as repair, contrastive, or bad-to-good examples.
+- **Rationale**: Real benchmarks supply the skill distribution the browser-native policy must learn and preserve an honest eval boundary. Synthetic templates are still valuable for controllable verifier stress tests and train-only clones, but using them as the backbone would optimize a task-bank artifact instead of browser research competence.
+- **Tradeoff**: This raises data-engineering overhead: licenses, splits, eval registries, and dedupe keys must be tracked before importing examples. The cost is acceptable because it prevents train/eval contamination and avoids spending SFT/RL capacity on a synthetic curriculum that may not transfer.
+- **Implication**: Raw-student probes and bootstrap generation should use benchmark-derived, dev-safe samples or fresh non-overlapping clones, not the synthetic BER-171 task bank as the backbone.
+- **References**: `docs/exec-plans/real-benchmark-browser-mix.md`; BER-172.
+
