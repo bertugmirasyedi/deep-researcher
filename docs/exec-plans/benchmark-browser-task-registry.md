@@ -3,6 +3,7 @@
 - **Issue**: BER-173
 - **Status**: Curated registry, no browser/model runs
 - **Registry**: [`data/browser-task-bank/benchmark-browser-tasks.json`](../../data/browser-task-bank/benchmark-browser-tasks.json)
+- **Raw-student pilots**: [BER-173 Raw-Student Ranking Pilot Results](ber-173-raw-student-ranking-results.md)
 - **Decision source**: [D019](../decisions.md#d019-benchmark-anchored-browser-agent-data-mix-over-synthetic-templates) and [Real Benchmark-Derived Browser-Agent Mix](real-benchmark-browser-mix.md)
 - **Last updated**: 2026-06-15
 
