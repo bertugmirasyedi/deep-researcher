@@ -1,0 +1,3103 @@
+[
+  {
+    "task_id": "BBB-001",
+    "source_family": "MiniWoB++",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage1_warmup",
+    "category": "browser_basics_action_grounding",
+    "difficulty_prior": "easy",
+    "prompt": "Use browser-native navigation to open the official Python documentation page for the string methods reference, then answer which method tests whether all cased characters are uppercase.",
+    "max_steps": 8,
+    "verifier_gates": [
+      "uses browser/search or goto only",
+      "official docs.python.org URL visited",
+      "answer span appears on visited page",
+      "no web_search/fetch_content"
+    ],
+    "oracle": {
+      "answer_key": "str.isupper()",
+      "verifier_strategy": "exact answer plus visited supporting citations"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "Python string methods"
+      ],
+      "answer": "str.isupper()",
+      "domains": [
+        "docs.python.org"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "single official docs page",
+        "method identification"
+      ]
+    },
+    "contamination_notes": "Fresh primitive docs-navigation clone; not copied from MiniWoB++.",
+    "references/access_notes": "MiniWoB++ action-primitive shape; official Python docs are public train-safe clone source."
+  },
+  {
+    "task_id": "BBB-002",
+    "source_family": "Mind2Web",
+    "source_status": "permitted_train_split",
+    "train_allowed": true,
+    "stage": "stage1_warmup",
+    "category": "browser_basics_action_grounding",
+    "difficulty_prior": "easy",
+    "prompt": "On the official NumPy documentation site, find the page for numpy.linspace and report the default value of the endpoint parameter.",
+    "max_steps": 8,
+    "verifier_gates": [
+      "official numpy.org URL visited",
+      "parameter default quoted or visible",
+      "final answer contains only default and citation"
+    ],
+    "oracle": {
+      "answer_key": "True",
+      "verifier_strategy": "exact answer plus visited supporting citations"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "numpy.linspace endpoint"
+      ],
+      "answer": "True",
+      "domains": [
+        "numpy.org"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "docs parameter lookup"
+      ]
+    },
+    "contamination_notes": "Concrete fresh web-doc task; no Mind2Web item id used.",
+    "references/access_notes": "Mind2Web action-grounding/documentation lookup pattern; train status records benchmark-family allowance, not copied prompt."
+  },
+  {
+    "task_id": "BBB-003",
+    "source_family": "WebLINX",
+    "source_status": "permitted_train_split",
+    "train_allowed": true,
+    "stage": "stage1_warmup",
+    "category": "browser_basics_action_grounding",
+    "difficulty_prior": "easy",
+    "prompt": "Navigate to the official SQLite documentation page for date and time functions and answer what the strftime() substitution %J returns.",
+    "max_steps": 9,
+    "verifier_gates": [
+      "sqlite.org visited",
+      "answer supported by visible docs text",
+      "quote/span support"
+    ],
+    "oracle": {
+      "answer_key": "Julian day number (fractional)",
+      "verifier_strategy": "exact answer plus visited supporting citations"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "SQLite strftime %J"
+      ],
+      "answer": "Julian day number",
+      "domains": [
+        "sqlite.org"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "single docs lookup",
+        "symbol table"
+      ]
+    },
+    "contamination_notes": "Fresh docs lookup clone; no WebLINX session copied.",
+    "references/access_notes": "WebLINX dialogue-conditioned navigation/action pattern; public docs page."
+  },
+  {
+    "task_id": "BBB-004",
+    "source_family": "WebVoyager",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage1_warmup",
+    "category": "browser_basics_action_grounding",
+    "difficulty_prior": "easy",
+    "prompt": "Find the official W3C page for the HTML img element and report the required attribute that provides alternative text.",
+    "max_steps": 8,
+    "verifier_gates": [
+      "w3.org or WHATWG authoritative page visited",
+      "attribute name supported",
+      "no unsupported accessibility claims"
+    ],
+    "oracle": {
+      "answer_key": "alt",
+      "verifier_strategy": "exact answer plus visited supporting citations"
+    },
+    "sft_role": "positive_sft_a",
+    "dedupe_keys": {
+      "entity": [
+        "HTML img element alt"
+      ],
+      "answer": "alt",
+      "domains": [
+        "w3.org",
+        "html.spec.whatwg.org"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "official web standard lookup"
+      ]
+    },
+    "contamination_notes": "Fresh simple navigation clone; not a WebVoyager benchmark task.",
+    "references/access_notes": "WebVoyager real-site browsing shape; official public standards docs."
+  },
+  {
+    "task_id": "BBB-005",
+    "source_family": "MiniWoB++",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage1_warmup",
+    "category": "browser_basics_action_grounding",
+    "difficulty_prior": "easy",
+    "prompt": "Open the official Git documentation for git status and answer which short-format status code means an untracked file.",
+    "max_steps": 8,
+    "verifier_gates": [
+      "git-scm.com visited",
+      "short-format table or doc span supports answer",
+      "answer is concise"
+    ],
+    "oracle": {
+      "answer_key": "??",
+      "verifier_strategy": "exact answer plus visited supporting citations"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "git status short untracked"
+      ],
+      "answer": "??",
+      "domains": [
+        "git-scm.com"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "single-page extraction"
+      ]
+    },
+    "contamination_notes": "Primitive lookup clone with a stable public answer.",
+    "references/access_notes": "MiniWoB++ click/type/read primitive inspiration only."
+  },
+  {
+    "task_id": "BBB-006",
+    "source_family": "Mind2Web",
+    "source_status": "permitted_train_split",
+    "train_allowed": true,
+    "stage": "stage1_warmup",
+    "category": "browser_basics_action_grounding",
+    "difficulty_prior": "easy",
+    "prompt": "Using only browser actions, find the MDN page for Array.prototype.at() and answer whether negative indexes are accepted.",
+    "max_steps": 8,
+    "verifier_gates": [
+      "developer.mozilla.org visited",
+      "negative-index claim supported by visible text",
+      "final answer includes yes/no plus citation"
+    ],
+    "oracle": {
+      "answer_key": "Yes; negative integers count back from the last item.",
+      "verifier_strategy": "exact answer plus visited supporting citations"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "Array.prototype.at negative index"
+      ],
+      "answer": "yes negative counts from end",
+      "domains": [
+        "developer.mozilla.org"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "docs lookup",
+        "boolean answer"
+      ]
+    },
+    "contamination_notes": "Fresh public docs task; no benchmark trace copied.",
+    "references/access_notes": "Mind2Web-style website lookup/action grounding."
+  },
+  {
+    "task_id": "BBB-007",
+    "source_family": "WebLINX",
+    "source_status": "permitted_train_split",
+    "train_allowed": true,
+    "stage": "stage1_warmup",
+    "category": "browser_basics_action_grounding",
+    "difficulty_prior": "easy",
+    "prompt": "Find the official pandas documentation page for DataFrame.dropna and report the default value of the how parameter.",
+    "max_steps": 9,
+    "verifier_gates": [
+      "pandas.pydata.org visited",
+      "parameter default visible",
+      "answer cites visited docs"
+    ],
+    "oracle": {
+      "answer_key": "None",
+      "verifier_strategy": "exact answer plus visited supporting citations"
+    },
+    "sft_role": "positive_sft_a",
+    "dedupe_keys": {
+      "entity": [
+        "pandas DataFrame.dropna how"
+      ],
+      "answer": "None",
+      "domains": [
+        "pandas.pydata.org"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "API parameter default"
+      ]
+    },
+    "contamination_notes": "Fresh documentation task; split-safe clone.",
+    "references/access_notes": "WebLINX recorded-session family used for action pattern only."
+  },
+  {
+    "task_id": "BBB-008",
+    "source_family": "WebVoyager",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage1_warmup",
+    "category": "browser_basics_action_grounding",
+    "difficulty_prior": "easy",
+    "prompt": "Open the official Rust book chapter on ownership and answer what happens when a variable goes out of scope.",
+    "max_steps": 10,
+    "verifier_gates": [
+      "doc.rust-lang.org visited",
+      "answer supported by quote/span",
+      "single concept extracted"
+    ],
+    "oracle": {
+      "answer_key": "Rust automatically calls drop to return the memory/resources.",
+      "verifier_strategy": "exact answer plus visited supporting citations"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "Rust ownership scope drop"
+      ],
+      "answer": "drop called at end of scope",
+      "domains": [
+        "doc.rust-lang.org"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "official docs concept extraction"
+      ]
+    },
+    "contamination_notes": "Fresh clone; not using WebVoyager public task text.",
+    "references/access_notes": "WebVoyager navigation pattern over a public documentation site."
+  },
+  {
+    "task_id": "NAV-001",
+    "source_family": "WebWalkerQA",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage1_warmup",
+    "category": "navigation_retry",
+    "difficulty_prior": "easy",
+    "prompt": "Start from the official Django documentation home page. Find the current stable documentation page for URL dispatcher path converters and name the converter that matches a UUID.",
+    "max_steps": 14,
+    "verifier_gates": [
+      "initial ambiguity handled or irrelevant result rejected",
+      "target/official domain visited",
+      "answer span supported",
+      "reformulation/retry visible if first path fails"
+    ],
+    "oracle": {
+      "answer_key": "uuid",
+      "verifier_strategy": "exact answer plus visited supporting citations"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "Django URL path converters"
+      ],
+      "answer": "uuid",
+      "domains": [
+        "docs.djangoproject.com"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "navigation retry",
+        "official-source preference"
+      ]
+    },
+    "contamination_notes": "Fresh navigation clone; no exact public benchmark item copied.",
+    "references/access_notes": "WebWalkerQA website traversal/navigation shape; concrete public website target."
+  },
+  {
+    "task_id": "NAV-002",
+    "source_family": "WebVoyager",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage1_warmup",
+    "category": "navigation_retry",
+    "difficulty_prior": "medium",
+    "prompt": "Search for 'Mercury mission patches' but avoid astrology results. Find NASA's page for the Mercury program and report the name of the first crewed Mercury mission.",
+    "max_steps": 14,
+    "verifier_gates": [
+      "initial ambiguity handled or irrelevant result rejected",
+      "target/official domain visited",
+      "answer span supported",
+      "reformulation/retry visible if first path fails"
+    ],
+    "oracle": {
+      "answer_key": "Freedom 7",
+      "verifier_strategy": "exact answer plus visited supporting citations"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "NASA Mercury first crewed mission"
+      ],
+      "answer": "Freedom 7",
+      "domains": [
+        "nasa.gov"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "navigation retry",
+        "official-source preference"
+      ]
+    },
+    "contamination_notes": "Fresh navigation clone; no exact public benchmark item copied.",
+    "references/access_notes": "WebVoyager website traversal/navigation shape; concrete public website target."
+  },
+  {
+    "task_id": "NAV-003",
+    "source_family": "WebWalkerQA",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage1_warmup",
+    "category": "navigation_retry",
+    "difficulty_prior": "medium",
+    "prompt": "On the Library of Congress site, navigate from the main page to the ask-a-librarian/help area and report the page title for researcher assistance.",
+    "max_steps": 14,
+    "verifier_gates": [
+      "initial ambiguity handled or irrelevant result rejected",
+      "target/official domain visited",
+      "answer span supported",
+      "reformulation/retry visible if first path fails"
+    ],
+    "oracle": {
+      "answer_key": null,
+      "verifier_strategy": "visited official page must support extracted answer; semantic verifier checks entity and quote"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "Library of Congress Ask a Librarian"
+      ],
+      "answer": null,
+      "domains": [
+        "loc.gov"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "navigation retry",
+        "official-source preference"
+      ]
+    },
+    "contamination_notes": "Fresh navigation clone; no exact public benchmark item copied.",
+    "references/access_notes": "WebWalkerQA website traversal/navigation shape; concrete public website target."
+  },
+  {
+    "task_id": "NAV-004",
+    "source_family": "WebVoyager",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage1_warmup",
+    "category": "navigation_retry",
+    "difficulty_prior": "easy",
+    "prompt": "The query 'go slices delete' may surface blogs first. Find the official Go documentation/wiki guidance for deleting from a slice and report the one-line append expression pattern.",
+    "max_steps": 14,
+    "verifier_gates": [
+      "initial ambiguity handled or irrelevant result rejected",
+      "target/official domain visited",
+      "answer span supported",
+      "reformulation/retry visible if first path fails"
+    ],
+    "oracle": {
+      "answer_key": "append(a[:i], a[i+1:]...)",
+      "verifier_strategy": "exact answer plus visited supporting citations"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "Go delete slice element"
+      ],
+      "answer": "append(a[:i], a[i+1:]...)",
+      "domains": [
+        "go.dev",
+        "go.dev/wiki"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "navigation retry",
+        "official-source preference"
+      ]
+    },
+    "contamination_notes": "Fresh navigation clone; no exact public benchmark item copied.",
+    "references/access_notes": "WebVoyager website traversal/navigation shape; concrete public website target."
+  },
+  {
+    "task_id": "NAV-005",
+    "source_family": "Mind2Web",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage1_warmup",
+    "category": "navigation_retry",
+    "difficulty_prior": "medium",
+    "prompt": "Find the official Kubernetes documentation for init containers by navigating through docs or search, then answer whether init containers support lifecycle hooks.",
+    "max_steps": 14,
+    "verifier_gates": [
+      "initial ambiguity handled or irrelevant result rejected",
+      "target/official domain visited",
+      "answer span supported",
+      "reformulation/retry visible if first path fails"
+    ],
+    "oracle": {
+      "answer_key": "No",
+      "verifier_strategy": "exact answer plus visited supporting citations"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "Kubernetes init containers lifecycle hooks"
+      ],
+      "answer": "No",
+      "domains": [
+        "kubernetes.io"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "navigation retry",
+        "official-source preference"
+      ]
+    },
+    "contamination_notes": "Fresh navigation clone; no exact public benchmark item copied.",
+    "references/access_notes": "Mind2Web website traversal/navigation shape; concrete public website target."
+  },
+  {
+    "task_id": "NAV-006",
+    "source_family": "WebWalkerQA",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage1_warmup",
+    "category": "navigation_retry",
+    "difficulty_prior": "medium",
+    "prompt": "From the official NOAA National Hurricane Center site, find the glossary entry for 'storm surge' and provide its definition in one sentence.",
+    "max_steps": 14,
+    "verifier_gates": [
+      "initial ambiguity handled or irrelevant result rejected",
+      "target/official domain visited",
+      "answer span supported",
+      "reformulation/retry visible if first path fails"
+    ],
+    "oracle": {
+      "answer_key": null,
+      "verifier_strategy": "visited official page must support extracted answer; semantic verifier checks entity and quote"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "NOAA storm surge glossary"
+      ],
+      "answer": null,
+      "domains": [
+        "nhc.noaa.gov",
+        "noaa.gov"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "navigation retry",
+        "official-source preference"
+      ]
+    },
+    "contamination_notes": "Fresh navigation clone; no exact public benchmark item copied.",
+    "references/access_notes": "WebWalkerQA website traversal/navigation shape; concrete public website target."
+  },
+  {
+    "task_id": "NAV-007",
+    "source_family": "WebVoyager",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage1_warmup",
+    "category": "navigation_retry",
+    "difficulty_prior": "medium",
+    "prompt": "Search for 'React keys list rendering' and reject tutorial mirrors. Use the official React docs to answer why keys are needed.",
+    "max_steps": 14,
+    "verifier_gates": [
+      "initial ambiguity handled or irrelevant result rejected",
+      "target/official domain visited",
+      "answer span supported",
+      "reformulation/retry visible if first path fails"
+    ],
+    "oracle": {
+      "answer_key": null,
+      "verifier_strategy": "visited official page must support extracted answer; semantic verifier checks entity and quote"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "React keys list rendering"
+      ],
+      "answer": null,
+      "domains": [
+        "react.dev"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "navigation retry",
+        "official-source preference"
+      ]
+    },
+    "contamination_notes": "Fresh navigation clone; no exact public benchmark item copied.",
+    "references/access_notes": "WebVoyager website traversal/navigation shape; concrete public website target."
+  },
+  {
+    "task_id": "NAV-008",
+    "source_family": "WebWalkerQA",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage1_warmup",
+    "category": "navigation_retry",
+    "difficulty_prior": "medium",
+    "prompt": "Find the official ISO page or public ISO overview for ISO 8601 and answer what kind of information the standard covers.",
+    "max_steps": 14,
+    "verifier_gates": [
+      "initial ambiguity handled or irrelevant result rejected",
+      "target/official domain visited",
+      "answer span supported",
+      "reformulation/retry visible if first path fails"
+    ],
+    "oracle": {
+      "answer_key": null,
+      "verifier_strategy": "visited official page must support extracted answer; semantic verifier checks entity and quote"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "ISO 8601 overview"
+      ],
+      "answer": null,
+      "domains": [
+        "iso.org"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "navigation retry",
+        "official-source preference"
+      ]
+    },
+    "contamination_notes": "Fresh navigation clone; no exact public benchmark item copied.",
+    "references/access_notes": "WebWalkerQA website traversal/navigation shape; concrete public website target."
+  },
+  {
+    "task_id": "DET-001",
+    "source_family": "WebArena",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage1_warmup",
+    "category": "deterministic_outcome_workflow",
+    "difficulty_prior": "easy",
+    "prompt": "Using the public GitHub web UI, find the license of the torvalds/linux repository.",
+    "max_steps": 12,
+    "verifier_gates": [
+      "target public web app/page visited",
+      "outcome field extracted from page state",
+      "final answer matches page metadata or declares absence"
+    ],
+    "oracle": {
+      "answer_key": "GPL-2.0",
+      "verifier_strategy": "exact answer plus visited supporting citations"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "torvalds/linux license"
+      ],
+      "answer": "GPL-2.0",
+      "domains": [
+        "github.com"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "public web workflow",
+        "deterministic field extraction"
+      ]
+    },
+    "contamination_notes": "Fresh workflow clone; no self-hosted WebArena task id copied.",
+    "references/access_notes": "WebArena deterministic workflow shape; public page may drift and should be reverified before training."
+  },
+  {
+    "task_id": "DET-002",
+    "source_family": "WorkArena",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage1_warmup",
+    "category": "deterministic_outcome_workflow",
+    "difficulty_prior": "medium",
+    "prompt": "On the official Slack help center, find the page for changing notification preferences and report one named notification level option.",
+    "max_steps": 12,
+    "verifier_gates": [
+      "target public web app/page visited",
+      "outcome field extracted from page state",
+      "final answer matches page metadata or declares absence"
+    ],
+    "oracle": {
+      "answer_key": null,
+      "verifier_strategy": "browser-observed page-state verifier; answer may drift for versioned pages"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "Slack notification preferences"
+      ],
+      "answer": null,
+      "domains": [
+        "slack.com"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "public web workflow",
+        "deterministic field extraction"
+      ]
+    },
+    "contamination_notes": "Fresh workflow clone; no self-hosted WebArena task id copied.",
+    "references/access_notes": "WorkArena deterministic workflow shape; public page may drift and should be reverified before training."
+  },
+  {
+    "task_id": "DET-003",
+    "source_family": "WebArena",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage1_warmup",
+    "category": "deterministic_outcome_workflow",
+    "difficulty_prior": "easy",
+    "prompt": "On the official npm package page for express, report the current package license shown on the package metadata page.",
+    "max_steps": 12,
+    "verifier_gates": [
+      "target public web app/page visited",
+      "outcome field extracted from page state",
+      "final answer matches page metadata or declares absence"
+    ],
+    "oracle": {
+      "answer_key": "MIT",
+      "verifier_strategy": "exact answer plus visited supporting citations"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "npm express license"
+      ],
+      "answer": "MIT",
+      "domains": [
+        "npmjs.com"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "public web workflow",
+        "deterministic field extraction"
+      ]
+    },
+    "contamination_notes": "Fresh workflow clone; no self-hosted WebArena task id copied.",
+    "references/access_notes": "WebArena deterministic workflow shape; public page may drift and should be reverified before training."
+  },
+  {
+    "task_id": "DET-004",
+    "source_family": "Mind2Web",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage1_warmup",
+    "category": "deterministic_outcome_workflow",
+    "difficulty_prior": "medium",
+    "prompt": "On PyPI, find the requests project page and report the package's latest release version shown on the page.",
+    "max_steps": 12,
+    "verifier_gates": [
+      "target public web app/page visited",
+      "outcome field extracted from page state",
+      "final answer matches page metadata or declares absence"
+    ],
+    "oracle": {
+      "answer_key": null,
+      "verifier_strategy": "browser-observed page-state verifier; answer may drift for versioned pages"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "PyPI requests latest version"
+      ],
+      "answer": null,
+      "domains": [
+        "pypi.org"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "public web workflow",
+        "deterministic field extraction"
+      ]
+    },
+    "contamination_notes": "Fresh workflow clone; no self-hosted WebArena task id copied.",
+    "references/access_notes": "Mind2Web deterministic workflow shape; public page may drift and should be reverified before training."
+  },
+  {
+    "task_id": "DET-005",
+    "source_family": "WorkArena",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage1_warmup",
+    "category": "deterministic_outcome_workflow",
+    "difficulty_prior": "medium",
+    "prompt": "On the official Atlassian support docs, find the page describing Jira issue priority and report the default priority name if documented; otherwise say not documented on the visited page.",
+    "max_steps": 12,
+    "verifier_gates": [
+      "target public web app/page visited",
+      "outcome field extracted from page state",
+      "final answer matches page metadata or declares absence"
+    ],
+    "oracle": {
+      "answer_key": null,
+      "verifier_strategy": "browser-observed page-state verifier; answer may drift for versioned pages"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "Jira issue priority docs"
+      ],
+      "answer": null,
+      "domains": [
+        "support.atlassian.com",
+        "atlassian.com"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "public web workflow",
+        "deterministic field extraction"
+      ]
+    },
+    "contamination_notes": "Fresh workflow clone; no self-hosted WebArena task id copied.",
+    "references/access_notes": "WorkArena deterministic workflow shape; public page may drift and should be reverified before training."
+  },
+  {
+    "task_id": "DET-006",
+    "source_family": "WebArena",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage1_warmup",
+    "category": "deterministic_outcome_workflow",
+    "difficulty_prior": "easy",
+    "prompt": "On the official Docker Hub page or Docker docs for the nginx image, find the command pattern for pulling the image.",
+    "max_steps": 12,
+    "verifier_gates": [
+      "target public web app/page visited",
+      "outcome field extracted from page state",
+      "final answer matches page metadata or declares absence"
+    ],
+    "oracle": {
+      "answer_key": "docker pull nginx",
+      "verifier_strategy": "exact answer plus visited supporting citations"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "Docker Hub nginx pull command"
+      ],
+      "answer": "docker pull nginx",
+      "domains": [
+        "hub.docker.com",
+        "docker.com"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "public web workflow",
+        "deterministic field extraction"
+      ]
+    },
+    "contamination_notes": "Fresh workflow clone; no self-hosted WebArena task id copied.",
+    "references/access_notes": "WebArena deterministic workflow shape; public page may drift and should be reverified before training."
+  },
+  {
+    "task_id": "BRC-001",
+    "source_family": "BrowseComp-style",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage2_core_research",
+    "category": "exact_answer_browsecomp_clone",
+    "difficulty_prior": "hard",
+    "prompt": "Which Turing Award laureate served as president of the Association for Computing Machinery from 1962 to 1964? Provide the shortest answer plus two independent supporting citations.",
+    "max_steps": 24,
+    "verifier_gates": [
+      "at least two supporting visited URLs",
+      "answer string exact or accepted alias",
+      "each clue supported by source spans",
+      "no copied BrowseComp prompt/entity tuple"
+    ],
+    "oracle": {
+      "answer_key": "Alan J. Perlis",
+      "verifier_strategy": "exact answer plus visited supporting citations"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "Alan Perlis",
+        "ACM president",
+        "Turing Award"
+      ],
+      "answer": "Alan J. Perlis",
+      "domains": [
+        "acm.org",
+        "amturing.acm.org"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "obscure exact answer",
+        "two-source corroboration"
+      ]
+    },
+    "contamination_notes": "Fresh BrowseComp-style clone authored from public facts; no actual BrowseComp item copied.",
+    "references/access_notes": "BrowseComp skill shape only; public benchmark items remain eval-only under D019."
+  },
+  {
+    "task_id": "BRC-002",
+    "source_family": "BrowseComp-style",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage2_core_research",
+    "category": "exact_answer_browsecomp_clone",
+    "difficulty_prior": "hard",
+    "prompt": "Which Apollo 11 astronaut later served as commandant of the U.S. Air Force Test Pilot School? Provide the shortest answer plus two independent supporting citations.",
+    "max_steps": 24,
+    "verifier_gates": [
+      "at least two supporting visited URLs",
+      "answer string exact or accepted alias",
+      "each clue supported by source spans",
+      "no copied BrowseComp prompt/entity tuple"
+    ],
+    "oracle": {
+      "answer_key": "Michael Collins",
+      "verifier_strategy": "exact answer plus visited supporting citations"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "Michael Collins",
+        "Apollo 11",
+        "USAF Test Pilot School commandant"
+      ],
+      "answer": "Michael Collins",
+      "domains": [
+        "nasa.gov",
+        "af.mil"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "obscure exact answer",
+        "two-source corroboration"
+      ]
+    },
+    "contamination_notes": "Fresh BrowseComp-style clone authored from public facts; no actual BrowseComp item copied.",
+    "references/access_notes": "BrowseComp skill shape only; public benchmark items remain eval-only under D019."
+  },
+  {
+    "task_id": "BRC-003",
+    "source_family": "BrowseComp-style",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage2_core_research",
+    "category": "exact_answer_browsecomp_clone",
+    "difficulty_prior": "hard",
+    "prompt": "What was the original name of the programming language later renamed Java? Provide the shortest answer plus two independent supporting citations.",
+    "max_steps": 24,
+    "verifier_gates": [
+      "at least two supporting visited URLs",
+      "answer string exact or accepted alias",
+      "each clue supported by source spans",
+      "no copied BrowseComp prompt/entity tuple"
+    ],
+    "oracle": {
+      "answer_key": "Oak",
+      "verifier_strategy": "exact answer plus visited supporting citations"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "Java original name Oak"
+      ],
+      "answer": "Oak",
+      "domains": [
+        "oracle.com",
+        "wikipedia.org",
+        "java.com"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "obscure exact answer",
+        "two-source corroboration"
+      ]
+    },
+    "contamination_notes": "Fresh BrowseComp-style clone authored from public facts; no actual BrowseComp item copied.",
+    "references/access_notes": "BrowseComp skill shape only; public benchmark items remain eval-only under D019."
+  },
+  {
+    "task_id": "BRC-004",
+    "source_family": "BrowseComp-style",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage2_core_research",
+    "category": "exact_answer_browsecomp_clone",
+    "difficulty_prior": "hard",
+    "prompt": "Which Unix command's name is historically short for 'global regular expression print'? Provide the shortest answer plus two independent supporting citations.",
+    "max_steps": 24,
+    "verifier_gates": [
+      "at least two supporting visited URLs",
+      "answer string exact or accepted alias",
+      "each clue supported by source spans",
+      "no copied BrowseComp prompt/entity tuple"
+    ],
+    "oracle": {
+      "answer_key": "grep",
+      "verifier_strategy": "exact answer plus visited supporting citations"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "grep etymology"
+      ],
+      "answer": "grep",
+      "domains": [
+        "gnu.org",
+        "man7.org"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "obscure exact answer",
+        "two-source corroboration"
+      ]
+    },
+    "contamination_notes": "Fresh BrowseComp-style clone authored from public facts; no actual BrowseComp item copied.",
+    "references/access_notes": "BrowseComp skill shape only; public benchmark items remain eval-only under D019."
+  },
+  {
+    "task_id": "BRC-005",
+    "source_family": "BrowseComp-style",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage2_core_research",
+    "category": "exact_answer_browsecomp_clone",
+    "difficulty_prior": "hard",
+    "prompt": "Which mathematician won the first Fields Medal and was also known for work on Morse theory? Provide the shortest answer plus two independent supporting citations.",
+    "max_steps": 24,
+    "verifier_gates": [
+      "at least two supporting visited URLs",
+      "answer string exact or accepted alias",
+      "each clue supported by source spans",
+      "no copied BrowseComp prompt/entity tuple"
+    ],
+    "oracle": {
+      "answer_key": "Jesse Douglas",
+      "verifier_strategy": "exact answer plus visited supporting citations"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "first Fields Medal",
+        "Morse theory"
+      ],
+      "answer": "Jesse Douglas",
+      "domains": [
+        "mathunion.org",
+        "ams.org"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "obscure exact answer",
+        "two-source corroboration"
+      ]
+    },
+    "contamination_notes": "Fresh BrowseComp-style clone authored from public facts; no actual BrowseComp item copied.",
+    "references/access_notes": "BrowseComp skill shape only; public benchmark items remain eval-only under D019."
+  },
+  {
+    "task_id": "BRC-006",
+    "source_family": "BrowseComp-style",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage2_core_research",
+    "category": "exact_answer_browsecomp_clone",
+    "difficulty_prior": "hard",
+    "prompt": "Which spacecraft was the first to orbit Saturn? Provide the shortest answer plus two independent supporting citations.",
+    "max_steps": 24,
+    "verifier_gates": [
+      "at least two supporting visited URLs",
+      "answer string exact or accepted alias",
+      "each clue supported by source spans",
+      "no copied BrowseComp prompt/entity tuple"
+    ],
+    "oracle": {
+      "answer_key": "Cassini",
+      "verifier_strategy": "exact answer plus visited supporting citations"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "first spacecraft orbit Saturn Cassini"
+      ],
+      "answer": "Cassini",
+      "domains": [
+        "nasa.gov",
+        "jpl.nasa.gov"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "obscure exact answer",
+        "two-source corroboration"
+      ]
+    },
+    "contamination_notes": "Fresh BrowseComp-style clone authored from public facts; no actual BrowseComp item copied.",
+    "references/access_notes": "BrowseComp skill shape only; public benchmark items remain eval-only under D019."
+  },
+  {
+    "task_id": "BRC-007",
+    "source_family": "BrowseComp-style",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage2_core_research",
+    "category": "exact_answer_browsecomp_clone",
+    "difficulty_prior": "hard",
+    "prompt": "Which IETF RFC first defined the JSON data interchange format? Provide the shortest answer plus two independent supporting citations.",
+    "max_steps": 24,
+    "verifier_gates": [
+      "at least two supporting visited URLs",
+      "answer string exact or accepted alias",
+      "each clue supported by source spans",
+      "no copied BrowseComp prompt/entity tuple"
+    ],
+    "oracle": {
+      "answer_key": "RFC 4627",
+      "verifier_strategy": "exact answer plus visited supporting citations"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "JSON first RFC"
+      ],
+      "answer": "RFC 4627",
+      "domains": [
+        "ietf.org",
+        "rfc-editor.org"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "obscure exact answer",
+        "two-source corroboration"
+      ]
+    },
+    "contamination_notes": "Fresh BrowseComp-style clone authored from public facts; no actual BrowseComp item copied.",
+    "references/access_notes": "BrowseComp skill shape only; public benchmark items remain eval-only under D019."
+  },
+  {
+    "task_id": "BRC-008",
+    "source_family": "BrowseComp-style",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage2_core_research",
+    "category": "exact_answer_browsecomp_clone",
+    "difficulty_prior": "hard",
+    "prompt": "Which city hosted the first PyCon conference in 2003? Provide the shortest answer plus two independent supporting citations.",
+    "max_steps": 24,
+    "verifier_gates": [
+      "at least two supporting visited URLs",
+      "answer string exact or accepted alias",
+      "each clue supported by source spans",
+      "no copied BrowseComp prompt/entity tuple"
+    ],
+    "oracle": {
+      "answer_key": "Washington, DC",
+      "verifier_strategy": "exact answer plus visited supporting citations"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "first PyCon 2003 city"
+      ],
+      "answer": "Washington, DC",
+      "domains": [
+        "pycon.org",
+        "python.org"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "obscure exact answer",
+        "two-source corroboration"
+      ]
+    },
+    "contamination_notes": "Fresh BrowseComp-style clone authored from public facts; no actual BrowseComp item copied.",
+    "references/access_notes": "BrowseComp skill shape only; public benchmark items remain eval-only under D019."
+  },
+  {
+    "task_id": "BRC-009",
+    "source_family": "BrowseComp-style",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage2_core_research",
+    "category": "exact_answer_browsecomp_clone",
+    "difficulty_prior": "hard",
+    "prompt": "What is the four-letter gene symbol for the human protein commonly called p53? Provide the shortest answer plus two independent supporting citations.",
+    "max_steps": 24,
+    "verifier_gates": [
+      "at least two supporting visited URLs",
+      "answer string exact or accepted alias",
+      "each clue supported by source spans",
+      "no copied BrowseComp prompt/entity tuple"
+    ],
+    "oracle": {
+      "answer_key": "TP53",
+      "verifier_strategy": "exact answer plus visited supporting citations"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "p53 gene symbol"
+      ],
+      "answer": "TP53",
+      "domains": [
+        "ncbi.nlm.nih.gov",
+        "genenames.org"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "obscure exact answer",
+        "two-source corroboration"
+      ]
+    },
+    "contamination_notes": "Fresh BrowseComp-style clone authored from public facts; no actual BrowseComp item copied.",
+    "references/access_notes": "BrowseComp skill shape only; public benchmark items remain eval-only under D019."
+  },
+  {
+    "task_id": "BRC-010",
+    "source_family": "BrowseComp-style",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage2_core_research",
+    "category": "exact_answer_browsecomp_clone",
+    "difficulty_prior": "hard",
+    "prompt": "Which Nobel Prize in Physics laureate coined the term 'quark' in a 1964 paper? Provide the shortest answer plus two independent supporting citations.",
+    "max_steps": 24,
+    "verifier_gates": [
+      "at least two supporting visited URLs",
+      "answer string exact or accepted alias",
+      "each clue supported by source spans",
+      "no copied BrowseComp prompt/entity tuple"
+    ],
+    "oracle": {
+      "answer_key": "Murray Gell-Mann",
+      "verifier_strategy": "exact answer plus visited supporting citations"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "quark term coined 1964"
+      ],
+      "answer": "Murray Gell-Mann",
+      "domains": [
+        "nobelprize.org",
+        "aps.org"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "obscure exact answer",
+        "two-source corroboration"
+      ]
+    },
+    "contamination_notes": "Fresh BrowseComp-style clone authored from public facts; no actual BrowseComp item copied.",
+    "references/access_notes": "BrowseComp skill shape only; public benchmark items remain eval-only under D019."
+  },
+  {
+    "task_id": "MSR-001",
+    "source_family": "GAIA-style",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage2_core_research",
+    "category": "multi_source_reasoning",
+    "difficulty_prior": "medium",
+    "prompt": "Compare the release dates of Python 3.12.0 and Node.js 20.0.0 from official release pages. Which was released earlier, and by how many days?",
+    "max_steps": 22,
+    "verifier_gates": [
+      "minimum two independent visited sources",
+      "reasoning step visible in final answer",
+      "dates/numbers/compatibility claims cite source spans",
+      "no unsupported arithmetic"
+    ],
+    "oracle": {
+      "answer_key": null,
+      "verifier_strategy": "semantic verifier checks cited source values and reasoning consistency"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "Python 3.12.0",
+        "Node.js 20.0.0"
+      ],
+      "answer": null,
+      "domains": [
+        "python.org",
+        "nodejs.org"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "multi-source reasoning",
+        "comparison or arithmetic"
+      ]
+    },
+    "contamination_notes": "Fresh GAIA/FRAMES-style clone; no public GAIA question copied.",
+    "references/access_notes": "GAIA-style web-reasoning shape; train-safe clone with public docs targets."
+  },
+  {
+    "task_id": "MSR-002",
+    "source_family": "GAIA-style",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage2_core_research",
+    "category": "multi_source_reasoning",
+    "difficulty_prior": "medium",
+    "prompt": "Using official sources, determine whether PostgreSQL 16 or MySQL 8.4 LTS has the later initial release date, and cite both release pages.",
+    "max_steps": 22,
+    "verifier_gates": [
+      "minimum two independent visited sources",
+      "reasoning step visible in final answer",
+      "dates/numbers/compatibility claims cite source spans",
+      "no unsupported arithmetic"
+    ],
+    "oracle": {
+      "answer_key": null,
+      "verifier_strategy": "semantic verifier checks cited source values and reasoning consistency"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "PostgreSQL 16",
+        "MySQL 8.4 LTS"
+      ],
+      "answer": null,
+      "domains": [
+        "postgresql.org",
+        "mysql.com",
+        "oracle.com"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "multi-source reasoning",
+        "comparison or arithmetic"
+      ]
+    },
+    "contamination_notes": "Fresh GAIA/FRAMES-style clone; no public GAIA question copied.",
+    "references/access_notes": "GAIA-style web-reasoning shape; train-safe clone with public docs targets."
+  },
+  {
+    "task_id": "MSR-003",
+    "source_family": "GAIA-style",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage2_core_research",
+    "category": "multi_source_reasoning",
+    "difficulty_prior": "medium",
+    "prompt": "Find the current stable versions named on the official Django and Rails release pages, then state which project uses semantic versioning language explicitly on the visited page.",
+    "max_steps": 22,
+    "verifier_gates": [
+      "minimum two independent visited sources",
+      "reasoning step visible in final answer",
+      "dates/numbers/compatibility claims cite source spans",
+      "no unsupported arithmetic"
+    ],
+    "oracle": {
+      "answer_key": null,
+      "verifier_strategy": "semantic verifier checks cited source values and reasoning consistency"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "Django release page",
+        "Rails release page"
+      ],
+      "answer": null,
+      "domains": [
+        "djangoproject.com",
+        "rubyonrails.org"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "multi-source reasoning",
+        "comparison or arithmetic"
+      ]
+    },
+    "contamination_notes": "Fresh GAIA/FRAMES-style clone; no public GAIA question copied.",
+    "references/access_notes": "GAIA-style web-reasoning shape; train-safe clone with public docs targets."
+  },
+  {
+    "task_id": "MSR-004",
+    "source_family": "GAIA-style",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage2_core_research",
+    "category": "multi_source_reasoning",
+    "difficulty_prior": "medium",
+    "prompt": "Verify whether the Apache-2.0 license and MIT license both require preservation of copyright notices by citing each license text.",
+    "max_steps": 22,
+    "verifier_gates": [
+      "minimum two independent visited sources",
+      "reasoning step visible in final answer",
+      "dates/numbers/compatibility claims cite source spans",
+      "no unsupported arithmetic"
+    ],
+    "oracle": {
+      "answer_key": "Both require preservation/inclusion of copyright notice",
+      "verifier_strategy": "exact answer plus visited supporting citations"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "Apache-2.0",
+        "MIT license copyright notice"
+      ],
+      "answer": "Both require preservation/inclusion of copyright notice",
+      "domains": [
+        "apache.org",
+        "opensource.org",
+        "mit-license.org"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "multi-source reasoning",
+        "comparison or arithmetic"
+      ]
+    },
+    "contamination_notes": "Fresh GAIA/FRAMES-style clone; no public GAIA question copied.",
+    "references/access_notes": "GAIA-style web-reasoning shape; train-safe clone with public docs targets."
+  },
+  {
+    "task_id": "MSR-005",
+    "source_family": "GAIA-style",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage2_core_research",
+    "category": "multi_source_reasoning",
+    "difficulty_prior": "medium",
+    "prompt": "Using one official standard page and one vendor implementation page, explain whether CSS container queries are broadly documented as available in modern browsers.",
+    "max_steps": 22,
+    "verifier_gates": [
+      "minimum two independent visited sources",
+      "reasoning step visible in final answer",
+      "dates/numbers/compatibility claims cite source spans",
+      "no unsupported arithmetic"
+    ],
+    "oracle": {
+      "answer_key": null,
+      "verifier_strategy": "semantic verifier checks cited source values and reasoning consistency"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "CSS container queries support"
+      ],
+      "answer": null,
+      "domains": [
+        "developer.mozilla.org",
+        "w3.org",
+        "web.dev"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "multi-source reasoning",
+        "comparison or arithmetic"
+      ]
+    },
+    "contamination_notes": "Fresh GAIA/FRAMES-style clone; no public GAIA question copied.",
+    "references/access_notes": "GAIA-style web-reasoning shape; train-safe clone with public docs targets."
+  },
+  {
+    "task_id": "MSR-006",
+    "source_family": "GAIA-style",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage2_core_research",
+    "category": "multi_source_reasoning",
+    "difficulty_prior": "medium",
+    "prompt": "Find two independent sources for the maximum payload size documented for GitHub webhooks, and report the value if they agree.",
+    "max_steps": 22,
+    "verifier_gates": [
+      "minimum two independent visited sources",
+      "reasoning step visible in final answer",
+      "dates/numbers/compatibility claims cite source spans",
+      "no unsupported arithmetic"
+    ],
+    "oracle": {
+      "answer_key": "25 MB",
+      "verifier_strategy": "exact answer plus visited supporting citations"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "GitHub webhook payload size"
+      ],
+      "answer": "25 MB",
+      "domains": [
+        "docs.github.com"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "multi-source reasoning",
+        "comparison or arithmetic"
+      ]
+    },
+    "contamination_notes": "Fresh GAIA/FRAMES-style clone; no public GAIA question copied.",
+    "references/access_notes": "GAIA-style web-reasoning shape; train-safe clone with public docs targets."
+  },
+  {
+    "task_id": "MSR-007",
+    "source_family": "GAIA-style",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage2_core_research",
+    "category": "multi_source_reasoning",
+    "difficulty_prior": "medium",
+    "prompt": "Use an official Apple page and an official Unicode page to identify the Unicode code point for the Apple logo character if Apple documents it publicly; otherwise report insufficient public official evidence.",
+    "max_steps": 22,
+    "verifier_gates": [
+      "minimum two independent visited sources",
+      "reasoning step visible in final answer",
+      "dates/numbers/compatibility claims cite source spans",
+      "no unsupported arithmetic"
+    ],
+    "oracle": {
+      "answer_key": null,
+      "verifier_strategy": "semantic verifier checks cited source values and reasoning consistency"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "Apple logo Unicode official evidence"
+      ],
+      "answer": null,
+      "domains": [
+        "apple.com",
+        "unicode.org"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "multi-source reasoning",
+        "comparison or arithmetic"
+      ]
+    },
+    "contamination_notes": "Fresh GAIA/FRAMES-style clone; no public GAIA question copied.",
+    "references/access_notes": "GAIA-style web-reasoning shape; train-safe clone with public docs targets."
+  },
+  {
+    "task_id": "MSR-008",
+    "source_family": "GAIA-style",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage2_core_research",
+    "category": "multi_source_reasoning",
+    "difficulty_prior": "medium",
+    "prompt": "Use official docs to compare whether AWS Lambda and Google Cloud Functions both support Python runtimes, and cite the runtime tables.",
+    "max_steps": 22,
+    "verifier_gates": [
+      "minimum two independent visited sources",
+      "reasoning step visible in final answer",
+      "dates/numbers/compatibility claims cite source spans",
+      "no unsupported arithmetic"
+    ],
+    "oracle": {
+      "answer_key": null,
+      "verifier_strategy": "semantic verifier checks cited source values and reasoning consistency"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "AWS Lambda Python runtime",
+        "Google Cloud Functions Python runtime"
+      ],
+      "answer": null,
+      "domains": [
+        "docs.aws.amazon.com",
+        "cloud.google.com"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "multi-source reasoning",
+        "comparison or arithmetic"
+      ]
+    },
+    "contamination_notes": "Fresh GAIA/FRAMES-style clone; no public GAIA question copied.",
+    "references/access_notes": "GAIA-style web-reasoning shape; train-safe clone with public docs targets."
+  },
+  {
+    "task_id": "SYN-001",
+    "source_family": "DeepResearch/Rubrics-style",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage2_core_research",
+    "category": "short_synthesis",
+    "difficulty_prior": "medium",
+    "prompt": "In 180-220 words, explain what WebAssembly is for, using the official WebAssembly site, MDN, and one browser vendor page. Include one uncertainty/limit sentence.",
+    "max_steps": 28,
+    "verifier_gates": [
+      "3 cited visited sources",
+      "150-220 words unless prompt states otherwise",
+      "source-type diversity",
+      "all factual claims supported",
+      "explicit uncertainty/limitation if requested"
+    ],
+    "oracle": {
+      "answer_key": null,
+      "verifier_strategy": "rubric/checklist verifier: source count, citation support, word count, source quality, no overclaim"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "is for, using the official WebAssembly site, MDN, and one br"
+      ],
+      "answer": null,
+      "domains": [
+        "webassembly.org",
+        "developer.mozilla.org"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "short cited synthesis",
+        "rubric-style checklist"
+      ]
+    },
+    "contamination_notes": "Fresh synthesis prompt; not copied from DRB/ResearchRubrics public eval prompts.",
+    "references/access_notes": "DeepResearch/ResearchRubrics-style structure; clone prompt is trainable after dedupe."
+  },
+  {
+    "task_id": "SYN-002",
+    "source_family": "DeepResearch/Rubrics-style",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage2_core_research",
+    "category": "short_synthesis",
+    "difficulty_prior": "medium",
+    "prompt": "Write a 150-200 word cited summary of what the OpenSSF Scorecard project checks, using its official docs, GitHub page, and one foundation/blog source.",
+    "max_steps": 28,
+    "verifier_gates": [
+      "3 cited visited sources",
+      "150-220 words unless prompt states otherwise",
+      "source-type diversity",
+      "all factual claims supported",
+      "explicit uncertainty/limitation if requested"
+    ],
+    "oracle": {
+      "answer_key": null,
+      "verifier_strategy": "rubric/checklist verifier: source count, citation support, word count, source quality, no overclaim"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "of what the OpenSSF Scorecard project checks, using its offi"
+      ],
+      "answer": null,
+      "domains": [
+        "openssf.org",
+        "github.com"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "short cited synthesis",
+        "rubric-style checklist"
+      ]
+    },
+    "contamination_notes": "Fresh synthesis prompt; not copied from DRB/ResearchRubrics public eval prompts.",
+    "references/access_notes": "DeepResearch/ResearchRubrics-style structure; clone prompt is trainable after dedupe."
+  },
+  {
+    "task_id": "SYN-003",
+    "source_family": "DeepResearch/Rubrics-style",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage2_core_research",
+    "category": "short_synthesis",
+    "difficulty_prior": "medium",
+    "prompt": "Summarize in 150-220 words what SBOMs are and why they are used, citing NTIA/CISA guidance plus one standards or foundation source.",
+    "max_steps": 28,
+    "verifier_gates": [
+      "3 cited visited sources",
+      "150-220 words unless prompt states otherwise",
+      "source-type diversity",
+      "all factual claims supported",
+      "explicit uncertainty/limitation if requested"
+    ],
+    "oracle": {
+      "answer_key": null,
+      "verifier_strategy": "rubric/checklist verifier: source count, citation support, word count, source quality, no overclaim"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "are and why they are used, citing NTIA/CISA guidance plus on"
+      ],
+      "answer": null,
+      "domains": [
+        "cisa.gov",
+        "ntia.gov"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "short cited synthesis",
+        "rubric-style checklist"
+      ]
+    },
+    "contamination_notes": "Fresh synthesis prompt; not copied from DRB/ResearchRubrics public eval prompts.",
+    "references/access_notes": "DeepResearch/ResearchRubrics-style structure; clone prompt is trainable after dedupe."
+  },
+  {
+    "task_id": "SYN-004",
+    "source_family": "DeepResearch/Rubrics-style",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage2_core_research",
+    "category": "short_synthesis",
+    "difficulty_prior": "medium",
+    "prompt": "Write a short cited briefing on what passkeys are and what problem they address, using FIDO Alliance, Apple/Google/Microsoft docs or explainers.",
+    "max_steps": 28,
+    "verifier_gates": [
+      "3 cited visited sources",
+      "150-220 words unless prompt states otherwise",
+      "source-type diversity",
+      "all factual claims supported",
+      "explicit uncertainty/limitation if requested"
+    ],
+    "oracle": {
+      "answer_key": null,
+      "verifier_strategy": "rubric/checklist verifier: source count, citation support, word count, source quality, no overclaim"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "what passkeys are and what problem they address, using FIDO "
+      ],
+      "answer": null,
+      "domains": [
+        "fidoalliance.org",
+        "apple.com",
+        "google.com",
+        "microsoft.com"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "short cited synthesis",
+        "rubric-style checklist"
+      ]
+    },
+    "contamination_notes": "Fresh synthesis prompt; not copied from DRB/ResearchRubrics public eval prompts.",
+    "references/access_notes": "DeepResearch/ResearchRubrics-style structure; clone prompt is trainable after dedupe."
+  },
+  {
+    "task_id": "SYN-005",
+    "source_family": "DeepResearch/Rubrics-style",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage2_core_research",
+    "category": "short_synthesis",
+    "difficulty_prior": "medium",
+    "prompt": "Summarize the purpose of robots.txt and one limitation, citing Google Search Central, RFC 9309 or official documentation, and another reputable source.",
+    "max_steps": 28,
+    "verifier_gates": [
+      "3 cited visited sources",
+      "150-220 words unless prompt states otherwise",
+      "source-type diversity",
+      "all factual claims supported",
+      "explicit uncertainty/limitation if requested"
+    ],
+    "oracle": {
+      "answer_key": null,
+      "verifier_strategy": "rubric/checklist verifier: source count, citation support, word count, source quality, no overclaim"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "one limitation, citing Google Search Central, RFC 9309 or of"
+      ],
+      "answer": null,
+      "domains": [
+        "developers.google.com",
+        "rfc-editor.org"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "short cited synthesis",
+        "rubric-style checklist"
+      ]
+    },
+    "contamination_notes": "Fresh synthesis prompt; not copied from DRB/ResearchRubrics public eval prompts.",
+    "references/access_notes": "DeepResearch/ResearchRubrics-style structure; clone prompt is trainable after dedupe."
+  },
+  {
+    "task_id": "SYN-006",
+    "source_family": "DeepResearch/Rubrics-style",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage2_core_research",
+    "category": "short_synthesis",
+    "difficulty_prior": "medium",
+    "prompt": "Write a 150-200 word explanation of the difference between OAuth 2.0 and OpenID Connect using standards/project documentation and one vendor explainer.",
+    "max_steps": 28,
+    "verifier_gates": [
+      "3 cited visited sources",
+      "150-220 words unless prompt states otherwise",
+      "source-type diversity",
+      "all factual claims supported",
+      "explicit uncertainty/limitation if requested"
+    ],
+    "oracle": {
+      "answer_key": null,
+      "verifier_strategy": "rubric/checklist verifier: source count, citation support, word count, source quality, no overclaim"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "the difference between OAuth 2.0 and OpenID Connect using st"
+      ],
+      "answer": null,
+      "domains": [
+        "openid.net",
+        "ietf.org",
+        "auth0.com"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "short cited synthesis",
+        "rubric-style checklist"
+      ]
+    },
+    "contamination_notes": "Fresh synthesis prompt; not copied from DRB/ResearchRubrics public eval prompts.",
+    "references/access_notes": "DeepResearch/ResearchRubrics-style structure; clone prompt is trainable after dedupe."
+  },
+  {
+    "task_id": "SYN-007",
+    "source_family": "DeepResearch/Rubrics-style",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage2_core_research",
+    "category": "short_synthesis",
+    "difficulty_prior": "medium",
+    "prompt": "Summarize what reproducible builds are and why they matter, citing reproducible-builds.org, one distribution/project doc, and one security/foundation source.",
+    "max_steps": 28,
+    "verifier_gates": [
+      "3 cited visited sources",
+      "150-220 words unless prompt states otherwise",
+      "source-type diversity",
+      "all factual claims supported",
+      "explicit uncertainty/limitation if requested"
+    ],
+    "oracle": {
+      "answer_key": null,
+      "verifier_strategy": "rubric/checklist verifier: source count, citation support, word count, source quality, no overclaim"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "why they matter, citing reproducible-builds.org, one distrib"
+      ],
+      "answer": null,
+      "domains": [
+        "reproducible-builds.org"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "short cited synthesis",
+        "rubric-style checklist"
+      ]
+    },
+    "contamination_notes": "Fresh synthesis prompt; not copied from DRB/ResearchRubrics public eval prompts.",
+    "references/access_notes": "DeepResearch/ResearchRubrics-style structure; clone prompt is trainable after dedupe."
+  },
+  {
+    "task_id": "SYN-008",
+    "source_family": "DeepResearch/Rubrics-style",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage2_core_research",
+    "category": "short_synthesis",
+    "difficulty_prior": "medium",
+    "prompt": "Write a concise briefing on RISC-V's open standard model, citing RISC-V International, one specification or technical page, and one independent explainer.",
+    "max_steps": 28,
+    "verifier_gates": [
+      "3 cited visited sources",
+      "150-220 words unless prompt states otherwise",
+      "source-type diversity",
+      "all factual claims supported",
+      "explicit uncertainty/limitation if requested"
+    ],
+    "oracle": {
+      "answer_key": null,
+      "verifier_strategy": "rubric/checklist verifier: source count, citation support, word count, source quality, no overclaim"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "open standard model, citing RISC-V International, one specif"
+      ],
+      "answer": null,
+      "domains": [
+        "riscv.org"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "short cited synthesis",
+        "rubric-style checklist"
+      ]
+    },
+    "contamination_notes": "Fresh synthesis prompt; not copied from DRB/ResearchRubrics public eval prompts.",
+    "references/access_notes": "DeepResearch/ResearchRubrics-style structure; clone prompt is trainable after dedupe."
+  },
+  {
+    "task_id": "CTX-001",
+    "source_family": "FRAMES-style",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage3_hardening_repair",
+    "category": "context_pressure",
+    "difficulty_prior": "hard",
+    "prompt": "Track six candidate JavaScript date libraries across official docs/GitHub pages and answer which currently documents time zone support without extra plugins. Use stash/recall or compression for candidate state.",
+    "max_steps": 34,
+    "verifier_gates": [
+      "at least five evidence cards or candidate pages",
+      "context_usage or compression event justified",
+      "compressed notes preserve source ids/URLs",
+      "final answer cites recalled facts"
+    ],
+    "oracle": {
+      "answer_key": null,
+      "verifier_strategy": "process verifier checks source-preserving compression plus semantic answer support"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "Track six candidate JavaScript date libraries across official docs/Git"
+      ],
+      "answer": null,
+      "domains": [
+        "momentjs.com",
+        "date-fns.org",
+        "github.com",
+        "luxon.js.org"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "context pressure",
+        "candidate tracking",
+        "source-preserving compression"
+      ]
+    },
+    "contamination_notes": "Fresh context-pressure clone; no FRAMES item copied.",
+    "references/access_notes": "FRAMES-style multi-hop/evidence aggregation shape; train-safe clone."
+  },
+  {
+    "task_id": "CTX-002",
+    "source_family": "FRAMES-style",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage3_hardening_repair",
+    "category": "context_pressure",
+    "difficulty_prior": "hard",
+    "prompt": "Collect evidence from five pages about SQLite JSON support versions and answer which SQLite release introduced JSONB. Preserve source URLs in compressed notes.",
+    "max_steps": 34,
+    "verifier_gates": [
+      "at least five evidence cards or candidate pages",
+      "context_usage or compression event justified",
+      "compressed notes preserve source ids/URLs",
+      "final answer cites recalled facts"
+    ],
+    "oracle": {
+      "answer_key": null,
+      "verifier_strategy": "process verifier checks source-preserving compression plus semantic answer support"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "Collect evidence from five pages about SQLite JSON support versions an"
+      ],
+      "answer": null,
+      "domains": [
+        "sqlite.org"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "context pressure",
+        "candidate tracking",
+        "source-preserving compression"
+      ]
+    },
+    "contamination_notes": "Fresh context-pressure clone; no FRAMES item copied.",
+    "references/access_notes": "FRAMES-style multi-hop/evidence aggregation shape; train-safe clone."
+  },
+  {
+    "task_id": "CTX-003",
+    "source_family": "FRAMES-style",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage3_hardening_repair",
+    "category": "context_pressure",
+    "difficulty_prior": "hard",
+    "prompt": "Review at least five official changelog/release pages for Kubernetes 1.29 through 1.33 and summarize one recurring deprecation theme.",
+    "max_steps": 34,
+    "verifier_gates": [
+      "at least five evidence cards or candidate pages",
+      "context_usage or compression event justified",
+      "compressed notes preserve source ids/URLs",
+      "final answer cites recalled facts"
+    ],
+    "oracle": {
+      "answer_key": null,
+      "verifier_strategy": "process verifier checks source-preserving compression plus semantic answer support"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "Review at least five official changelog/release pages for Kubernetes 1"
+      ],
+      "answer": null,
+      "domains": [
+        "kubernetes.io"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "context pressure",
+        "candidate tracking",
+        "source-preserving compression"
+      ]
+    },
+    "contamination_notes": "Fresh context-pressure clone; no FRAMES item copied.",
+    "references/access_notes": "FRAMES-style multi-hop/evidence aggregation shape; train-safe clone."
+  },
+  {
+    "task_id": "CTX-004",
+    "source_family": "FRAMES-style",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage3_hardening_repair",
+    "category": "context_pressure",
+    "difficulty_prior": "hard",
+    "prompt": "Compare four official documentation pages for Python packaging tools (pip, build, twine, venv) and answer which tool uploads distributions to package indexes.",
+    "max_steps": 34,
+    "verifier_gates": [
+      "at least five evidence cards or candidate pages",
+      "context_usage or compression event justified",
+      "compressed notes preserve source ids/URLs",
+      "final answer cites recalled facts"
+    ],
+    "oracle": {
+      "answer_key": null,
+      "verifier_strategy": "process verifier checks source-preserving compression plus semantic answer support"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "Compare four official documentation pages for Python packaging tools ("
+      ],
+      "answer": null,
+      "domains": [
+        "packaging.python.org",
+        "pip.pypa.io",
+        "twine.readthedocs.io"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "context pressure",
+        "candidate tracking",
+        "source-preserving compression"
+      ]
+    },
+    "contamination_notes": "Fresh context-pressure clone; no FRAMES item copied.",
+    "references/access_notes": "FRAMES-style multi-hop/evidence aggregation shape; train-safe clone."
+  },
+  {
+    "task_id": "CTX-005",
+    "source_family": "FRAMES-style",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage3_hardening_repair",
+    "category": "context_pressure",
+    "difficulty_prior": "hard",
+    "prompt": "Inspect at least five pages from the official PostgreSQL docs around indexes and answer when a BRIN index is recommended.",
+    "max_steps": 34,
+    "verifier_gates": [
+      "at least five evidence cards or candidate pages",
+      "context_usage or compression event justified",
+      "compressed notes preserve source ids/URLs",
+      "final answer cites recalled facts"
+    ],
+    "oracle": {
+      "answer_key": null,
+      "verifier_strategy": "process verifier checks source-preserving compression plus semantic answer support"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "Inspect at least five pages from the official PostgreSQL docs around i"
+      ],
+      "answer": null,
+      "domains": [
+        "postgresql.org"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "context pressure",
+        "candidate tracking",
+        "source-preserving compression"
+      ]
+    },
+    "contamination_notes": "Fresh context-pressure clone; no FRAMES item copied.",
+    "references/access_notes": "FRAMES-style multi-hop/evidence aggregation shape; train-safe clone."
+  },
+  {
+    "task_id": "CTX-006",
+    "source_family": "FRAMES-style",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage3_hardening_repair",
+    "category": "context_pressure",
+    "difficulty_prior": "hard",
+    "prompt": "Track candidate W3C/WICG proposals related to web packaging or signed exchanges and answer which are obsolete, current, or unclear with citations.",
+    "max_steps": 34,
+    "verifier_gates": [
+      "at least five evidence cards or candidate pages",
+      "context_usage or compression event justified",
+      "compressed notes preserve source ids/URLs",
+      "final answer cites recalled facts"
+    ],
+    "oracle": {
+      "answer_key": null,
+      "verifier_strategy": "process verifier checks source-preserving compression plus semantic answer support"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "Track candidate W3C/WICG proposals related to web packaging or signed "
+      ],
+      "answer": null,
+      "domains": [
+        "w3.org",
+        "wicg.github.io"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "context pressure",
+        "candidate tracking",
+        "source-preserving compression"
+      ]
+    },
+    "contamination_notes": "Fresh context-pressure clone; no FRAMES item copied.",
+    "references/access_notes": "FRAMES-style multi-hop/evidence aggregation shape; train-safe clone."
+  },
+  {
+    "task_id": "CTX-007",
+    "source_family": "FRAMES-style",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage3_hardening_repair",
+    "category": "context_pressure",
+    "difficulty_prior": "hard",
+    "prompt": "Collect evidence cards for five cloud provider docs about object lifecycle rules, compress them, then answer whether all support automatic deletion after age.",
+    "max_steps": 34,
+    "verifier_gates": [
+      "at least five evidence cards or candidate pages",
+      "context_usage or compression event justified",
+      "compressed notes preserve source ids/URLs",
+      "final answer cites recalled facts"
+    ],
+    "oracle": {
+      "answer_key": null,
+      "verifier_strategy": "process verifier checks source-preserving compression plus semantic answer support"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "Collect evidence cards for five cloud provider docs about object lifec"
+      ],
+      "answer": null,
+      "domains": [
+        "aws.amazon.com",
+        "cloud.google.com",
+        "learn.microsoft.com"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "context pressure",
+        "candidate tracking",
+        "source-preserving compression"
+      ]
+    },
+    "contamination_notes": "Fresh context-pressure clone; no FRAMES item copied.",
+    "references/access_notes": "FRAMES-style multi-hop/evidence aggregation shape; train-safe clone."
+  },
+  {
+    "task_id": "CTX-008",
+    "source_family": "FRAMES-style",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage3_hardening_repair",
+    "category": "context_pressure",
+    "difficulty_prior": "hard",
+    "prompt": "Review six source pages about the history of the PNG image format and answer which organization maintains the current PNG specification.",
+    "max_steps": 34,
+    "verifier_gates": [
+      "at least five evidence cards or candidate pages",
+      "context_usage or compression event justified",
+      "compressed notes preserve source ids/URLs",
+      "final answer cites recalled facts"
+    ],
+    "oracle": {
+      "answer_key": null,
+      "verifier_strategy": "process verifier checks source-preserving compression plus semantic answer support"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "Review six source pages about the history of the PNG image format and "
+      ],
+      "answer": null,
+      "domains": [
+        "w3.org",
+        "libpng.org",
+        "iso.org"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "context pressure",
+        "candidate tracking",
+        "source-preserving compression"
+      ]
+    },
+    "contamination_notes": "Fresh context-pressure clone; no FRAMES item copied.",
+    "references/access_notes": "FRAMES-style multi-hop/evidence aggregation shape; train-safe clone."
+  },
+  {
+    "task_id": "ABS-001",
+    "source_family": "GAIA-style",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage3_hardening_repair",
+    "category": "gap_abstention",
+    "difficulty_prior": "medium",
+    "prompt": "Find a public official page proving that the npm package left-pad has a formal steering committee. If unavailable after checking package, repository, and official registry pages, return insufficient evidence with failed leads.",
+    "max_steps": 22,
+    "verifier_gates": [
+      "checked at least two plausible official/public locations where applicable",
+      "no fabricated exact answer",
+      "insufficient-evidence answer includes checked places",
+      "public/private boundary respected"
+    ],
+    "oracle": {
+      "answer_key": null,
+      "verifier_strategy": "abstention verifier checks visited leads and absence threshold; no guessing allowed"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "left-pad formal steering committee"
+      ],
+      "answer": null,
+      "domains": [
+        "npmjs.com",
+        "github.com"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "gap assessment",
+        "abstention",
+        "official evidence threshold"
+      ]
+    },
+    "contamination_notes": "Fresh gap clone; trainable because it tests absence without copying benchmark items.",
+    "references/access_notes": "GAIA/HLE/SimpleQA abstention shape; public pages only and no private data extraction."
+  },
+  {
+    "task_id": "ABS-002",
+    "source_family": "GAIA-style",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage3_hardening_repair",
+    "category": "gap_abstention",
+    "difficulty_prior": "medium",
+    "prompt": "Determine the current enterprise price of Anthropic Claude Team if the public page requires contacting sales for enterprise. Do not guess; cite public pricing/contact docs and state the limitation.",
+    "max_steps": 22,
+    "verifier_gates": [
+      "checked at least two plausible official/public locations where applicable",
+      "no fabricated exact answer",
+      "insufficient-evidence answer includes checked places",
+      "public/private boundary respected"
+    ],
+    "oracle": {
+      "answer_key": null,
+      "verifier_strategy": "abstention verifier checks visited leads and absence threshold; no guessing allowed"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "Anthropic enterprise price public"
+      ],
+      "answer": null,
+      "domains": [
+        "anthropic.com"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "gap assessment",
+        "abstention",
+        "official evidence threshold"
+      ]
+    },
+    "contamination_notes": "Fresh gap clone; trainable because it tests absence without copying benchmark items.",
+    "references/access_notes": "GAIA/HLE/SimpleQA abstention shape; public pages only and no private data extraction."
+  },
+  {
+    "task_id": "ABS-003",
+    "source_family": "GAIA-style",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage3_hardening_repair",
+    "category": "gap_abstention",
+    "difficulty_prior": "medium",
+    "prompt": "Find whether a public official roadmap commits Python 3.15 to remove the GIL by default. If not supported, state insufficient evidence and cite current roadmap/PEP evidence.",
+    "max_steps": 22,
+    "verifier_gates": [
+      "checked at least two plausible official/public locations where applicable",
+      "no fabricated exact answer",
+      "insufficient-evidence answer includes checked places",
+      "public/private boundary respected"
+    ],
+    "oracle": {
+      "answer_key": null,
+      "verifier_strategy": "abstention verifier checks visited leads and absence threshold; no guessing allowed"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "Python 3.15 remove GIL default roadmap"
+      ],
+      "answer": null,
+      "domains": [
+        "python.org",
+        "peps.python.org"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "gap assessment",
+        "abstention",
+        "official evidence threshold"
+      ]
+    },
+    "contamination_notes": "Fresh gap clone; trainable because it tests absence without copying benchmark items.",
+    "references/access_notes": "GAIA/HLE/SimpleQA abstention shape; public pages only and no private data extraction."
+  },
+  {
+    "task_id": "ABS-004",
+    "source_family": "GAIA-style",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage3_hardening_repair",
+    "category": "gap_abstention",
+    "difficulty_prior": "medium",
+    "prompt": "Check whether OpenAI publicly documents the exact BrowseComp hidden test set prompts. If not, explain the access boundary and cite public benchmark documentation.",
+    "max_steps": 22,
+    "verifier_gates": [
+      "checked at least two plausible official/public locations where applicable",
+      "no fabricated exact answer",
+      "insufficient-evidence answer includes checked places",
+      "public/private boundary respected"
+    ],
+    "oracle": {
+      "answer_key": null,
+      "verifier_strategy": "abstention verifier checks visited leads and absence threshold; no guessing allowed"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "BrowseComp hidden test prompts public"
+      ],
+      "answer": null,
+      "domains": [
+        "openai.com",
+        "kaggle.com"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "gap assessment",
+        "abstention",
+        "official evidence threshold"
+      ]
+    },
+    "contamination_notes": "Fresh gap clone; trainable because it tests absence without copying benchmark items.",
+    "references/access_notes": "GAIA/HLE/SimpleQA abstention shape; public pages only and no private data extraction."
+  },
+  {
+    "task_id": "ABS-005",
+    "source_family": "GAIA-style",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage3_hardening_repair",
+    "category": "gap_abstention",
+    "difficulty_prior": "medium",
+    "prompt": "Find a public official page listing a current private support email address for the Linux Foundation board. If only contact forms/public channels exist, do not infer an email.",
+    "max_steps": 22,
+    "verifier_gates": [
+      "checked at least two plausible official/public locations where applicable",
+      "no fabricated exact answer",
+      "insufficient-evidence answer includes checked places",
+      "public/private boundary respected"
+    ],
+    "oracle": {
+      "answer_key": null,
+      "verifier_strategy": "abstention verifier checks visited leads and absence threshold; no guessing allowed"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "Linux Foundation board private support email"
+      ],
+      "answer": null,
+      "domains": [
+        "linuxfoundation.org"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "gap assessment",
+        "abstention",
+        "official evidence threshold"
+      ]
+    },
+    "contamination_notes": "Fresh gap clone; trainable because it tests absence without copying benchmark items.",
+    "references/access_notes": "GAIA/HLE/SimpleQA abstention shape; public pages only and no private data extraction."
+  },
+  {
+    "task_id": "ABS-006",
+    "source_family": "GAIA-style",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage3_hardening_repair",
+    "category": "gap_abstention",
+    "difficulty_prior": "medium",
+    "prompt": "Investigate whether the SQLite project officially recommends using SQLite for every high-write distributed workload. Return supported/unsupported with official limits or appropriate-use pages.",
+    "max_steps": 22,
+    "verifier_gates": [
+      "checked at least two plausible official/public locations where applicable",
+      "no fabricated exact answer",
+      "insufficient-evidence answer includes checked places",
+      "public/private boundary respected"
+    ],
+    "oracle": {
+      "answer_key": null,
+      "verifier_strategy": "abstention verifier checks visited leads and absence threshold; no guessing allowed"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "SQLite recommended every high-write distributed workload"
+      ],
+      "answer": null,
+      "domains": [
+        "sqlite.org"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "gap assessment",
+        "abstention",
+        "official evidence threshold"
+      ]
+    },
+    "contamination_notes": "Fresh gap clone; trainable because it tests absence without copying benchmark items.",
+    "references/access_notes": "GAIA/HLE/SimpleQA abstention shape; public pages only and no private data extraction."
+  },
+  {
+    "task_id": "ABS-007",
+    "source_family": "GAIA-style",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage3_hardening_repair",
+    "category": "gap_abstention",
+    "difficulty_prior": "medium",
+    "prompt": "Find a current official statement that Rust has a stable formal specification complete enough for all compiler behavior. If unavailable, cite what official docs say instead.",
+    "max_steps": 22,
+    "verifier_gates": [
+      "checked at least two plausible official/public locations where applicable",
+      "no fabricated exact answer",
+      "insufficient-evidence answer includes checked places",
+      "public/private boundary respected"
+    ],
+    "oracle": {
+      "answer_key": null,
+      "verifier_strategy": "abstention verifier checks visited leads and absence threshold; no guessing allowed"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "Rust complete stable formal specification"
+      ],
+      "answer": null,
+      "domains": [
+        "rust-lang.org",
+        "doc.rust-lang.org"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "gap assessment",
+        "abstention",
+        "official evidence threshold"
+      ]
+    },
+    "contamination_notes": "Fresh gap clone; trainable because it tests absence without copying benchmark items.",
+    "references/access_notes": "GAIA/HLE/SimpleQA abstention shape; public pages only and no private data extraction."
+  },
+  {
+    "task_id": "ABS-008",
+    "source_family": "GAIA-style",
+    "source_status": "fresh_clone",
+    "train_allowed": true,
+    "stage": "stage3_hardening_repair",
+    "category": "gap_abstention",
+    "difficulty_prior": "medium",
+    "prompt": "Determine whether the exact model weights of GPT-4.1 are publicly downloadable from an official OpenAI page. If not, provide a limitation answer with cited official pages.",
+    "max_steps": 22,
+    "verifier_gates": [
+      "checked at least two plausible official/public locations where applicable",
+      "no fabricated exact answer",
+      "insufficient-evidence answer includes checked places",
+      "public/private boundary respected"
+    ],
+    "oracle": {
+      "answer_key": null,
+      "verifier_strategy": "abstention verifier checks visited leads and absence threshold; no guessing allowed"
+    },
+    "sft_role": "positive_sft_a_sft_b",
+    "dedupe_keys": {
+      "entity": [
+        "GPT-4.1 public weights download"
+      ],
+      "answer": null,
+      "domains": [
+        "openai.com"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "gap assessment",
+        "abstention",
+        "official evidence threshold"
+      ]
+    },
+    "contamination_notes": "Fresh gap clone; trainable because it tests absence without copying benchmark items.",
+    "references/access_notes": "GAIA/HLE/SimpleQA abstention shape; public pages only and no private data extraction."
+  },
+  {
+    "task_id": "REP-001",
+    "source_family": "negative_fixture",
+    "source_status": "synthetic_fixture",
+    "train_allowed": false,
+    "stage": "stage3_hardening_repair",
+    "category": "repair_verifier_fixture",
+    "difficulty_prior": "easy",
+    "prompt": "A draft answer cites https://example.invalid/source as evidence, but the visited-url ledger contains only python.org and docs.python.org. Mark the citation invalid and rewrite the answer using only visited evidence.",
+    "max_steps": 10,
+    "verifier_gates": [
+      "citation URL must be in visited ledger",
+      "invalid URL explicitly rejected",
+      "rewritten answer uses only visited evidence"
+    ],
+    "oracle": {
+      "answer_key": null,
+      "verifier_strategy": "synthetic verifier fixture with known bad trace; expected output is repair/verdict, not factual answer"
+    },
+    "sft_role": "repair_target_only",
+    "dedupe_keys": {
+      "entity": [
+        "fake citation",
+        "visited ledger mismatch"
+      ],
+      "answer": null,
+      "domains": [
+        "synthetic.local"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "fake citation",
+        "visited ledger mismatch"
+      ]
+    },
+    "contamination_notes": "Synthetic negative/verifier fixture; explicitly not positive imitation.",
+    "references/access_notes": "Negative fixture derived from benchmark failure modes; no raw page dumps or benchmark hidden items."
+  },
+  {
+    "task_id": "REP-002",
+    "source_family": "negative_fixture",
+    "source_status": "synthetic_fixture",
+    "train_allowed": false,
+    "stage": "stage3_hardening_repair",
+    "category": "repair_verifier_fixture",
+    "difficulty_prior": "easy",
+    "prompt": "A trace uses web_search after the browser-only policy has been declared. Identify the forbidden tool use and provide the equivalent browser.search/browser.goto next action.",
+    "max_steps": 10,
+    "verifier_gates": [
+      "forbidden API call detected",
+      "replacement browser action is concrete",
+      "bad trace not marked positive imitation"
+    ],
+    "oracle": {
+      "answer_key": null,
+      "verifier_strategy": "synthetic verifier fixture with known bad trace; expected output is repair/verdict, not factual answer"
+    },
+    "sft_role": "verifier_only",
+    "dedupe_keys": {
+      "entity": [
+        "forbidden tool",
+        "browser-native boundary"
+      ],
+      "answer": null,
+      "domains": [
+        "synthetic.local"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "forbidden tool",
+        "browser-native boundary"
+      ]
+    },
+    "contamination_notes": "Synthetic negative/verifier fixture; explicitly not positive imitation.",
+    "references/access_notes": "Negative fixture derived from benchmark failure modes; no raw page dumps or benchmark hidden items."
+  },
+  {
+    "task_id": "REP-003",
+    "source_family": "negative_fixture",
+    "source_status": "synthetic_fixture",
+    "train_allowed": false,
+    "stage": "stage3_hardening_repair",
+    "category": "repair_verifier_fixture",
+    "difficulty_prior": "medium",
+    "prompt": "A final answer quotes 'all customers get unlimited storage' from a visited pricing page whose observation says 'storage limits vary by plan'. Flag the unsupported quote and produce a corrected limitation answer.",
+    "max_steps": 10,
+    "verifier_gates": [
+      "unsupported quote identified",
+      "corrected answer entailed by observation",
+      "no invented plan limit"
+    ],
+    "oracle": {
+      "answer_key": null,
+      "verifier_strategy": "synthetic verifier fixture with known bad trace; expected output is repair/verdict, not factual answer"
+    },
+    "sft_role": "repair_target_only",
+    "dedupe_keys": {
+      "entity": [
+        "unsupported quote",
+        "pricing overclaim"
+      ],
+      "answer": null,
+      "domains": [
+        "synthetic.local"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "unsupported quote",
+        "pricing overclaim"
+      ]
+    },
+    "contamination_notes": "Synthetic negative/verifier fixture; explicitly not positive imitation.",
+    "references/access_notes": "Negative fixture derived from benchmark failure modes; no raw page dumps or benchmark hidden items."
+  },
+  {
+    "task_id": "REP-004",
+    "source_family": "negative_fixture",
+    "source_status": "synthetic_fixture",
+    "train_allowed": false,
+    "stage": "stage3_hardening_repair",
+    "category": "repair_verifier_fixture",
+    "difficulty_prior": "medium",
+    "prompt": "A draft counts five citations as independent, but three URLs are syndicated copies of the same press release. Mark source-stuffing and require an independent corroborating source before accepting the claim.",
+    "max_steps": 10,
+    "verifier_gates": [
+      "duplicate/mirror sources clustered",
+      "independence requirement enforced",
+      "claim not accepted on duplicates only"
+    ],
+    "oracle": {
+      "answer_key": null,
+      "verifier_strategy": "synthetic verifier fixture with known bad trace; expected output is repair/verdict, not factual answer"
+    },
+    "sft_role": "verifier_only",
+    "dedupe_keys": {
+      "entity": [
+        "source stuffing",
+        "duplicate domains"
+      ],
+      "answer": null,
+      "domains": [
+        "synthetic.local"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "source stuffing",
+        "duplicate domains"
+      ]
+    },
+    "contamination_notes": "Synthetic negative/verifier fixture; explicitly not positive imitation.",
+    "references/access_notes": "Negative fixture derived from benchmark failure modes; no raw page dumps or benchmark hidden items."
+  },
+  {
+    "task_id": "REP-005",
+    "source_family": "negative_fixture",
+    "source_status": "synthetic_fixture",
+    "train_allowed": false,
+    "stage": "stage3_hardening_repair",
+    "category": "repair_verifier_fixture",
+    "difficulty_prior": "medium",
+    "prompt": "A trace calls compress_findings after every page even when no evidence has been collected. Label context-primitive spam and select the next useful browser action.",
+    "max_steps": 10,
+    "verifier_gates": [
+      "unjustified compression flagged",
+      "next action collects evidence or narrows query",
+      "not positive imitation"
+    ],
+    "oracle": {
+      "answer_key": null,
+      "verifier_strategy": "synthetic verifier fixture with known bad trace; expected output is repair/verdict, not factual answer"
+    },
+    "sft_role": "verifier_only",
+    "dedupe_keys": {
+      "entity": [
+        "context primitive spam"
+      ],
+      "answer": null,
+      "domains": [
+        "synthetic.local"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "context primitive spam"
+      ]
+    },
+    "contamination_notes": "Synthetic negative/verifier fixture; explicitly not positive imitation.",
+    "references/access_notes": "Negative fixture derived from benchmark failure modes; no raw page dumps or benchmark hidden items."
+  },
+  {
+    "task_id": "REP-006",
+    "source_family": "negative_fixture",
+    "source_status": "synthetic_fixture",
+    "train_allowed": false,
+    "stage": "stage3_hardening_repair",
+    "category": "repair_verifier_fixture",
+    "difficulty_prior": "medium",
+    "prompt": "A draft gives an exact obscure answer after one anonymous forum post and no corroboration. Convert it to an insufficient-evidence answer with the best lead preserved.",
+    "max_steps": 10,
+    "verifier_gates": [
+      "single weak source rejected",
+      "best lead preserved with caveat",
+      "no exact answer overclaim"
+    ],
+    "oracle": {
+      "answer_key": null,
+      "verifier_strategy": "synthetic verifier fixture with known bad trace; expected output is repair/verdict, not factual answer"
+    },
+    "sft_role": "repair_target_only",
+    "dedupe_keys": {
+      "entity": [
+        "weak-source overclaim"
+      ],
+      "answer": null,
+      "domains": [
+        "synthetic.local"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "weak-source overclaim"
+      ]
+    },
+    "contamination_notes": "Synthetic negative/verifier fixture; explicitly not positive imitation.",
+    "references/access_notes": "Negative fixture derived from benchmark failure modes; no raw page dumps or benchmark hidden items."
+  },
+  {
+    "task_id": "REP-007",
+    "source_family": "negative_fixture",
+    "source_status": "synthetic_fixture",
+    "train_allowed": false,
+    "stage": "stage3_hardening_repair",
+    "category": "repair_verifier_fixture",
+    "difficulty_prior": "medium",
+    "prompt": "A trace reaches a captcha/login wall and proposes bypassing it. Reject the unsafe bypass and choose a safe alternate source search or limitation answer.",
+    "max_steps": 10,
+    "verifier_gates": [
+      "captcha/login wall detected",
+      "bypass rejected",
+      "safe recovery or limitation chosen"
+    ],
+    "oracle": {
+      "answer_key": null,
+      "verifier_strategy": "synthetic verifier fixture with known bad trace; expected output is repair/verdict, not factual answer"
+    },
+    "sft_role": "repair_target_only",
+    "dedupe_keys": {
+      "entity": [
+        "blocked page",
+        "unsafe bypass"
+      ],
+      "answer": null,
+      "domains": [
+        "synthetic.local"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "blocked page",
+        "unsafe bypass"
+      ]
+    },
+    "contamination_notes": "Synthetic negative/verifier fixture; explicitly not positive imitation.",
+    "references/access_notes": "Negative fixture derived from benchmark failure modes; no raw page dumps or benchmark hidden items."
+  },
+  {
+    "task_id": "REP-008",
+    "source_family": "negative_fixture",
+    "source_status": "synthetic_fixture",
+    "train_allowed": false,
+    "stage": "stage3_hardening_repair",
+    "category": "repair_verifier_fixture",
+    "difficulty_prior": "medium",
+    "prompt": "A final synthesis includes a recommendation not supported by any cited source. Remove unsupported advice and keep only cited claims, preserving citation ids.",
+    "max_steps": 10,
+    "verifier_gates": [
+      "unsupported recommendation removed",
+      "remaining claims cite source ids",
+      "answer not treated as positive original"
+    ],
+    "oracle": {
+      "answer_key": null,
+      "verifier_strategy": "synthetic verifier fixture with known bad trace; expected output is repair/verdict, not factual answer"
+    },
+    "sft_role": "repair_target_only",
+    "dedupe_keys": {
+      "entity": [
+        "unsupported recommendation",
+        "claim-citation alignment"
+      ],
+      "answer": null,
+      "domains": [
+        "synthetic.local"
+      ],
+      "source_ids": [],
+      "constraint_tuple": [
+        "unsupported recommendation",
+        "claim-citation alignment"
+      ]
+    },
+    "contamination_notes": "Synthetic negative/verifier fixture; explicitly not positive imitation.",
+    "references/access_notes": "Negative fixture derived from benchmark failure modes; no raw page dumps or benchmark hidden items."
+  },
+  {
+    "task_id": "EVP-001",
+    "source_family": "BrowseComp-style",
+    "source_status": "dev_probe",
+    "train_allowed": false,
+    "stage": "stage4_eval_probe",
+    "category": "exact_answer_browsecomp_clone",
+    "difficulty_prior": "probe",
+    "prompt": "Use a real BrowseComp public/dev item only as an eval probe after hashing its prompt/entity/answer tuple; do not import it into train.",
+    "max_steps": 30,
+    "verifier_gates": [
+      "stored as eval/probe only",
+      "task id/hash or clone provenance recorded",
+      "no training render emitted",
+      "dedupe against train by entity/source/answer"
+    ],
+    "oracle": {
+      "answer_key": null,
+      "verifier_strategy": "suite-native or deterministic verifier to be attached when concrete eval item is selected"
+    },
+    "sft_role": "eval_only",
+    "dedupe_keys": {
+      "entity": [
+        "EVP-001"
+      ],
+      "answer": null,
+      "domains": [],
+      "source_ids": [
+        "EVP-001"
+      ],
+      "constraint_tuple": [
+        "eval quarantine",
+        "benchmark reference"
+      ]
+    },
+    "contamination_notes": "Eval/probe placeholder reference; not a train candidate and no hidden/test item content included.",
+    "references/access_notes": "Public benchmark reference only; access/split/license must be checked before selecting a concrete item."
+  },
+  {
+    "task_id": "EVP-002",
+    "source_family": "WebVoyager",
+    "source_status": "eval_only_reference",
+    "train_allowed": false,
+    "stage": "stage4_eval_probe",
+    "category": "navigation_retry",
+    "difficulty_prior": "probe",
+    "prompt": "Use a WebVoyager public benchmark task as an eval-only browser navigation probe with suite-native success criteria; store only task id/hash in eval registry.",
+    "max_steps": 25,
+    "verifier_gates": [
+      "stored as eval/probe only",
+      "task id/hash or clone provenance recorded",
+      "no training render emitted",
+      "dedupe against train by entity/source/answer"
+    ],
+    "oracle": {
+      "answer_key": null,
+      "verifier_strategy": "suite-native or deterministic verifier to be attached when concrete eval item is selected"
+    },
+    "sft_role": "eval_only",
+    "dedupe_keys": {
+      "entity": [
+        "EVP-002"
+      ],
+      "answer": null,
+      "domains": [],
+      "source_ids": [
+        "EVP-002"
+      ],
+      "constraint_tuple": [
+        "eval quarantine",
+        "benchmark reference"
+      ]
+    },
+    "contamination_notes": "Eval/probe placeholder reference; not a train candidate and no hidden/test item content included.",
+    "references/access_notes": "Public benchmark reference only; access/split/license must be checked before selecting a concrete item."
+  },
+  {
+    "task_id": "EVP-003",
+    "source_family": "WebArena",
+    "source_status": "eval_only_reference",
+    "train_allowed": false,
+    "stage": "stage4_eval_probe",
+    "category": "deterministic_outcome_workflow",
+    "difficulty_prior": "probe",
+    "prompt": "Use a WebArena self-hosted benchmark task as eval-only deterministic workflow reference; do not reuse its site/task/action tuple in training.",
+    "max_steps": 25,
+    "verifier_gates": [
+      "stored as eval/probe only",
+      "task id/hash or clone provenance recorded",
+      "no training render emitted",
+      "dedupe against train by entity/source/answer"
+    ],
+    "oracle": {
+      "answer_key": null,
+      "verifier_strategy": "suite-native or deterministic verifier to be attached when concrete eval item is selected"
+    },
+    "sft_role": "eval_only",
+    "dedupe_keys": {
+      "entity": [
+        "EVP-003"
+      ],
+      "answer": null,
+      "domains": [],
+      "source_ids": [
+        "EVP-003"
+      ],
+      "constraint_tuple": [
+        "eval quarantine",
+        "benchmark reference"
+      ]
+    },
+    "contamination_notes": "Eval/probe placeholder reference; not a train candidate and no hidden/test item content included.",
+    "references/access_notes": "Public benchmark reference only; access/split/license must be checked before selecting a concrete item."
+  },
+  {
+    "task_id": "EVP-004",
+    "source_family": "WebWalkerQA",
+    "source_status": "dev_probe",
+    "train_allowed": false,
+    "stage": "stage4_eval_probe",
+    "category": "navigation_retry",
+    "difficulty_prior": "probe",
+    "prompt": "Use one WebWalkerQA dev-safe website traversal QA pair as a probe if split/license permits; otherwise replace with a fresh root-site clone.",
+    "max_steps": 22,
+    "verifier_gates": [
+      "stored as eval/probe only",
+      "task id/hash or clone provenance recorded",
+      "no training render emitted",
+      "dedupe against train by entity/source/answer"
+    ],
+    "oracle": {
+      "answer_key": null,
+      "verifier_strategy": "suite-native or deterministic verifier to be attached when concrete eval item is selected"
+    },
+    "sft_role": "eval_only",
+    "dedupe_keys": {
+      "entity": [
+        "EVP-004"
+      ],
+      "answer": null,
+      "domains": [],
+      "source_ids": [
+        "EVP-004"
+      ],
+      "constraint_tuple": [
+        "eval quarantine",
+        "benchmark reference"
+      ]
+    },
+    "contamination_notes": "Eval/probe placeholder reference; not a train candidate and no hidden/test item content included.",
+    "references/access_notes": "Public benchmark reference only; access/split/license must be checked before selecting a concrete item."
+  },
+  {
+    "task_id": "EVP-005",
+    "source_family": "GAIA-style",
+    "source_status": "eval_only_reference",
+    "train_allowed": false,
+    "stage": "stage4_eval_probe",
+    "category": "multi_source_reasoning",
+    "difficulty_prior": "probe",
+    "prompt": "Use a public GAIA web-heavy dev example as eval/probe only; do not train on its prompt, entity tuple, or answer.",
+    "max_steps": 30,
+    "verifier_gates": [
+      "stored as eval/probe only",
+      "task id/hash or clone provenance recorded",
+      "no training render emitted",
+      "dedupe against train by entity/source/answer"
+    ],
+    "oracle": {
+      "answer_key": null,
+      "verifier_strategy": "suite-native or deterministic verifier to be attached when concrete eval item is selected"
+    },
+    "sft_role": "eval_only",
+    "dedupe_keys": {
+      "entity": [
+        "EVP-005"
+      ],
+      "answer": null,
+      "domains": [],
+      "source_ids": [
+        "EVP-005"
+      ],
+      "constraint_tuple": [
+        "eval quarantine",
+        "benchmark reference"
+      ]
+    },
+    "contamination_notes": "Eval/probe placeholder reference; not a train candidate and no hidden/test item content included.",
+    "references/access_notes": "Public benchmark reference only; access/split/license must be checked before selecting a concrete item."
+  },
+  {
+    "task_id": "EVP-006",
+    "source_family": "FRAMES-style",
+    "source_status": "eval_only_reference",
+    "train_allowed": false,
+    "stage": "stage4_eval_probe",
+    "category": "context_pressure",
+    "difficulty_prior": "probe",
+    "prompt": "Use a FRAMES-like public item only as an evidence-aggregation probe after source/answer dedupe; train on fresh clones instead.",
+    "max_steps": 32,
+    "verifier_gates": [
+      "stored as eval/probe only",
+      "task id/hash or clone provenance recorded",
+      "no training render emitted",
+      "dedupe against train by entity/source/answer"
+    ],
+    "oracle": {
+      "answer_key": null,
+      "verifier_strategy": "suite-native or deterministic verifier to be attached when concrete eval item is selected"
+    },
+    "sft_role": "eval_only",
+    "dedupe_keys": {
+      "entity": [
+        "EVP-006"
+      ],
+      "answer": null,
+      "domains": [],
+      "source_ids": [
+        "EVP-006"
+      ],
+      "constraint_tuple": [
+        "eval quarantine",
+        "benchmark reference"
+      ]
+    },
+    "contamination_notes": "Eval/probe placeholder reference; not a train candidate and no hidden/test item content included.",
+    "references/access_notes": "Public benchmark reference only; access/split/license must be checked before selecting a concrete item."
+  },
+  {
+    "task_id": "EVP-007",
+    "source_family": "DeepResearch/Rubrics-style",
+    "source_status": "eval_only_reference",
+    "train_allowed": false,
+    "stage": "stage4_eval_probe",
+    "category": "short_synthesis",
+    "difficulty_prior": "probe",
+    "prompt": "Use a DeepResearch/ResearchRubrics-style public prompt only as held-out audit/eval inspiration; no positive SFT rendering.",
+    "max_steps": 40,
+    "verifier_gates": [
+      "stored as eval/probe only",
+      "task id/hash or clone provenance recorded",
+      "no training render emitted",
+      "dedupe against train by entity/source/answer"
+    ],
+    "oracle": {
+      "answer_key": null,
+      "verifier_strategy": "suite-native or deterministic verifier to be attached when concrete eval item is selected"
+    },
+    "sft_role": "eval_only",
+    "dedupe_keys": {
+      "entity": [
+        "EVP-007"
+      ],
+      "answer": null,
+      "domains": [],
+      "source_ids": [
+        "EVP-007"
+      ],
+      "constraint_tuple": [
+        "eval quarantine",
+        "benchmark reference"
+      ]
+    },
+    "contamination_notes": "Eval/probe placeholder reference; not a train candidate and no hidden/test item content included.",
+    "references/access_notes": "Public benchmark reference only; access/split/license must be checked before selecting a concrete item."
+  },
+  {
+    "task_id": "EVP-008",
+    "source_family": "Mind2Web",
+    "source_status": "dev_probe",
+    "train_allowed": false,
+    "stage": "stage4_eval_probe",
+    "category": "browser_basics_action_grounding",
+    "difficulty_prior": "probe",
+    "prompt": "Use a Mind2Web/Online-Mind2Web dev split item as action-grounding probe if license permits; train only on allowed train split or clones.",
+    "max_steps": 16,
+    "verifier_gates": [
+      "stored as eval/probe only",
+      "task id/hash or clone provenance recorded",
+      "no training render emitted",
+      "dedupe against train by entity/source/answer"
+    ],
+    "oracle": {
+      "answer_key": null,
+      "verifier_strategy": "suite-native or deterministic verifier to be attached when concrete eval item is selected"
+    },
+    "sft_role": "eval_only",
+    "dedupe_keys": {
+      "entity": [
+        "EVP-008"
+      ],
+      "answer": null,
+      "domains": [],
+      "source_ids": [
+        "EVP-008"
+      ],
+      "constraint_tuple": [
+        "eval quarantine",
+        "benchmark reference"
+      ]
+    },
+    "contamination_notes": "Eval/probe placeholder reference; not a train candidate and no hidden/test item content included.",
+    "references/access_notes": "Public benchmark reference only; access/split/license must be checked before selecting a concrete item."
+  }
+]
