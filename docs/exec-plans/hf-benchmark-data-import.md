@@ -3,7 +3,8 @@
 - **Issue**: BER-175
 - **Status**: Draft import policy, docs-only
 - **Decision source**: [D020](../decisions.md#d020-benchmark-first-data-imports-over-clone-heavy-purity), [Real Benchmark Browser Mix](real-benchmark-browser-mix.md), [Benchmark Browser Task Registry](benchmark-browser-task-registry.md)
-- **Last updated**: 2026-06-15
+- **Schema-fit gate**: [HF Dataset Schema-Fit Probe](hf-dataset-schema-fit-probe.md) (BER-176) recommends Mind2Web as the first adapter target before broader ingestion.
+- **Last updated**: 2026-06-16
 
 ## 1. Simplified policy
 
