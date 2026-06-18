@@ -1,72 +1,102 @@
-# AGENTS.md
+# AGENTS.md — `evolution-sft-rl` worktree
 
-## Project
+> **This worktree has a distinct job from `main`.** `main` is the Deep Researcher
+> **context-and-skills pack** (the research harness/product). This branch
+> (`bm/feat/evolution-sft-rl`) executes the **Evolution → SFT → RL** training
+> program: it treats that harness as an evolution organism and trains a *student*
+> model through it. Code/docs that define the harness live on `main`; the
+> experiment plans, decisions, and lab notes for the training program live here.
 
-Deep Researcher is a **context-and-skills pack** for [pi-coding-agent](https://github.com/MarioZechner/pi-coding-agent). It provides a research skill, pipeline documentation, and quality standards — no application code. The heavy lifting (parallel execution, progress tracking) is done by two tools:
+## The job
 
-- **Orca orchestration** — `orca orchestration` task DAG + Orca worker terminals for parallel `researcher` subagent dispatch
-- **Linear** — durable per-run intent for `deep` runs (always; skipped for `quick`)
-
-## Quick Start
-
-Inside **pi** interactive mode:
+Turn the Deep Researcher harness into a trained small model via one ablation chain,
+measuring one number per stage:
 
 ```
-/skill:deep-researcher <topic>
-/skill:deep-researcher <topic> --depth quick|deep
-/skill:deep-researcher <topic> --format brief|full|academic
+raw student  →  + evolved harness  →  + SFT  →  + GRPO (RL)  →  + re-evolution
 ```
 
-## Architecture
+- **Student policy**: Qwen3-30B-A3B (per the RL research report), in the loop from
+  day one — the harness is evolved for the exact model that later gets SFT+RL.
+- **Frontier-and-fixed**: the hyperagent meta-agent (mutation proposer) and the
+  LLM-as-judge (integrity boundary) stay frontier.
+- **Training unit = single-question / worker episode** (search + evaluate one
+  sub-question → scored payload), *not* the full 200+-turn pipeline. Shorter
+  horizons (~20–40 turns) sidestep multi-agent credit assignment, let vanilla
+  GRPOTrainer suffice, and make the SFT data unit match the RL training unit.
 
-See [ARCHITECTURE.md](ARCHITECTURE.md) for pipeline stages and data flow.
+## Linear is the durable plan
 
-**Key constraint**: Every factual claim in output must trace to a cited source.
+The **`Evolution → SFT → RL`** milestone (project: `deep-researcher`) is the source
+of truth. Read it before acting: `linear milestone show "Evolution → SFT → RL"`.
 
-## Navigation
+| # | Issue | Stage | Blocks |
+|---|-------|-------|--------|
+| BER-139 | Floor check: raw student on single-agent harness | Gate (1/2/3) | BER-144, BER-143 |
+| BER-140 | Redesign organism: capabilities not mandates | Build organism | BER-144 |
+| BER-143 | *Conditional* SFT-0 protocol-compliance bootstrap | Only if BER-139 = outcome 2 | BER-144 |
+| BER-141 | Reconcile cost arithmetic + model-config drift | Hygiene | — |
+| BER-144 | Run harness evolution with student in the loop | Evolution | BER-145 |
+| BER-145 | SFT distillation: rejection-sampled teacher episodes | SFT | BER-146 |
+| BER-146 | GRPO on single-question episodes (Polar + TRL) | RL | BER-147 |
+| BER-147 | Post-RL re-evolution (P2O-style refresh) | Re-evolve | — |
+| BER-137 ✓ | Spike: Polar trajectory capture (GO, conditional) | De-risk | — |
+| BER-138 ✓ | Spike: ResearchRubrics reward variance (8 rollouts) | De-risk | — |
+| BER-150 ✓ | Spike: *actual* ResearchRubrics reward variance | De-risk | — |
 
-| Area | Location | Description |
-|------|----------|-------------|
-| Research workflow | [docs/research-workflow.md](docs/research-workflow.md) | Pipeline: plan → search → evaluate → synthesize |
-| Source quality | [docs/source-quality.md](docs/source-quality.md) | Trust tiers, credibility scoring, source selection |
-| Output format | [docs/output-format.md](docs/output-format.md) | Report structure, citation format, confidence grades |
-| Decisions log | [docs/decisions.md](docs/decisions.md) | Design decisions with rationale |
-| Execution plans | [docs/exec-plans/README.md](docs/exec-plans/README.md) | Active/completed plans, tech debt tracker |
-| Report archive | [researches/README.md](researches/README.md) | Saved research reports (`YYYY-MM-DD-<slug>.md`) |
-| Researcher agent | [.pi/agents/researcher.md](.pi/agents/researcher.md) | Project-level researcher subagent dispatched as an Orca worker terminal |
+Dependency order: `139 → 140 → 144 → 145 → 146 → 147` (143 is a conditional detour
+off 139; 141 is parallel hygiene). The three spikes are done.
 
-## Orchestration with Orca workers
+## Key decisions baked in (2026-06-11)
 
-**Parallel execution is the default.** Dispatch one Orca worker terminal per sub-question via `orca orchestration task-create` + `dispatch --inject`. Each worker runs `ORCA_ROLE=worker pi` using the `researcher` agent at `.pi/agents/researcher.md`. The coordinator (planner) waits for `worker_done` payloads via `orca orchestration check --wait --types worker_done,escalation`.
+1. **Capabilities, not mandates** (Bitter Lesson): strip hard-coded priors (6–8
+   sub-questions, 4-searches-each, mandated refinement, parallel-as-rule) from the
+   organism. Expose context-management primitives (`compress_findings`,
+   `stash_finding`, `recall_finding`, `context_usage`) and `spawn_worker` as
+   *optional* tools so evolution decides usage. Keep the parallel pipeline as a
+   comparison organism. Expect gen-1 single-agent organisms to score *worse* first.
+2. **Single-question episodes** as the SFT *and* RL unit (~10× cheaper than full
+   runs; rewards partially verifiable: citation validity, source counts, tiers).
+3. **Reward design** (from BER-150): use full prompt-specific ResearchRubrics for
+   eval/selection and *at most* a small mixed reward component — **not** the sole
+   high-volume GRPO reward. Pair with cheap verifiable rewards (citation validity,
+   source coverage/quality, URL support, checklist). Log completion length +
+   citation density to watch for reward hacking.
+4. **Rejection sampling (STaR)** for SFT: generate ~1.5–2× target, keep only above
+   rubric threshold + verifiable checks; target ~500 kept episodes, loss-masked to
+   assistant tokens, LoRA on the student.
 
-1. **Plan** in coordinator — decompose topic, produce sub-questions + dispatch map
-2. **Dispatch** Orca worker terminals — each runs Search + Evaluate for its sub-question
-3. **Collect** findings from `worker_done` payloads and synthesize into the final report, saved under `researches/`
+## Stack
 
-> Single-threaded execution is the **exception**, reserved for `quick` depth only.
+- **Evolution**: hyperagent (NSGA-II Pareto promotion, held-out validation,
+  per-run token caps, total budget cap) — see [hyperagent-benchmark-plan.md](docs/exec-plans/hyperagent-benchmark-plan.md).
+- **Trajectory capture**: Polar (NVIDIA ProRL-Agent-Server) + pi — validated in BER-137.
+- **RL**: TRL `GRPOTrainer` + LoRA on the SFT checkpoint.
+- **Eval**: ResearchRubrics (full prompt-specific weighted rubrics).
+- **Student serving**: hosted Qwen API or rented vLLM endpoint.
 
-## Tracking with Linear
+## Plans (this worktree's docs)
 
-Use **Linear issues** to track research runs:
+| Plan | File |
+|------|------|
+| Hyperagent evolution harness | [docs/exec-plans/hyperagent-benchmark-plan.md](docs/exec-plans/hyperagent-benchmark-plan.md) |
+| Context-management tools (learnable behaviors) | [docs/exec-plans/context-management-tools.md](docs/exec-plans/context-management-tools.md) |
+| Evaluation integration (reward signal) | [docs/exec-plans/evaluation-integration.md](docs/exec-plans/evaluation-integration.md) |
+| Exec-plan index + refined sequence | [docs/exec-plans/README.md](docs/exec-plans/README.md) |
+| RL methods research report (130+ sources) | [researches/2026-06-10-rl-methods-for-agent-training.md](researches/2026-06-10-rl-methods-for-agent-training.md) |
 
-- **`deep`** — always create a Linear issue. **`quick`** — skip.
-- Issue body should contain: topic, sub-questions as checklist (one per SQ), dispatch map, source-count target, final report path placeholder.
-- As workers complete, `linear issue update <id> --check "..."` ticks each sub-question.
-- Final report path is recorded in a Linear comment when archived under `researches/`.
+For the underlying harness (research workflow, source-quality tiers, output format,
+the `researcher` subagent), see those docs on `main` — this worktree does not
+redefine them.
 
-## Critical Rules
+## How to work here
 
-1. **Cite everything** — Every factual claim must link to a verifiable source.
-2. **Evaluate before trusting** — Apply source-quality tiers before including any source.
-3. **Synthesize, don't summarize** — Cross-reference findings; identify agreements, conflicts, gaps.
-4. **Declare confidence** — Every conclusion gets a confidence grade (high / medium / low).
-5. **Log decisions** — Non-obvious choices go into [docs/decisions.md](docs/decisions.md).
-6. **Archive reports** — Save final report to `researches/` before summarizing to the user.
-
-## How to Work in This Repo
-
-1. **Read this file first** — it's the map
-2. **Follow pointers** — each doc owns its domain; don't duplicate
-3. **Use the skill** — `/skill:deep-researcher` loads the full workflow
-4. **Keep docs in sync** — if a change invalidates a doc, fix both in the same commit
-5. **Keep AGENTS.md lean** — if this file exceeds ~100 lines, extract to `docs/`
+1. **Pull intent from Linear first** — the milestone issue carries the goal,
+   acceptance criteria, and decision gates; this file is the map, not the spec.
+2. **Record decisions** — gate outcomes (esp. BER-139's 1/2/3) and reward-design
+   choices go in `docs/decisions.md`; per-run training results go in lab-notebook
+   entries (config diff, curves, conclusion) on the relevant issue.
+3. **Respect budget caps** — each phase has a cap (re-costed in BER-141); a failed
+   RL run is tuition, but capped.
+4. **Commit convention** — `BER-###: <summary>`, end with the Co-Authored-By trailer.
+5. **Keep this file lean** — if it exceeds ~120 lines, extract to `docs/`.
