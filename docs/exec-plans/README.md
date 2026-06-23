@@ -14,8 +14,8 @@ Execution plans record **future or in-progress work** that goes beyond a single 
 |------|------|--------|---------|
 | Evaluation Integration | [evaluation-integration.md](evaluation-integration.md) | Draft | Integrate ResearchRubrics and DeepResearch Bench II as evaluation benchmarks; A/B testing protocol; internal metrics; regression suite |
 | Hyperagent Benchmark Plan | [hyperagent-benchmark-plan.md](hyperagent-benchmark-plan.md) | Draft | Use Hyperagent as an evolution harness for Deep Researcher variants; NSGA-II Pareto scoring; three-phase rollout |
-| Context Management Tools | [context-management-tools.md](context-management-tools.md) | Draft | Custom pi tools (compress_findings, stash_finding, recall_finding, context_usage, escalate) to make context management a learnable RL behavior; planner-side merge/synthesize tools |
-| RL Fine-Tuning | [../researches/2026-06-10-rl-methods-for-agent-training.md](../../researches/2026-06-10-rl-methods-for-agent-training.md) | Research Report | 130+ sources on GRPO, RLVR, PRMs, SFT+RL recipes, local-world training, frameworks, benchmarks; validated pi-RL bridge via Polar |
+| Context Management Tools | [context-management-tools.md](context-management-tools.md) | Draft | Custom OMP tools (compress_findings, stash_finding, recall_finding, context_usage, escalate) to make context management a learnable RL behavior; planner-side merge/synthesize tools |
+| RL Fine-Tuning | [../researches/2026-06-10-rl-methods-for-agent-training.md](../../researches/2026-06-10-rl-methods-for-agent-training.md) | Research Report | 130+ sources on GRPO, RLVR, PRMs, SFT+RL recipes, local-world training, frameworks, benchmarks; validated OMP-RL bridge via Polar |
 
 ## Completed Plans
 
@@ -37,8 +37,8 @@ RL Fine-Tuning (Polar + TRL + GRPO)
 
 | Item | Origin | Priority | Notes |
 |------|--------|----------|-------|
-| Model/thinking sync in dispatch envelope | D010, D011 | Medium | `--model` and `--thinking` flags in the dispatch envelope must be manually kept in sync with `researcher.md` frontmatter |
-| Worker isolation depends on stock-pi flag behavior | D010 | Low | Verified against `resource-loader.js:271–273`; may break on pi major version bumps |
+| Model/thinking sync in researcher agent | D011 | Medium | `.omp/agents/researcher.md` frontmatter should stay aligned with the selected worker model and thinking level |
+| Legacy Orca-Linear references in historical reports | D013 | Low | Historical `researches/` files are left as-is unless they are promoted into current workflow docs |
 
 ## Related
 

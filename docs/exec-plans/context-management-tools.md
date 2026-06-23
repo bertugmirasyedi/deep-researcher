@@ -1,4 +1,4 @@
-# Context Management as Custom pi Tools
+# Context Management as Custom OMP Tools
 
 **Status**: Draft  
 **Created**: 2026-06-10  
@@ -6,7 +6,7 @@
 
 ## 1. Summary
 
-The 2026 SOTA research identifies context management as the primary differentiator between frontier and mid-tier deep research systems. The current Deep Researcher pipeline has **zero context management** — workers dump raw payloads and the planner accumulates them linearly. This plan proposes making context management a **learned behavior** by exposing it as custom pi tools, enabling the model to discover optimal compression/stashing/retrieval policies through RL training (see [hyperagent-benchmark-plan.md](hyperagent-benchmark-plan.md) and [rl-methods-for-agent-training.md](../../researches/2026-06-10-rl-methods-for-agent-training.md)).
+The 2026 SOTA research identifies context management as the primary differentiator between frontier and mid-tier deep research systems. The current Deep Researcher pipeline has **zero context management** — workers dump raw payloads and the planner accumulates them linearly. This plan proposes making context management a **learned behavior** by exposing it as custom OMP tools, enabling the model to discover optimal compression/stashing/retrieval policies through RL training (see [hyperagent-benchmark-plan.md](hyperagent-benchmark-plan.md) and [rl-methods-for-agent-training.md](../../researches/2026-06-10-rl-methods-for-agent-training.md)).
 
 ## 2. Tool Surface
 
@@ -20,7 +20,7 @@ The 2026 SOTA research identifies context management as the primary differentiat
 | `list_findings` | `list_findings()` | Lists all stashed finding keys for the current run. Returns array of keys with brief metadata (SQ, timestamps). | — |
 | `context_usage` | `context_usage()` | Returns current token count, % of budget, and breakdown by message role. | AdaCoM (+39% BrowseComp-Plus); self-awareness pattern |
 | `prune_sources` | `prune_sources(min_tier: string, min_credibility: number)` | Drops source data below the given tier/credibility threshold from the current context. Keeps source IDs in inventory. | Agent-learned priority scoring; hierarchical context management |
-| `escalate` | `escalate(reason: string, details: string)` | Sends an escalation message to the planner via orchestration, including the reason (blocked, insufficient_sources, conflicting_evidence) and structured details. | Escalation handling (rec 4b from gap analysis) |
+| `escalate` | `escalate(reason: string, details: string)` | Sends an escalation message to the planner through OMP task output or `irc`, including the reason (blocked, insufficient_sources, conflicting_evidence) and structured details. | Escalation handling (rec 4b from gap analysis) |
 
 ### Planner-side tools
 
@@ -28,7 +28,7 @@ The 2026 SOTA research identifies context management as the primary differentiat
 |------|-----------|----------|----------------|
 | `merge_findings` | `merge_findings(sq_id: string)` | Reads `.research/<run-id>/sqN-findings.json` for the given sub-question, replaces the raw worker payload in context with the stashed compressed version. | Anthropic context resets; planner-writes-files pattern (rec 1c) |
 | `check_coverage` | `check_coverage()` | Scans all worker findings and reports: (a) sub-questions with <3 Tier A/B sources, (b) sub-questions with zero Tier A sources, (c) overall source count vs depth minimum. | Per-SQ quality gates (Codex review feedback) |
-| `spawn_gap_worker` | `spawn_gap_worker(sq_id: string, gap_description: string)` | Creates a new Orca worker terminal + task for the under-covered sub-question, dispatches it, and waits for worker_done. | Gap-driven re-dispatch (rec 4a) |
+| `spawn_gap_worker` | `spawn_gap_worker(sq_id: string, gap_description: string)` | Spawns a follow-up OMP `researcher` task agent for the under-covered sub-question and merges its task output. | Gap-driven re-dispatch (rec 4a) |
 | `synthesize_from_stash` | `synthesize_from_stash()` | Reads all stashed findings from `.research/<run-id>/findings.json` and uses them (instead of raw worker payloads) as input for the final report synthesis. | File-based handoff; sequential merge-and-compress |
 
 ## 3. RL Training Integration
@@ -108,11 +108,11 @@ All stash/recall operations use `.research/<run-id>/findings.json`:
 
 ### Worker isolation
 
-Workers remain read-only for file mutations. Stash operations use `orca orchestration send` to report compressed findings to the planner, which writes them to the filesystem. Workers can read `.research/<run-id>/` for context but cannot write to it. This preserves the isolation envelope (D010).
+Workers remain read-only for file mutations. Stash operations report compressed findings through OMP task output or `irc`; the planner writes selected findings to the filesystem. Workers can read `.research/<run-id>/` for context but cannot write to it. This preserves the read-only task-agent contract (D013).
 
 ### Tool implementation
 
-Tools are implemented as pi extensions (TypeScript) and loaded by the worker/planner pi session. They follow standard pi tool conventions:
+Tools are implemented as OMP custom tools (TypeScript) and loaded by the worker/planner OMP session. They follow standard OMP tool conventions:
 
 - Input validation via Zod schemas
 - Tool descriptions visible to the model (used for planning)
@@ -125,7 +125,7 @@ Tools are implemented as pi extensions (TypeScript) and loaded by the worker/pla
 |------|------|
 | [evaluation-integration.md](evaluation-integration.md) | Provides the reward signal (ResearchRubrics scores) |
 | [hyperagent-benchmark-plan.md](hyperagent-benchmark-plan.md) | Provides the evolution/search framework (NSGA-II, organisms, archive) |
-| [rl-finetuning-plan.md](rl-finetuning-plan.md) | Provides the training infrastructure (Polar + TRL + GRPO) |
+| [RL methods research report](../../researches/2026-06-10-rl-methods-for-agent-training.md) | Provides the training infrastructure (Polar + TRL + GRPO) |
 | **This plan** | Provides the tool surface that makes context management learnable |
 
 The four plans form a complete stack:

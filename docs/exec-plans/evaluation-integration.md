@@ -39,11 +39,11 @@ Using both benchmarks provides:
 
 ### Baseline Definition
 
-The **baseline** is the current Deep Researcher pipeline (as of 2026-06-10) running with its default configuration:
-- Planner: main planner pi (GPT-5.5 per D011)
+The **baseline** is the current Deep Researcher pipeline (updated 2026-06-23 for OMP) running with its default configuration:
+- Planner: main OMP session (GPT-5.5 per D011)
 - Workers: `gpt-5.4-mini` at `xhigh` thinking (D011)
-- Isolation envelope per D010
-- Depth: `deep` (6–8 sub-questions, 4 searches, required `fetch_content`, ≥1 refinement)
+- Task-agent fan-out per D013
+- Depth: `deep` (6–8 sub-questions, 4 searches, required full-source `read`, ≥1 refinement)
 - Source minimum: 30
 
 Run the full evaluation suite on the baseline and record scores as the reference point.
@@ -144,7 +144,7 @@ All estimates assume `deep` depth (6–8 sub-questions), `gpt-5.4-mini` at `xhig
 |-----------|-----------------|----------------|
 | Planner — plan + dispatch + synthesize | ~30K input + ~15K output | ~$0.80 |
 | 6× researcher workers (search + evaluate) | ~6 × (50K input + 25K output) = ~450K | ~$3.50 |
-| `fetch_content` reads (24+ full-text) | Included in worker tokens | — |
+| Full-source `read` calls (24+ URL/document reads) | Included in worker tokens | — |
 | Refinement round (6× 1 additional search) | ~6 × 15K = ~90K | ~$0.70 |
 | **Total per run** | | **~$5.00** |
 

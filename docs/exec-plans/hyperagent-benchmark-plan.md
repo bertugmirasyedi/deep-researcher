@@ -18,7 +18,7 @@ Each Hyperagent **organism** represents a complete Deep Researcher variant. The 
 
 ```
 organisms/gen-NNN/
-  pi-agent/                          # Sandboxed pi-coding-agent config
+  omp-agent/                         # Sandboxed OMP agent config
     SYSTEM.md                        # Replaces researcher.md as the task agent system prompt
     skills/                          # Evolvable skills (e.g., custom search strategies)
     AGENTS.md                        # Additional context (e.g., domain-specific guidance)
@@ -175,7 +175,7 @@ Prevent the meta agent from overfitting to the evolution prompt set. The held-ou
 
 | Step | Task | Acceptance Criterion |
 |------|------|---------------------|
-| 2.1 | Create ablation organisms: remove one component each (refinement round, fetch_content requirement, multi-query search, source tiering) | 4 ablation variants |
+| 2.1 | Create ablation organisms: remove one component each (refinement round, full-source read requirement, multi-query search, source tiering) | 4 ablation variants |
 | 2.2 | Run all ablation variants through eval harness | Scores for all 4 on evolution + held-out sets |
 | 2.3 | Analyze per-dimension rubric impact | Identify which components affect which quality dimensions |
 | 2.4 | Document ablation findings | Report in this file, §7 (Results) |

@@ -2,16 +2,20 @@
 
 ## Project
 
-Deep Researcher is a **context-and-skills pack** for [pi-coding-agent](https://github.com/MarioZechner/pi-coding-agent). It provides a research skill, pipeline documentation, and quality standards — no application code. The heavy lifting (parallel execution, progress tracking) is done by two tools:
+Deep Researcher is a **context-and-skills pack** for **Oh My Pi (`omp`)**. It provides a research skill, a project `researcher` task-agent prompt, pipeline documentation, and quality standards — no application code.
 
-- **Orca orchestration** — `orca orchestration` task DAG + Orca worker terminals for parallel `researcher` subagent dispatch
-- **Linear** — durable per-run intent for `deep` runs (always; skipped for `quick`)
+The heavy lifting is done by OMP-native tools:
+
+- **`task`** — parallel `researcher` subagent dispatch for `deep` research
+- **`web_search`** — live source discovery
+- **`read`** — local file reads and full-text URL/document extraction
+- **`agent://` / `history://`** — worker output and transcript recovery when needed
 
 ## Quick Start
 
-Inside **pi** interactive mode:
+Inside **omp** interactive mode:
 
-```
+```text
 /skill:deep-researcher <topic>
 /skill:deep-researcher <topic> --depth quick|deep
 /skill:deep-researcher <topic> --format brief|full|academic
@@ -33,26 +37,27 @@ See [ARCHITECTURE.md](ARCHITECTURE.md) for pipeline stages and data flow.
 | Decisions log | [docs/decisions.md](docs/decisions.md) | Design decisions with rationale |
 | Execution plans | [docs/exec-plans/README.md](docs/exec-plans/README.md) | Active/completed plans, tech debt tracker |
 | Report archive | [researches/README.md](researches/README.md) | Saved research reports (`YYYY-MM-DD-<slug>.md`) |
-| Researcher agent | [.pi/agents/researcher.md](.pi/agents/researcher.md) | Project-level researcher subagent dispatched as an Orca worker terminal |
+| Researcher agent | [.omp/agents/researcher.md](.omp/agents/researcher.md) | Project-level OMP task agent for sub-question research |
+| Deep Researcher skill | [.omp/skills/deep-researcher/SKILL.md](.omp/skills/deep-researcher/SKILL.md) | Skill entry point and workflow contract |
 
-## Orchestration with Orca workers
+## Orchestration with OMP task agents
 
-**Parallel execution is the default.** Dispatch one Orca worker terminal per sub-question via `orca orchestration task-create` + `dispatch --inject`. Each worker runs `ORCA_ROLE=worker pi` using the `researcher` agent at `.pi/agents/researcher.md`. The coordinator (planner) waits for `worker_done` payloads via `orca orchestration check --wait --types worker_done,escalation`.
+**Parallel execution is the default for `deep`.** Spawn one OMP `researcher` task agent per sub-question in a single `task` batch. Each worker runs Search + Evaluate for its sub-question, reads full source text with `read <url>`, runs at least one refinement round, and returns structured findings.
 
-1. **Plan** in coordinator — decompose topic, produce sub-questions + dispatch map
-2. **Dispatch** Orca worker terminals — each runs Search + Evaluate for its sub-question
-3. **Collect** findings from `worker_done` payloads and synthesize into the final report, saved under `researches/`
+1. **Plan** in the main OMP session — decompose topic, produce sub-questions + dispatch map
+2. **Dispatch** OMP task agents — one `researcher` worker per sub-question
+3. **Collect** task outputs / `agent://` artifacts and synthesize the final report, saved under `researches/`
 
 > Single-threaded execution is the **exception**, reserved for `quick` depth only.
 
-## Tracking with Linear
+## Tracking and artifacts
 
-Use **Linear issues** to track research runs:
+Do **not** create per-run Linear issues for research. Research-run state lives in:
 
-- **`deep`** — always create a Linear issue. **`quick`** — skip.
-- Issue body should contain: topic, sub-questions as checklist (one per SQ), dispatch map, source-count target, final report path placeholder.
-- As workers complete, `linear issue update <id> --check "..."` ticks each sub-question.
-- Final report path is recorded in a Linear comment when archived under `researches/`.
+- the active OMP session and `task` results
+- `agent://<id>` worker output artifacts when inline output is truncated
+- `history://<id>` transcripts when debugging or auditing worker behavior
+- the final archived Markdown report under `researches/`
 
 ## Critical Rules
 

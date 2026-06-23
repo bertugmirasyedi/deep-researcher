@@ -1,6 +1,6 @@
 # Deep Researcher
 
-A **context-and-skills pack** for [pi-coding-agent](https://github.com/MarioZechner/pi-coding-agent) that produces structured, citation-backed research reports. No application code — just a skill definition, pipeline docs, and quality standards.
+A **context-and-skills pack** for **Oh My Pi (`omp`)** that produces structured, citation-backed research reports. No application code — just a skill definition, task-agent prompt, pipeline docs, and quality standards.
 
 ## What It Does
 
@@ -12,11 +12,11 @@ Given a research topic, the deep-researcher skill guides the agent to:
 4. **Synthesize** — Cross-reference findings, identify agreements/conflicts/gaps
 5. **Report** — Produce a structured report with citations and confidence grades
 
-For `deep` research, sub-questions are searched in parallel by **`researcher` subagents** running in dedicated Orca worker terminals, dispatched via `orca orchestration`; each worker reads full source content and runs at least one refinement round. Multi-session research is tracked with a per-run **Linear issue**.
+For `deep` research, sub-questions are searched in parallel by OMP **`task` subagents** using the project `researcher` agent. Each worker uses built-in `web_search` plus `read` on URLs for full-source extraction, then runs at least one refinement round. Results come back as normal `task` artifacts (`agent://…` / `history://…`); no Orca terminals or Linear issue are required.
 
 ## Usage
 
-Inside **pi** interactive mode:
+Inside **omp** interactive mode:
 
 ```
 /skill:deep-researcher "impact of RISC-V on embedded systems"
@@ -42,7 +42,7 @@ Inside **pi** interactive mode:
 | [docs/decisions.md](docs/decisions.md) | Design decisions and rationale |
 | [docs/exec-plans/README.md](docs/exec-plans/README.md) | Execution plans index |
 | [researches/README.md](researches/README.md) | Report archive — naming convention and structure |
-| [.pi/agents/researcher.md](.pi/agents/researcher.md) | Project-level `researcher` subagent definition |
+| [.omp/agents/researcher.md](.omp/agents/researcher.md) | Project-level `researcher` task-agent definition |
 
 ## Report Archive
 
@@ -50,4 +50,4 @@ Final reports are saved as Markdown files under `researches/` with the naming co
 
 ## Status
 
-Skills-and-docs pack — functional as a pi skill. No build step or application code needed.
+Skills-and-docs pack — functional as an OMP skill. No build step or application code needed.

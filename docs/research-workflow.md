@@ -2,7 +2,7 @@
 
 The complete pipeline from topic to report. See [ARCHITECTURE.md](../ARCHITECTURE.md) for system-level context.
 
-> **Orchestration**: This pipeline is executed by the pi-coding-agent skill inside a planner pi. For `deep` research, Stages 2-3 (Search + Evaluate) are parallelised by dispatching one **Orca worker terminal** per sub-question. Each worker runs `ORCA_ROLE=worker pi` with its system prompt set to `.pi/agents/researcher.md` (loaded via `--system-prompt`), and each worker must `fetch_content` the top results and run at least one refinement round. The planner creates tasks via `orca orchestration task-create`, spawns worker terminals, injects dispatch preambles, and waits for `worker_done` payloads. For durable intent tracking, a **Linear issue** is created per `deep` run (skipped for `quick`).
+> **Orchestration**: This pipeline is executed by the OMP `deep-researcher` skill inside the main OMP session. For `deep` research, Stages 2–3 (Search + Evaluate) are parallelised by spawning one project `researcher` task agent per sub-question with OMP's `task` tool. Each worker uses `web_search`, reads full source text with `read <url>`, runs at least one refinement round, and returns structured findings through normal task output / `agent://` artifacts. `quick` runs inline without worker fan-out.
 
 ## Stage 1: Plan
 
@@ -25,9 +25,9 @@ The complete pipeline from topic to report. See [ARCHITECTURE.md](../ARCHITECTUR
 | Depth | Sub-questions | Searches per sub-Q | Read full content | Refinement round | Minimum sources | Target sources |
 |-------|--------------|-------------------|-------------------|------------------|-----------------|----------------|
 | Quick | 3 | 2 | optional (snippets ok) | no | **5** | 5-10 |
-| Deep (default) | 6-8 | 4 | **required** (top 4+/sub-Q) | **≥1 required** | **30** | 30-50 |
+| Deep (default) | 6-8 | 4 | **required** (top 4+/sub-Q via `read`) | **≥1 required** | **30** | 30-50 |
 
-`quick` is a fast snippet-level lookup that runs inline. `deep` is the full pipeline: parallel workers, mandatory full-text reads, and at least one refinement round seeded by first-round findings. The read-and-iterate requirement — not the raw search count — is what makes `deep` research rather than a search skim.
+`quick` is a fast snippet-level lookup that runs inline. `deep` is the full pipeline: parallel task agents, mandatory full-text reads, and at least one refinement round seeded by first-round findings. The read-and-iterate requirement — not the raw search count — is what makes `deep` research rather than a search skim.
 
 ### Output
 
@@ -41,70 +41,51 @@ The complete pipeline from topic to report. See [ARCHITECTURE.md](../ARCHITECTUR
 1. [SQ1] <question> - expected sources: <types>
 2. [SQ2] <question> - expected sources: <types>
 ...
+
+### Dispatch Map
+| Worker | Sub-question | Searches | Full reads |
+|--------|--------------|----------|------------|
+| ResearcherSQ1 | SQ1 | 3-4 | top 4+ URLs |
+| ResearcherSQ2 | SQ2 | 3-4 | top 4+ URLs |
 ```
 
 ## Stage 2: Search
 
 **Goal**: Gather raw source material for each sub-question.
 
-### Parallel Execution with Researcher Subagents (default)
+### Parallel Execution with Researcher Task Agents (default for `deep`)
 
-**Deep research must use parallel execution.** The planner dispatches one Orca worker per sub-question. Each worker runs `pi` with the isolation envelope (see snippet below); the worker's system prompt **is** `.pi/agents/researcher.md`, loaded via `--system-prompt`. Each worker executes the full Search → Evaluate cycle (Stages 2–3) for its assigned sub-question — including the mandatory `fetch_content` reads and refinement round. The planner collects all `worker_done` payloads and proceeds to Stage 4 (Synthesize).
+**Deep research must use parallel execution.** The planner spawns one OMP `researcher` task agent per sub-question in a single `task` batch. Each worker executes the full Search → Evaluate cycle (Stages 2–3) for its assigned sub-question — including mandatory full-source `read` calls and the refinement round. The planner collects task outputs and proceeds to Stage 4 (Synthesize).
 
-```bash
-# Orca dispatch pattern - one worker per sub-question
+Use this shape conceptually when dispatching:
 
-# 1. Create a task for each sub-question
-TASK_SQ1=$(orca orchestration task-create --spec "Search + Evaluate SQ1: <sub-question>. The worker's system prompt is .pi/agents/researcher.md (loaded via --system-prompt). Use bash only for orchestration/Linear CLIs, not for file mutation." --json | jq -r '.result.task.id')
-TASK_SQ2=$(orca orchestration task-create --spec "Search + Evaluate SQ2: <sub-question>. The worker's system prompt is .pi/agents/researcher.md (loaded via --system-prompt). Use bash only for orchestration/Linear CLIs, not for file mutation." --json | jq -r '.result.task.id')
-# ... repeat for SQ3...SQN
-
-# 2. Spawn worker terminals (one per task) with the isolation envelope.
-#    Matches the standard Orca worker dispatch pattern in orca-linear-workflow:
-#    interactive pi → wait for tui-idle → dispatch --inject → wait for worker_done.
-#    What's different here: the isolation envelope flags after `pi` make this worker
-#    a sealed Researcher process instead of a full coding agent.
-#    --model and --thinking keep in sync with .pi/agents/researcher.md frontmatter.
-TERM_SQ1=$(orca terminal create --worktree active --title "researcher-sq1" \
-  --command "ORCA_ROLE=worker pi --system-prompt /Users/bertugmirasyedi/projects/deep-researcher/.pi/agents/researcher.md --append-system-prompt /dev/null --no-context-files --no-skills --no-prompt-templates --no-extensions --extension /opt/homebrew/lib/node_modules/pi-web-access/index.ts --tools read,grep,find,ls,web_search,fetch_content,bash --model zai/glm-5.1 --thinking high" \
-  --json | jq -r '.result.terminal.handle')
-TERM_SQ2=$(orca terminal create --worktree active --title "researcher-sq2" \
-  --command "ORCA_ROLE=worker pi --system-prompt /Users/bertugmirasyedi/projects/deep-researcher/.pi/agents/researcher.md --append-system-prompt /dev/null --no-context-files --no-skills --no-prompt-templates --no-extensions --extension /opt/homebrew/lib/node_modules/pi-web-access/index.ts --tools read,grep,find,ls,web_search,fetch_content,bash --model zai/glm-5.1 --thinking high" \
-  --json | jq -r '.result.terminal.handle')
-# ... repeat for SQ3...SQN
-
-# 3. Wait for each terminal to become idle (agent ready)
-orca terminal wait --terminal "$TERM_SQ1" --for tui-idle --timeout-ms 60000 --json
-orca terminal wait --terminal "$TERM_SQ2" --for tui-idle --timeout-ms 60000 --json
-# ... repeat for remaining terminals
-
-# 4. Dispatch tasks - inject preamble telling the worker to run
-#    Search + Evaluate for its SQ and report worker_done with
-#    structured findings JSON.
-orca orchestration dispatch --task "$TASK_SQ1" --to "$TERM_SQ1" --inject --json
-orca orchestration dispatch --task "$TASK_SQ2" --to "$TERM_SQ2" --inject --json
-# ... repeat for remaining task/terminal pairs
-
-# 5. Collect results - block until all workers report
-orca orchestration check --wait \
-  --types worker_done,escalation \
-  --timeout-ms 600000 --json
-
-# 6. Close terminals after collection
-orca terminal close --terminal "$TERM_SQ1" --json
-orca terminal close --terminal "$TERM_SQ2" --json
-# ... repeat for remaining terminals
+```text
+task:
+  agent: researcher
+  context: |
+    Goal: research <topic> at depth=deep.
+    Constraints: read-only; cite every factual claim; use web_search; read top URLs with read; run one refinement round; no project-wide commands.
+    Contract: return the Research Findings markdown block from this workflow.
+  tasks:
+    - id: ResearcherSQ1
+      role: Research sub-question specialist
+      assignment: Search + Evaluate SQ1: <sub-question> ...
+    - id: ResearcherSQ2
+      role: Research sub-question specialist
+      assignment: Search + Evaluate SQ2: <sub-question> ...
 ```
 
-The auto-injected dispatch preamble tells each worker to run Search + Evaluate for its assigned sub-question and send `worker_done` with the structured findings JSON. The worker's system prompt is already `.pi/agents/researcher.md` (loaded via `--system-prompt` at terminal creation), so the injected preamble only needs to carry the sub-question and any run-specific instructions.
+Each assignment must be self-contained: include the exact sub-question, source-type expectations, search count, required full-text URL reads, refinement requirement, and the output format.
 
-> **Exception**: Single-threaded (sequential) search is only for `quick` depth, executed directly in the planner pi.
+The auto-created task outputs are the join point. Use `agent://<id>` to recover full output if an inline result is truncated, and `history://<id>` only when the transcript is needed for debugging or audit.
+
+> **Exception**: Single-threaded sequential search is only for `quick` depth, executed directly in the planner.
 
 ### Steps (per sub-question, inside each `researcher` worker)
 
 1. **Craft queries** - For each sub-question, generate 2-4 search queries with varied phrasing and scope
-2. **Execute searches** - If a search tool (`web_search`, etc.) is available, run queries via batched execution. If no search tool is installed, use user-provided sources, local files, and training knowledge - but never fabricate citations; mark claims without verifiable sources.
-3. **Fetch content** - For `deep`, **required**: extract readable markdown via `fetch_content` from the top 4+ URLs per sub-question and work from full text. For `quick`, search snippets are acceptable. If no content tool is available, work with snippets and user-provided materials and note the limitation.
+2. **Execute searches** - Use `web_search` when configured. If no search provider is available, use user-provided sources, local files, and training knowledge - but never fabricate citations; mark claims without verifiable sources.
+3. **Read content** - For `deep`, **required**: extract readable text by calling `read` on the top 4+ URLs per sub-question and work from full text. For `quick`, search snippets are acceptable. If a URL cannot be read, note the limitation and prefer another source.
 4. **Refine** - For `deep`, **required**: run at least one follow-up query round seeded by first-round findings (named entities, contradictions, cited works) before handing off. `quick` does a single pass.
 5. **Collect metadata** - For each source: author, date, domain, publication type, URL
 
@@ -132,61 +113,72 @@ Collection of source objects, each containing:
 
 **Goal**: Score and tier sources, identify conflicts and gaps.
 
+### Quality Scoring
+
+For each source, assign:
+
+- **Tier**: A / B / C / D (see [source-quality.md](source-quality.md))
+- **Credibility score**: 0.0 - 5.0
+- **Recency**: current / recent / dated / historical
+- **Relevance**: direct / supporting / tangential
+
 ### Steps
 
-1. **Apply quality tiers** - Per [source-quality.md](source-quality.md), classify each source
-2. **Score credibility** - Rate each source on author authority, publication reputation, recency
-3. **Deduplicate** - Merge sources covering the same finding; keep highest-quality instance
-4. **Map conflicts** - Identify where sources disagree
-5. **Identify gaps** - Note sub-questions with insufficient source coverage
-
-### Scoring
-
-| Dimension | Weight | Scale |
-|-----------|--------|-------|
-| Author authority | 30% | 1-5 |
-| Publication reputation | 25% | 1-5 |
-| Recency relevance | 20% | 1-5 |
-| Corroboration | 15% | 1-5 |
-| Methodology transparency | 10% | 1-5 |
-
-Minimum credibility threshold: **3.0 weighted average**. Sources below threshold are flagged but not discarded - they may appear in the report as counterpoints.
+1. **Classify source type** - Academic, official, news, blog, forum, etc.
+2. **Score credibility** - Apply weighted criteria:
+   - Author authority (30%)
+   - Publication reputation (25%)
+   - Recency (20%)
+   - Corroboration (15%)
+   - Methodology transparency (10%)
+3. **Deduplicate** - Merge duplicate reports of the same fact
+4. **Map conflicts** - Record contradictory claims and relative source strength
+5. **Identify gaps** - Note missing perspectives, weak evidence, or unresolved questions
 
 ### Output
 
-Scored source list with:
-- Quality tier (A/B/C/D)
-- Credibility score (1.0-5.0)
-- Conflict flags (links to conflicting sources)
-- Coverage assessment per sub-question
+```markdown
+### Evaluated Sources: [Sub-question]
 
-## Stage 4: Synthesize & Report
+| ID | Source | Tier | Score | Key Finding | Notes |
+|----|--------|------|-------|-------------|-------|
+| S1 | [Title](url) | A | 4.5 | ... | official data |
+| S2 | [Title](url) | B | 3.8 | ... | corroborates S1 |
 
-**Goal**: Produce a structured report that synthesizes findings across sources.
+**Conflicts**: ...
+**Gaps**: ...
+```
+
+## Stage 4: Synthesize and Write
+
+**Goal**: Produce the final report.
 
 ### Steps
 
-1. **Synthesize per sub-question** - For each sub-question, combine findings from all scored sources
-2. **Identify themes** - Extract cross-cutting themes that span multiple sub-questions
-3. **Assess confidence** - Assign confidence grades based on source quality and agreement
-4. **Note gaps** - Explicitly state what the research could not determine
-5. **Format output** - Apply the requested format per [output-format.md](output-format.md)
-6. **Save report** - Write the final Markdown report to `researches/YYYY-MM-DD-<topic-slug>.md` (see [researches/README.md](../researches/README.md) for naming convention)
-7. **Present summary** - Summarize key findings to the user; report is archived for future reference
+1. **Merge worker findings** - Combine all sub-question outputs, deduplicate cross-sub-question overlaps
+2. **Synthesize themes** - Identify patterns, causal links, and disagreements
+3. **Answer the core question** - Directly address the user's topic
+4. **Assign confidence** - Every major conclusion gets high/medium/low confidence with evidence
+5. **Document gaps** - Explicitly state what could not be established
+6. **Save report** - Write to `researches/YYYY-MM-DD-<topic-slug>.md`
 
-### Synthesis Rules
+### Report Structure
 
-- **Agreements**: When multiple high-quality sources agree, state as established fact with confidence
-- **Conflicts**: When credible sources disagree, present both sides with reasoning for each
-- **Gaps**: When no source adequately addresses a sub-question, state the gap explicitly
-- **Single-source claims**: Mark as such; reduce confidence grade
+Use [output-format.md](output-format.md). Required sections:
 
-## Error Handling
+1. Executive Summary
+2. Key Findings
+3. Detailed Analysis (organized by sub-question or theme)
+4. Source Assessment
+5. Knowledge Gaps
+6. Sources
 
-| Situation | Response |
-|-----------|----------|
-| Search returns no results | Reformulate query; try broader phrasing; note in report |
-| All sources are low quality | Report with explicit caveat; recommend manual verification |
-| Sources heavily conflict | Present disagreement neutrally; assess which side has stronger evidence |
-| Sub-question unanswerable | State in report; suggest alternative angles |
-| Minimum source count not met | Disclose in Knowledge Gaps section; lower and justify confidence on affected conclusions; document which sub-questions lacked sufficient sources |
+## Failure Handling
+
+| Failure | Response |
+|---------|----------|
+| Search provider unavailable | Use provided/local sources where possible; disclose limitation; do not fabricate citations |
+| URL cannot be read | Note failed read; prefer alternative sources; do not cite unread content as if verified |
+| Worker output incomplete | Use `agent://<id>` / `history://<id>` for audit; if still incomplete, lower confidence and disclose gap |
+| Conflicting sources | Present both claims, weight by tier/score, explain confidence |
+| Minimum source count not met | Disclose in Knowledge Gaps; lower and justify confidence on affected conclusions; document which sub-questions lacked sufficient sources |
