@@ -1,0 +1,123 @@
+{
+  "topic": "latest agentic frameworks",
+  "neutralQueries": [
+    "placeholder query one",
+    "placeholder query two"
+  ],
+  "searchResults": [
+    {
+      "query": "latest agentic frameworks landscape 2026",
+      "title": "Mastra workflow agents",
+      "url": "https://example.com/source-1",
+      "snippet": "Mastra workflow orchestration evidence."
+    },
+    {
+      "query": "new AI agent frameworks comparison 2026",
+      "title": "LangGraph orchestration",
+      "url": "https://example.com/source-2",
+      "snippet": "LangGraph state graph evidence."
+    },
+    {
+      "query": "agent orchestration frameworks production readiness 2026",
+      "title": "Pydantic AI typed agents",
+      "url": "https://example.com/source-3",
+      "snippet": "Pydantic AI typed interface evidence."
+    }
+  ],
+  "sourceReads": [
+    {
+      "sourceId": "S1",
+      "url": "https://example.com/source-1",
+      "title": "Mastra workflow agents",
+      "contentSummary": "Mastra appears in evidence for workflows.",
+      "quotedEvidence": [
+        "Mastra supports workflow-style orchestration."
+      ],
+      "readOk": true
+    },
+    {
+      "sourceId": "S2",
+      "url": "https://example.com/source-2",
+      "title": "LangGraph orchestration",
+      "contentSummary": "LangGraph appears in evidence for state graphs.",
+      "quotedEvidence": [
+        "LangGraph exposes graph-based orchestration."
+      ],
+      "readOk": true
+    },
+    {
+      "sourceId": "S3",
+      "url": "https://example.com/source-3",
+      "title": "Pydantic AI typed agents",
+      "contentSummary": "Pydantic AI appears in evidence for typed agents.",
+      "quotedEvidence": [
+        "Pydantic AI emphasizes typed Python agent interfaces."
+      ],
+      "readOk": true
+    }
+  ],
+  "entities": [
+    {
+      "id": "E1",
+      "name": "Mastra",
+      "kind": "framework",
+      "evidenceSourceIds": [
+        "S1"
+      ],
+      "firstSeenQuery": "latest agentic frameworks landscape 2026",
+      "mentionCount": 2,
+      "recencySignal": "2026 workflow coverage"
+    },
+    {
+      "id": "E2",
+      "name": "LangGraph",
+      "kind": "framework",
+      "evidenceSourceIds": [
+        "S2"
+      ],
+      "firstSeenQuery": "new AI agent frameworks comparison 2026",
+      "mentionCount": 2,
+      "recencySignal": "2026 state graph coverage"
+    },
+    {
+      "id": "E3",
+      "name": "Pydantic AI",
+      "kind": "framework",
+      "evidenceSourceIds": [
+        "S3"
+      ],
+      "firstSeenQuery": "agent orchestration frameworks production readiness 2026",
+      "mentionCount": 2,
+      "recencySignal": "2026 typed agent coverage"
+    }
+  ],
+  "dimensions": [
+    {
+      "name": "workflow orchestration",
+      "evidenceSourceIds": [
+        "S1",
+        "S2"
+      ],
+      "explanation": "Evidence highlights explicit orchestration primitives."
+    },
+    {
+      "name": "typed agent interfaces",
+      "evidenceSourceIds": [
+        "S3"
+      ],
+      "explanation": "Evidence highlights typed contracts and validation."
+    },
+    {
+      "name": "production observability",
+      "evidenceSourceIds": [
+        "S1",
+        "S2",
+        "S3"
+      ],
+      "explanation": "Evidence highlights production readiness and observability."
+    }
+  ],
+  "gaps": [
+    "Fixture evidence is synthetic and only validates workflow mechanics."
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "topic": "latest agentic frameworks",
+  "depth": "deep",
+  "format": "full",
+  "markdown": "Workflow: mastra-omp-acp\nDiscovery-first plan: yes\nReview status: passed\n\n# Latest Agentic Frameworks\n\n## Findings\nMastra, LangGraph, and Pydantic AI are the only discovered fixture entities used for subquestion planning [S1] [S6] [S11].\n\n## Areas of Agreement\nThe fixture evidence agrees that workflow orchestration, typed interfaces, and observability are useful comparison dimensions [S16].\n\n## Areas of Disagreement\nThe fixture evidence contains no unresolved framework disagreement and discloses that limitation [S21].\n\n## Source Inventory\n| S1 | Fixture source 1 | https://example.com/source-1 |\n| S2 | Fixture source 2 | https://example.com/source-2 |\n| S3 | Fixture source 3 | https://example.com/source-3 |\n| S4 | Fixture source 4 | https://example.com/source-4 |\n| S5 | Fixture source 5 | https://example.com/source-5 |\n| S6 | Fixture source 6 | https://example.com/source-6 |\n| S7 | Fixture source 7 | https://example.com/source-7 |\n| S8 | Fixture source 8 | https://example.com/source-8 |\n| S9 | Fixture source 9 | https://example.com/source-9 |\n| S10 | Fixture source 10 | https://example.com/source-10 |\n| S11 | Fixture source 11 | https://example.com/source-11 |\n| S12 | Fixture source 12 | https://example.com/source-12 |\n| S13 | Fixture source 13 | https://example.com/source-13 |\n| S14 | Fixture source 14 | https://example.com/source-14 |\n| S15 | Fixture source 15 | https://example.com/source-15 |\n| S16 | Fixture source 16 | https://example.com/source-16 |\n| S17 | Fixture source 17 | https://example.com/source-17 |\n| S18 | Fixture source 18 | https://example.com/source-18 |\n| S19 | Fixture source 19 | https://example.com/source-19 |\n| S20 | Fixture source 20 | https://example.com/source-20 |\n| S21 | Fixture source 21 | https://example.com/source-21 |\n| S22 | Fixture source 22 | https://example.com/source-22 |\n| S23 | Fixture source 23 | https://example.com/source-23 |\n| S24 | Fixture source 24 | https://example.com/source-24 |\n| S25 | Fixture source 25 | https://example.com/source-25 |\n| S26 | Fixture source 26 | https://example.com/source-26 |\n| S27 | Fixture source 27 | https://example.com/source-27 |\n| S28 | Fixture source 28 | https://example.com/source-28 |\n| S29 | Fixture source 29 | https://example.com/source-29 |\n| S30 | Fixture source 30 | https://example.com/source-30 |",
+  "outputPath": "researches/2026-06-24-latest-agentic-frameworks.md",
+  "sourcesConsulted": 30,
+  "sourceMinimumMet": true,
+  "reviewStatus": "passed",
+  "reviewResults": [
+    {
+      "reviewer": "coverage",
+      "passed": true,
+      "findings": [
+        "Fixture coverage passes."
+      ],
+      "requiredActions": [],
+      "targetedQueries": []
+    },
+    {
+      "reviewer": "bias",
+      "passed": true,
+      "findings": [
+        "Fixture bias review passes."
+      ],
+      "requiredActions": [],
+      "targetedQueries": []
+    },
+    {
+      "reviewer": "citation",
+      "passed": true,
+      "findings": [
+        "Fixture citation review passes."
+      ],
+      "requiredActions": [],
+      "targetedQueries": []
+    }
+  ]
+}

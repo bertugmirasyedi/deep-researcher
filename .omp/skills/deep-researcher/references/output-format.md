@@ -4,9 +4,13 @@ Report structure and formatting standards. See parent SKILL.md for workflow summ
 
 ## Full Format (default)
 
-```
+```markdown
+Workflow: mastra-omp-acp
+Discovery-first plan: yes | no
+Review status: passed | passed_with_disclosed_gaps | failed
+
 # Research Report: <topic>
-**Date**: YYYY-MM-DD | **Depth**: <level> | **Sources**: N | **Confidence**: <grade>
+**Date**: YYYY-MM-DD | **Depth**: quick | deep | **Sources**: N | **Confidence**: <grade>
 
 ## Executive Summary
 <2–4 paragraphs. Must stand alone.>
@@ -32,24 +36,36 @@ Confidence: <grade> — <justification>
 
 | ID | Source | Tier | Score | Recency | Sub-Qs |
 |----|--------|------|-------|---------|--------|
-| S1 | ... | A | 4.2 | 2024 | SQ1, SQ3 |
+| S1 | ... | A | 4.2 | 2026 | SQ1, SQ3 |
 
 ## Methodology
-<Depth, queries, tools, evaluation criteria.>
+<Neutral discovery queries, discovered entities/dimensions, review gate results, repair queries, final citation audit, depth, tools, and evaluation criteria.>
 ```
 
 ## Brief Format
 
-Executive Summary + merged Findings (no sub-headers) + Source Inventory. No agreement/disagreement/gap sections.
+Executive Summary + merged Findings + Source Inventory + Methodology summary. No agreement/disagreement/gap sections unless needed for disclosure.
 
 ## Academic Format
 
 Full format extended with:
+
 - Formal abstract (150–250 words)
 - Numbered references `[1]`, `[2]`
-- Inline citations: `(Author, Year)` or `[N]`
-- Appendix: search queries used
+- Inline citations: `(Author, Year)` or `[S1]`
+- Appendix: neutral discovery and refinement queries used
 - Appendix: excluded sources with rationale
+
+## Header Fields
+
+- `Workflow`: canonical deep runner uses `mastra-omp-acp`
+- `Discovery-first plan`: canonical deep runner must be `yes`
+- `Review status`: `passed`, `passed_with_disclosed_gaps`, or `failed`
+- `Depth`: `quick` or `deep`
+
+## Methodology Requirements
+
+Include neutral discovery queries, discovered entities/dimensions, review gate results, repair queries if any, final citation audit result, source-minimum requirement, and actual source count.
 
 ## Citation Format
 
@@ -76,4 +92,5 @@ Full format extended with:
 - [ ] Confidence grades on all conclusions
 - [ ] Conflicts presented neutrally
 - [ ] Gaps explicitly stated
+- [ ] Review gates and final citation audit disclosed
 - [ ] Executive summary stands alone

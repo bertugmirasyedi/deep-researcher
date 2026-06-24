@@ -1,0 +1,29 @@
+[
+  {
+    "reviewer": "coverage",
+    "passed": true,
+    "findings": [
+      "Fixture coverage passes."
+    ],
+    "requiredActions": [],
+    "targetedQueries": []
+  },
+  {
+    "reviewer": "bias",
+    "passed": true,
+    "findings": [
+      "Fixture bias review passes."
+    ],
+    "requiredActions": [],
+    "targetedQueries": []
+  },
+  {
+    "reviewer": "citation",
+    "passed": true,
+    "findings": [
+      "Fixture citation review passes."
+    ],
+    "requiredActions": [],
+    "targetedQueries": []
+  }
+]

@@ -57,6 +57,7 @@ Architectural and design decisions with rationale. Append new decisions to the e
 - **Decision**: Context-and-skills pack.
 - **Rationale**: OMP already provides the agent runtime, tool access, skill system, `task` subagents, URL-capable `read`, `web_search`, and internal artifacts. Building a separate app would duplicate orchestration, tooling, and UI.
 - **Tradeoff**: Requires OMP. Not portable to other agent frameworks without adaptation.
+- **Current status**: Superseded by D014 for canonical `deep` execution. The repo now includes a small Mastra workflow runner while keeping OMP as the model/tool runtime.
 
 ### D007: pi-threads for parallel search, pi-workflow for tracking
 
@@ -113,6 +114,7 @@ Architectural and design decisions with rationale. Append new decisions to the e
 - **Decision**: Option C. Two modes: `quick` (3 sub-Qs, 2 searches, snippets ok, no iteration, min 5, inline single-threaded, no per-run tracking issue) and `deep` (default; 6–8 sub-Qs, 4 searches, **full-source `read` required** on top 4+/sub-Q, **≥1 refinement round required**, min 30, parallel OMP `researcher` task agents).
 - **Rationale**: What makes research "deep" is reading full sources and iterating — not raw search count. Making those two behaviors mandatory for `deep` (and naming the snippet-only path honestly as `quick`) fixes the "standard is just a couple web searches" problem at its root. Default is `deep` because the pack is a *deep* researcher; `quick` is the explicit fast opt-out. Dropping the deep minimum from 200 → 30 closes the unachievable cliff. A `deep` run that skipped reads or iteration must be relabeled `quick` in the report header rather than claiming `deep`.
 - **Tradeoff**: Loses the middle tier's granularity — there is no longer a "medium" effort level. Acceptable: the middle was the muddy, mislabeled tier; two honest modes are a clearer mental model than three with a broken middle and an unreachable top. Updated across SKILL.md, docs/research-workflow.md, ARCHITECTURE.md, README.md, AGENTS.md. Existing research reports under `researches/` that cite the old tier names are left as historical record.
+- **Current status**: Superseded by D014 for canonical `deep` orchestration. The `quick`/`deep` depth model remains current, but canonical `deep` now uses Mastra foreach over OMP ACP instead of OMP task-agent fan-out.
 
 ### D013: OMP task agents supersede Orca + Linear research runs
 
@@ -123,3 +125,21 @@ Architectural and design decisions with rationale. Append new decisions to the e
 - **Rationale**: This removes the manual worker lifecycle and external tracking dependency while preserving the important properties: parallel per-sub-question workers, focused read-only researcher prompts, full-source reads, refinement, structured source scoring, and report archival.
 - **Tradeoff**: Linear no longer provides a durable checklist for in-progress research. Acceptable because OMP task outputs/transcripts and the saved Markdown report are the relevant artifacts for this repo; longer project planning remains outside the research-run skill.
 - **Supersedes**: D009 and D010.
+- **Current status**: Superseded by D014 for canonical `deep` runs. Remains true for fallback/manual OMP task-agent execution.
+
+### D014: Mastra Workflows with OMP ACP for deep research orchestration
+
+- **Date**: 2026-06-24
+- **Context**: Canonical `deep` research needed deterministic workflow control without losing the user's OMP/Codex runtime, OMP auth, OMP built-in tools, and OMP project context.
+- **Decision**:
+  - Use Mastra Workflows as the deterministic control plane for `deep` research.
+  - Use OMP ACP (`omp acp`) for model/tool execution so the user's OMP Codex subscription, OMP auth, OMP built-in tools, OMP `web_search`, and OMP `read` remain the runtime substrate.
+  - Do not strip OMP built-in tools with `--tools` or `--no-tools`; constrain behavior with prompts, read-only ACP workspace, permission policy, and deterministic validation.
+  - ACP returns text for the final agent response in Mastra's ACP integration, so TypeScript parses JSON text and validates it with Zod instead of relying on Mastra native `structuredOutput`.
+  - `deep` no longer plans from model priors; it must run neutral discovery before subquestion planning.
+  - TypeScript owns schemas, stage order, plan validation, foreach concurrency, review gates, repair loop, final citation audit, and archive path.
+  - Search-heavy stages use `openai-codex/gpt-5.5` with `minimal` thinking; planning, synthesis, and review stages use `openai-codex/gpt-5.5` with `high` thinking.
+  - D006 is superseded for canonical `deep` execution because the repo now includes a small runner, not only prompts/docs.
+  - D013 remains true for fallback/manual OMP task-agent execution but is superseded for canonical `deep` runs.
+- **Rationale**: Mastra gives reproducible stateful orchestration, while OMP ACP preserves the user's paid model/tool runtime and existing project context. Zod validation and deterministic audits prevent model-prior planning and citation drift from silently passing.
+- **Tradeoff**: The repo now has a Bun/TypeScript runner and dependencies. Fixture mode covers the workflow graph without live OMP, network, or model credentials.

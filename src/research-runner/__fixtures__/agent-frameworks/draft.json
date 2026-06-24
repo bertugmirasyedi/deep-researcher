@@ -1,0 +1,758 @@
+{
+  "title": "Latest Agentic Frameworks",
+  "markdown": "# Latest Agentic Frameworks\n\n## Findings\nMastra, LangGraph, and Pydantic AI are the discovered fixture entities for this workflow regression test [S1] [S6] [S11].\n\n## Areas of Agreement\nThe discovered frameworks emphasize workflow control, typed contracts, or production readiness [S16].\n\n## Areas of Disagreement\nThe fixture data does not encode substantive disagreements; this gap is disclosed [S21].\n\n## Source Inventory\n| S1 | Fixture source 1 | https://example.com/source-1 |\n| S2 | Fixture source 2 | https://example.com/source-2 |\n| S3 | Fixture source 3 | https://example.com/source-3 |\n| S4 | Fixture source 4 | https://example.com/source-4 |\n| S5 | Fixture source 5 | https://example.com/source-5 |\n| S6 | Fixture source 6 | https://example.com/source-6 |\n| S7 | Fixture source 7 | https://example.com/source-7 |\n| S8 | Fixture source 8 | https://example.com/source-8 |\n| S9 | Fixture source 9 | https://example.com/source-9 |\n| S10 | Fixture source 10 | https://example.com/source-10 |\n| S11 | Fixture source 11 | https://example.com/source-11 |\n| S12 | Fixture source 12 | https://example.com/source-12 |\n| S13 | Fixture source 13 | https://example.com/source-13 |\n| S14 | Fixture source 14 | https://example.com/source-14 |\n| S15 | Fixture source 15 | https://example.com/source-15 |\n| S16 | Fixture source 16 | https://example.com/source-16 |\n| S17 | Fixture source 17 | https://example.com/source-17 |\n| S18 | Fixture source 18 | https://example.com/source-18 |\n| S19 | Fixture source 19 | https://example.com/source-19 |\n| S20 | Fixture source 20 | https://example.com/source-20 |\n| S21 | Fixture source 21 | https://example.com/source-21 |\n| S22 | Fixture source 22 | https://example.com/source-22 |\n| S23 | Fixture source 23 | https://example.com/source-23 |\n| S24 | Fixture source 24 | https://example.com/source-24 |\n| S25 | Fixture source 25 | https://example.com/source-25 |\n| S26 | Fixture source 26 | https://example.com/source-26 |\n| S27 | Fixture source 27 | https://example.com/source-27 |\n| S28 | Fixture source 28 | https://example.com/source-28 |\n| S29 | Fixture source 29 | https://example.com/source-29 |\n| S30 | Fixture source 30 | https://example.com/source-30 |",
+  "sources": [
+    {
+      "id": "S1",
+      "url": "https://example.com/source-1",
+      "title": "SQ1 fixture source 1",
+      "domain": "example.com",
+      "publicationType": "technical documentation",
+      "tier": "A",
+      "score": 4.2,
+      "recency": "current",
+      "relevance": "direct",
+      "keyClaims": [
+        "Evidence claim from source S1."
+      ],
+      "readStatus": "read",
+      "citedByClaimIds": [
+        "C1"
+      ]
+    },
+    {
+      "id": "S2",
+      "url": "https://example.com/source-2",
+      "title": "SQ1 fixture source 2",
+      "domain": "example.com",
+      "publicationType": "technical documentation",
+      "tier": "B",
+      "score": 4.2,
+      "recency": "current",
+      "relevance": "direct",
+      "keyClaims": [
+        "Evidence claim from source S2."
+      ],
+      "readStatus": "read",
+      "citedByClaimIds": [
+        "C2"
+      ]
+    },
+    {
+      "id": "S3",
+      "url": "https://example.com/source-3",
+      "title": "SQ1 fixture source 3",
+      "domain": "example.com",
+      "publicationType": "technical documentation",
+      "tier": "A",
+      "score": 4.2,
+      "recency": "current",
+      "relevance": "direct",
+      "keyClaims": [
+        "Evidence claim from source S3."
+      ],
+      "readStatus": "read",
+      "citedByClaimIds": [
+        "C3"
+      ]
+    },
+    {
+      "id": "S4",
+      "url": "https://example.com/source-4",
+      "title": "SQ1 fixture source 4",
+      "domain": "example.com",
+      "publicationType": "technical documentation",
+      "tier": "B",
+      "score": 4.2,
+      "recency": "current",
+      "relevance": "direct",
+      "keyClaims": [
+        "Evidence claim from source S4."
+      ],
+      "readStatus": "read",
+      "citedByClaimIds": [
+        "C4"
+      ]
+    },
+    {
+      "id": "S5",
+      "url": "https://example.com/source-5",
+      "title": "SQ1 fixture source 5",
+      "domain": "example.com",
+      "publicationType": "technical documentation",
+      "tier": "A",
+      "score": 4.2,
+      "recency": "current",
+      "relevance": "direct",
+      "keyClaims": [
+        "Evidence claim from source S5."
+      ],
+      "readStatus": "read",
+      "citedByClaimIds": [
+        "C5"
+      ]
+    },
+    {
+      "id": "S6",
+      "url": "https://example.com/source-6",
+      "title": "SQ2 fixture source 6",
+      "domain": "example.com",
+      "publicationType": "technical documentation",
+      "tier": "B",
+      "score": 4.2,
+      "recency": "current",
+      "relevance": "direct",
+      "keyClaims": [
+        "Evidence claim from source S6."
+      ],
+      "readStatus": "read",
+      "citedByClaimIds": [
+        "C6"
+      ]
+    },
+    {
+      "id": "S7",
+      "url": "https://example.com/source-7",
+      "title": "SQ2 fixture source 7",
+      "domain": "example.com",
+      "publicationType": "technical documentation",
+      "tier": "A",
+      "score": 4.2,
+      "recency": "current",
+      "relevance": "direct",
+      "keyClaims": [
+        "Evidence claim from source S7."
+      ],
+      "readStatus": "read",
+      "citedByClaimIds": [
+        "C7"
+      ]
+    },
+    {
+      "id": "S8",
+      "url": "https://example.com/source-8",
+      "title": "SQ2 fixture source 8",
+      "domain": "example.com",
+      "publicationType": "technical documentation",
+      "tier": "B",
+      "score": 4.2,
+      "recency": "current",
+      "relevance": "direct",
+      "keyClaims": [
+        "Evidence claim from source S8."
+      ],
+      "readStatus": "read",
+      "citedByClaimIds": [
+        "C8"
+      ]
+    },
+    {
+      "id": "S9",
+      "url": "https://example.com/source-9",
+      "title": "SQ2 fixture source 9",
+      "domain": "example.com",
+      "publicationType": "technical documentation",
+      "tier": "A",
+      "score": 4.2,
+      "recency": "current",
+      "relevance": "direct",
+      "keyClaims": [
+        "Evidence claim from source S9."
+      ],
+      "readStatus": "read",
+      "citedByClaimIds": [
+        "C9"
+      ]
+    },
+    {
+      "id": "S10",
+      "url": "https://example.com/source-10",
+      "title": "SQ2 fixture source 10",
+      "domain": "example.com",
+      "publicationType": "technical documentation",
+      "tier": "B",
+      "score": 4.2,
+      "recency": "current",
+      "relevance": "direct",
+      "keyClaims": [
+        "Evidence claim from source S10."
+      ],
+      "readStatus": "read",
+      "citedByClaimIds": [
+        "C10"
+      ]
+    },
+    {
+      "id": "S11",
+      "url": "https://example.com/source-11",
+      "title": "SQ3 fixture source 11",
+      "domain": "example.com",
+      "publicationType": "technical documentation",
+      "tier": "A",
+      "score": 4.2,
+      "recency": "current",
+      "relevance": "direct",
+      "keyClaims": [
+        "Evidence claim from source S11."
+      ],
+      "readStatus": "read",
+      "citedByClaimIds": [
+        "C11"
+      ]
+    },
+    {
+      "id": "S12",
+      "url": "https://example.com/source-12",
+      "title": "SQ3 fixture source 12",
+      "domain": "example.com",
+      "publicationType": "technical documentation",
+      "tier": "B",
+      "score": 4.2,
+      "recency": "current",
+      "relevance": "direct",
+      "keyClaims": [
+        "Evidence claim from source S12."
+      ],
+      "readStatus": "read",
+      "citedByClaimIds": [
+        "C12"
+      ]
+    },
+    {
+      "id": "S13",
+      "url": "https://example.com/source-13",
+      "title": "SQ3 fixture source 13",
+      "domain": "example.com",
+      "publicationType": "technical documentation",
+      "tier": "A",
+      "score": 4.2,
+      "recency": "current",
+      "relevance": "direct",
+      "keyClaims": [
+        "Evidence claim from source S13."
+      ],
+      "readStatus": "read",
+      "citedByClaimIds": [
+        "C13"
+      ]
+    },
+    {
+      "id": "S14",
+      "url": "https://example.com/source-14",
+      "title": "SQ3 fixture source 14",
+      "domain": "example.com",
+      "publicationType": "technical documentation",
+      "tier": "B",
+      "score": 4.2,
+      "recency": "current",
+      "relevance": "direct",
+      "keyClaims": [
+        "Evidence claim from source S14."
+      ],
+      "readStatus": "read",
+      "citedByClaimIds": [
+        "C14"
+      ]
+    },
+    {
+      "id": "S15",
+      "url": "https://example.com/source-15",
+      "title": "SQ3 fixture source 15",
+      "domain": "example.com",
+      "publicationType": "technical documentation",
+      "tier": "A",
+      "score": 4.2,
+      "recency": "current",
+      "relevance": "direct",
+      "keyClaims": [
+        "Evidence claim from source S15."
+      ],
+      "readStatus": "read",
+      "citedByClaimIds": [
+        "C15"
+      ]
+    },
+    {
+      "id": "S16",
+      "url": "https://example.com/source-16",
+      "title": "SQ4 fixture source 16",
+      "domain": "example.com",
+      "publicationType": "technical documentation",
+      "tier": "B",
+      "score": 4.2,
+      "recency": "current",
+      "relevance": "direct",
+      "keyClaims": [
+        "Evidence claim from source S16."
+      ],
+      "readStatus": "read",
+      "citedByClaimIds": [
+        "C16"
+      ]
+    },
+    {
+      "id": "S17",
+      "url": "https://example.com/source-17",
+      "title": "SQ4 fixture source 17",
+      "domain": "example.com",
+      "publicationType": "technical documentation",
+      "tier": "A",
+      "score": 4.2,
+      "recency": "current",
+      "relevance": "direct",
+      "keyClaims": [
+        "Evidence claim from source S17."
+      ],
+      "readStatus": "read",
+      "citedByClaimIds": [
+        "C17"
+      ]
+    },
+    {
+      "id": "S18",
+      "url": "https://example.com/source-18",
+      "title": "SQ4 fixture source 18",
+      "domain": "example.com",
+      "publicationType": "technical documentation",
+      "tier": "B",
+      "score": 4.2,
+      "recency": "current",
+      "relevance": "direct",
+      "keyClaims": [
+        "Evidence claim from source S18."
+      ],
+      "readStatus": "read",
+      "citedByClaimIds": [
+        "C18"
+      ]
+    },
+    {
+      "id": "S19",
+      "url": "https://example.com/source-19",
+      "title": "SQ4 fixture source 19",
+      "domain": "example.com",
+      "publicationType": "technical documentation",
+      "tier": "A",
+      "score": 4.2,
+      "recency": "current",
+      "relevance": "direct",
+      "keyClaims": [
+        "Evidence claim from source S19."
+      ],
+      "readStatus": "read",
+      "citedByClaimIds": [
+        "C19"
+      ]
+    },
+    {
+      "id": "S20",
+      "url": "https://example.com/source-20",
+      "title": "SQ4 fixture source 20",
+      "domain": "example.com",
+      "publicationType": "technical documentation",
+      "tier": "B",
+      "score": 4.2,
+      "recency": "current",
+      "relevance": "direct",
+      "keyClaims": [
+        "Evidence claim from source S20."
+      ],
+      "readStatus": "read",
+      "citedByClaimIds": [
+        "C20"
+      ]
+    },
+    {
+      "id": "S21",
+      "url": "https://example.com/source-21",
+      "title": "SQ5 fixture source 21",
+      "domain": "example.com",
+      "publicationType": "technical documentation",
+      "tier": "A",
+      "score": 4.2,
+      "recency": "current",
+      "relevance": "direct",
+      "keyClaims": [
+        "Evidence claim from source S21."
+      ],
+      "readStatus": "read",
+      "citedByClaimIds": [
+        "C21"
+      ]
+    },
+    {
+      "id": "S22",
+      "url": "https://example.com/source-22",
+      "title": "SQ5 fixture source 22",
+      "domain": "example.com",
+      "publicationType": "technical documentation",
+      "tier": "B",
+      "score": 4.2,
+      "recency": "current",
+      "relevance": "direct",
+      "keyClaims": [
+        "Evidence claim from source S22."
+      ],
+      "readStatus": "read",
+      "citedByClaimIds": [
+        "C22"
+      ]
+    },
+    {
+      "id": "S23",
+      "url": "https://example.com/source-23",
+      "title": "SQ5 fixture source 23",
+      "domain": "example.com",
+      "publicationType": "technical documentation",
+      "tier": "A",
+      "score": 4.2,
+      "recency": "current",
+      "relevance": "direct",
+      "keyClaims": [
+        "Evidence claim from source S23."
+      ],
+      "readStatus": "read",
+      "citedByClaimIds": [
+        "C23"
+      ]
+    },
+    {
+      "id": "S24",
+      "url": "https://example.com/source-24",
+      "title": "SQ5 fixture source 24",
+      "domain": "example.com",
+      "publicationType": "technical documentation",
+      "tier": "B",
+      "score": 4.2,
+      "recency": "current",
+      "relevance": "direct",
+      "keyClaims": [
+        "Evidence claim from source S24."
+      ],
+      "readStatus": "read",
+      "citedByClaimIds": [
+        "C24"
+      ]
+    },
+    {
+      "id": "S25",
+      "url": "https://example.com/source-25",
+      "title": "SQ5 fixture source 25",
+      "domain": "example.com",
+      "publicationType": "technical documentation",
+      "tier": "A",
+      "score": 4.2,
+      "recency": "current",
+      "relevance": "direct",
+      "keyClaims": [
+        "Evidence claim from source S25."
+      ],
+      "readStatus": "read",
+      "citedByClaimIds": [
+        "C25"
+      ]
+    },
+    {
+      "id": "S26",
+      "url": "https://example.com/source-26",
+      "title": "SQ6 fixture source 26",
+      "domain": "example.com",
+      "publicationType": "technical documentation",
+      "tier": "B",
+      "score": 4.2,
+      "recency": "current",
+      "relevance": "direct",
+      "keyClaims": [
+        "Evidence claim from source S26."
+      ],
+      "readStatus": "read",
+      "citedByClaimIds": [
+        "C26"
+      ]
+    },
+    {
+      "id": "S27",
+      "url": "https://example.com/source-27",
+      "title": "SQ6 fixture source 27",
+      "domain": "example.com",
+      "publicationType": "technical documentation",
+      "tier": "A",
+      "score": 4.2,
+      "recency": "current",
+      "relevance": "direct",
+      "keyClaims": [
+        "Evidence claim from source S27."
+      ],
+      "readStatus": "read",
+      "citedByClaimIds": [
+        "C27"
+      ]
+    },
+    {
+      "id": "S28",
+      "url": "https://example.com/source-28",
+      "title": "SQ6 fixture source 28",
+      "domain": "example.com",
+      "publicationType": "technical documentation",
+      "tier": "B",
+      "score": 4.2,
+      "recency": "current",
+      "relevance": "direct",
+      "keyClaims": [
+        "Evidence claim from source S28."
+      ],
+      "readStatus": "read",
+      "citedByClaimIds": [
+        "C28"
+      ]
+    },
+    {
+      "id": "S29",
+      "url": "https://example.com/source-29",
+      "title": "SQ6 fixture source 29",
+      "domain": "example.com",
+      "publicationType": "technical documentation",
+      "tier": "A",
+      "score": 4.2,
+      "recency": "current",
+      "relevance": "direct",
+      "keyClaims": [
+        "Evidence claim from source S29."
+      ],
+      "readStatus": "read",
+      "citedByClaimIds": [
+        "C29"
+      ]
+    },
+    {
+      "id": "S30",
+      "url": "https://example.com/source-30",
+      "title": "SQ6 fixture source 30",
+      "domain": "example.com",
+      "publicationType": "technical documentation",
+      "tier": "B",
+      "score": 4.2,
+      "recency": "current",
+      "relevance": "direct",
+      "keyClaims": [
+        "Evidence claim from source S30."
+      ],
+      "readStatus": "read",
+      "citedByClaimIds": [
+        "C30"
+      ]
+    }
+  ],
+  "claimMap": [
+    {
+      "claimId": "C1",
+      "claimText": "Fixture claim 1 is supported.",
+      "sourceIds": [
+        "S1"
+      ]
+    },
+    {
+      "claimId": "C2",
+      "claimText": "Fixture claim 2 is supported.",
+      "sourceIds": [
+        "S2"
+      ]
+    },
+    {
+      "claimId": "C3",
+      "claimText": "Fixture claim 3 is supported.",
+      "sourceIds": [
+        "S3"
+      ]
+    },
+    {
+      "claimId": "C4",
+      "claimText": "Fixture claim 4 is supported.",
+      "sourceIds": [
+        "S4"
+      ]
+    },
+    {
+      "claimId": "C5",
+      "claimText": "Fixture claim 5 is supported.",
+      "sourceIds": [
+        "S5"
+      ]
+    },
+    {
+      "claimId": "C6",
+      "claimText": "Fixture claim 6 is supported.",
+      "sourceIds": [
+        "S6"
+      ]
+    },
+    {
+      "claimId": "C7",
+      "claimText": "Fixture claim 7 is supported.",
+      "sourceIds": [
+        "S7"
+      ]
+    },
+    {
+      "claimId": "C8",
+      "claimText": "Fixture claim 8 is supported.",
+      "sourceIds": [
+        "S8"
+      ]
+    },
+    {
+      "claimId": "C9",
+      "claimText": "Fixture claim 9 is supported.",
+      "sourceIds": [
+        "S9"
+      ]
+    },
+    {
+      "claimId": "C10",
+      "claimText": "Fixture claim 10 is supported.",
+      "sourceIds": [
+        "S10"
+      ]
+    },
+    {
+      "claimId": "C11",
+      "claimText": "Fixture claim 11 is supported.",
+      "sourceIds": [
+        "S11"
+      ]
+    },
+    {
+      "claimId": "C12",
+      "claimText": "Fixture claim 12 is supported.",
+      "sourceIds": [
+        "S12"
+      ]
+    },
+    {
+      "claimId": "C13",
+      "claimText": "Fixture claim 13 is supported.",
+      "sourceIds": [
+        "S13"
+      ]
+    },
+    {
+      "claimId": "C14",
+      "claimText": "Fixture claim 14 is supported.",
+      "sourceIds": [
+        "S14"
+      ]
+    },
+    {
+      "claimId": "C15",
+      "claimText": "Fixture claim 15 is supported.",
+      "sourceIds": [
+        "S15"
+      ]
+    },
+    {
+      "claimId": "C16",
+      "claimText": "Fixture claim 16 is supported.",
+      "sourceIds": [
+        "S16"
+      ]
+    },
+    {
+      "claimId": "C17",
+      "claimText": "Fixture claim 17 is supported.",
+      "sourceIds": [
+        "S17"
+      ]
+    },
+    {
+      "claimId": "C18",
+      "claimText": "Fixture claim 18 is supported.",
+      "sourceIds": [
+        "S18"
+      ]
+    },
+    {
+      "claimId": "C19",
+      "claimText": "Fixture claim 19 is supported.",
+      "sourceIds": [
+        "S19"
+      ]
+    },
+    {
+      "claimId": "C20",
+      "claimText": "Fixture claim 20 is supported.",
+      "sourceIds": [
+        "S20"
+      ]
+    },
+    {
+      "claimId": "C21",
+      "claimText": "Fixture claim 21 is supported.",
+      "sourceIds": [
+        "S21"
+      ]
+    },
+    {
+      "claimId": "C22",
+      "claimText": "Fixture claim 22 is supported.",
+      "sourceIds": [
+        "S22"
+      ]
+    },
+    {
+      "claimId": "C23",
+      "claimText": "Fixture claim 23 is supported.",
+      "sourceIds": [
+        "S23"
+      ]
+    },
+    {
+      "claimId": "C24",
+      "claimText": "Fixture claim 24 is supported.",
+      "sourceIds": [
+        "S24"
+      ]
+    },
+    {
+      "claimId": "C25",
+      "claimText": "Fixture claim 25 is supported.",
+      "sourceIds": [
+        "S25"
+      ]
+    },
+    {
+      "claimId": "C26",
+      "claimText": "Fixture claim 26 is supported.",
+      "sourceIds": [
+        "S26"
+      ]
+    },
+    {
+      "claimId": "C27",
+      "claimText": "Fixture claim 27 is supported.",
+      "sourceIds": [
+        "S27"
+      ]
+    },
+    {
+      "claimId": "C28",
+      "claimText": "Fixture claim 28 is supported.",
+      "sourceIds": [
+        "S28"
+      ]
+    },
+    {
+      "claimId": "C29",
+      "claimText": "Fixture claim 29 is supported.",
+      "sourceIds": [
+        "S29"
+      ]
+    },
+    {
+      "claimId": "C30",
+      "claimText": "Fixture claim 30 is supported.",
+      "sourceIds": [
+        "S30"
+      ]
+    }
+  ]
+}

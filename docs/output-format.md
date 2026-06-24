@@ -7,10 +7,14 @@ Report structure, citation format, and confidence grading for Deep Researcher ou
 ### Full Format (default)
 
 ```markdown
+Workflow: mastra-omp-acp
+Discovery-first plan: yes | no
+Review status: passed | passed_with_disclosed_gaps | failed
+
 # Research Report: <topic>
 
 **Date**: YYYY-MM-DD
-**Depth**: shallow | standard | deep
+**Depth**: quick | deep
 **Sources consulted**: N
 **Source minimum met**: yes | no (required: X, found: Y)
 **Overall confidence**: high | medium | low
@@ -44,35 +48,51 @@ Report structure, citation format, and confidence grading for Deep Researcher ou
 
 <What this research could not determine. Recommend follow-up research angles.>
 
-<!-- If source minimum was not met, this section MUST include a statement like:
-"The requested depth (standard) requires a minimum of 10 sources, but only 7 were found
-after exhaustive searching. Conclusions for SQ3 and SQ5 have reduced confidence as a result."
--->
-
 ## Source Inventory
 
 | ID | Source | Tier | Credibility | Recency | Sub-Qs addressed |
 |----|--------|------|-------------|---------|-------------------|
-| S1 | [Author. "Title." Publication. Date.](URL) | A | 4.2 | 2024 | SQ1, SQ3 |
+| S1 | [Author. "Title." Publication. Date.](URL) | A | 4.2 | 2026 | SQ1, SQ3 |
 | S2 | ... | | | | |
 
 ## Methodology
 
-<Research depth, number of queries per sub-question, search tools used, evaluation criteria applied.>
+<Neutral discovery queries, discovered entities/dimensions, research depth, review gate results, repair queries, final citation audit, search tools used, and evaluation criteria applied.>
 ```
 
 ### Brief Format
 
-Trimmed to: Executive Summary + Findings (no sub-question headers, just paragraph answers) + Source Inventory.
+Trimmed to: Executive Summary + Findings + Source Inventory + Methodology summary. Agreement/disagreement/gap sections may be merged, but factual paragraphs still need citations.
 
 ### Academic Format
 
 Extended Full format with:
+
 - Formal abstract (150–250 words)
 - Numbered references `[1]`, `[2]`, etc.
-- Inline citations: `(Author, Year)` or `[1]`
-- Appendix with search queries used
+- Inline citations: `(Author, Year)` or `[S1]`
+- Appendix with neutral discovery queries and refinement queries
 - Appendix with excluded sources and rationale
+
+## Required Header Fields
+
+| Field | Values | Requirement |
+|---|---|---|
+| `Workflow` | `mastra-omp-acp` or fallback identifier | Canonical deep runner uses `mastra-omp-acp` |
+| `Discovery-first plan` | `yes` or `no` | Canonical deep runner must be `yes` |
+| `Review status` | `passed`, `passed_with_disclosed_gaps`, `failed` | Final deterministic status |
+| `Depth` | `quick`, `deep` | No other depth labels are current |
+
+## Methodology Requirements
+
+The Methodology section must include:
+
+- Neutral discovery queries used before planning
+- Discovered entities and dimensions that seeded the plan
+- Review gate results for coverage, bias, and citation audit
+- Repair queries and repair outcome, if any
+- Final deterministic citation audit result
+- Source-minimum requirement and actual consulted source count
 
 ## Citation Format
 
@@ -83,23 +103,21 @@ Extended Full format with:
 
 ### Source Inventory Entry
 
-```
+```text
 [Author(s)]. "Title." *Publication*. Date. URL. [Tier: A | Credibility: 4.2]
 ```
 
 For sources without clear authors:
 
-```
+```text
 "Title." *Publication*. Date. URL. [Tier: B | Credibility: 3.8]
 ```
 
 ### In-text Attribution
 
-When citing a specific claim:
-
 ```markdown
-RISC-V adoption in embedded systems grew 40% year-over-year [S3].
-This is contested by West (2024) who argues the figure is inflated [S7].
+RISC-V adoption in embedded systems grew in cited market datasets [S3].
+This is contested by West (2026), who argues the figure is inflated [S7].
 ```
 
 ## Confidence Grades
@@ -123,7 +141,7 @@ This is contested by West (2024) who argues the figure is inflated [S7].
 - Italic for publication names
 - Code blocks for data, statistics, or technical specifications
 - Tables for comparative data
-- Blockquotes for direct source quotes (with attribution)
+- Blockquotes for direct source quotes with attribution
 
 ## Report Archival
 
@@ -145,4 +163,5 @@ Before delivering a report, verify:
 - [ ] Knowledge gaps are explicitly stated
 - [ ] Executive summary can stand alone
 - [ ] Source minimum for the requested depth is met, OR shortfall is disclosed in Knowledge Gaps with confidence adjustments
+- [ ] Review gate results and final citation audit are disclosed
 - [ ] Report saved to `researches/YYYY-MM-DD-<topic-slug>.md`

@@ -13,6 +13,12 @@ Thumbs.db
 # Node.js
 node_modules/
 
+# Mastra local build and trace storage
+.mastra/
+src/mastra/public/
+*.db
+*.db-*
+
 # pi sessions
 .pi/sessions/
 

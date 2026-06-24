@@ -1,0 +1,620 @@
+[
+  {
+    "subQuestionId": "SQ1",
+    "sources": [
+      {
+        "id": "S1",
+        "url": "https://example.com/source-1",
+        "title": "SQ1 fixture source 1",
+        "domain": "example.com",
+        "publicationType": "technical documentation",
+        "tier": "A",
+        "score": 4.2,
+        "recency": "current",
+        "relevance": "direct",
+        "keyClaims": [
+          "Evidence claim from source S1."
+        ],
+        "readStatus": "read",
+        "citedByClaimIds": [
+          "C1"
+        ]
+      },
+      {
+        "id": "S2",
+        "url": "https://example.com/source-2",
+        "title": "SQ1 fixture source 2",
+        "domain": "example.com",
+        "publicationType": "technical documentation",
+        "tier": "B",
+        "score": 4.2,
+        "recency": "current",
+        "relevance": "direct",
+        "keyClaims": [
+          "Evidence claim from source S2."
+        ],
+        "readStatus": "read",
+        "citedByClaimIds": [
+          "C2"
+        ]
+      },
+      {
+        "id": "S3",
+        "url": "https://example.com/source-3",
+        "title": "SQ1 fixture source 3",
+        "domain": "example.com",
+        "publicationType": "technical documentation",
+        "tier": "A",
+        "score": 4.2,
+        "recency": "current",
+        "relevance": "direct",
+        "keyClaims": [
+          "Evidence claim from source S3."
+        ],
+        "readStatus": "read",
+        "citedByClaimIds": [
+          "C3"
+        ]
+      },
+      {
+        "id": "S4",
+        "url": "https://example.com/source-4",
+        "title": "SQ1 fixture source 4",
+        "domain": "example.com",
+        "publicationType": "technical documentation",
+        "tier": "B",
+        "score": 4.2,
+        "recency": "current",
+        "relevance": "direct",
+        "keyClaims": [
+          "Evidence claim from source S4."
+        ],
+        "readStatus": "read",
+        "citedByClaimIds": [
+          "C4"
+        ]
+      },
+      {
+        "id": "S5",
+        "url": "https://example.com/source-5",
+        "title": "SQ1 fixture source 5",
+        "domain": "example.com",
+        "publicationType": "technical documentation",
+        "tier": "A",
+        "score": 4.2,
+        "recency": "current",
+        "relevance": "direct",
+        "keyClaims": [
+          "Evidence claim from source S5."
+        ],
+        "readStatus": "read",
+        "citedByClaimIds": [
+          "C5"
+        ]
+      }
+    ],
+    "synthesis": "SQ1 synthesis cites the fixture evidence [S1] [S2].",
+    "confidence": "high",
+    "conflicts": [],
+    "gaps": [],
+    "refinementQueries": [
+      "Mastra workflow orchestration 2026 refinement"
+    ],
+    "sourceCount": 5
+  },
+  {
+    "subQuestionId": "SQ2",
+    "sources": [
+      {
+        "id": "S6",
+        "url": "https://example.com/source-6",
+        "title": "SQ2 fixture source 6",
+        "domain": "example.com",
+        "publicationType": "technical documentation",
+        "tier": "B",
+        "score": 4.2,
+        "recency": "current",
+        "relevance": "direct",
+        "keyClaims": [
+          "Evidence claim from source S6."
+        ],
+        "readStatus": "read",
+        "citedByClaimIds": [
+          "C6"
+        ]
+      },
+      {
+        "id": "S7",
+        "url": "https://example.com/source-7",
+        "title": "SQ2 fixture source 7",
+        "domain": "example.com",
+        "publicationType": "technical documentation",
+        "tier": "A",
+        "score": 4.2,
+        "recency": "current",
+        "relevance": "direct",
+        "keyClaims": [
+          "Evidence claim from source S7."
+        ],
+        "readStatus": "read",
+        "citedByClaimIds": [
+          "C7"
+        ]
+      },
+      {
+        "id": "S8",
+        "url": "https://example.com/source-8",
+        "title": "SQ2 fixture source 8",
+        "domain": "example.com",
+        "publicationType": "technical documentation",
+        "tier": "B",
+        "score": 4.2,
+        "recency": "current",
+        "relevance": "direct",
+        "keyClaims": [
+          "Evidence claim from source S8."
+        ],
+        "readStatus": "read",
+        "citedByClaimIds": [
+          "C8"
+        ]
+      },
+      {
+        "id": "S9",
+        "url": "https://example.com/source-9",
+        "title": "SQ2 fixture source 9",
+        "domain": "example.com",
+        "publicationType": "technical documentation",
+        "tier": "A",
+        "score": 4.2,
+        "recency": "current",
+        "relevance": "direct",
+        "keyClaims": [
+          "Evidence claim from source S9."
+        ],
+        "readStatus": "read",
+        "citedByClaimIds": [
+          "C9"
+        ]
+      },
+      {
+        "id": "S10",
+        "url": "https://example.com/source-10",
+        "title": "SQ2 fixture source 10",
+        "domain": "example.com",
+        "publicationType": "technical documentation",
+        "tier": "B",
+        "score": 4.2,
+        "recency": "current",
+        "relevance": "direct",
+        "keyClaims": [
+          "Evidence claim from source S10."
+        ],
+        "readStatus": "read",
+        "citedByClaimIds": [
+          "C10"
+        ]
+      }
+    ],
+    "synthesis": "SQ2 synthesis cites the fixture evidence [S6] [S7].",
+    "confidence": "high",
+    "conflicts": [],
+    "gaps": [],
+    "refinementQueries": [
+      "LangGraph state graph agents 2026 refinement"
+    ],
+    "sourceCount": 5
+  },
+  {
+    "subQuestionId": "SQ3",
+    "sources": [
+      {
+        "id": "S11",
+        "url": "https://example.com/source-11",
+        "title": "SQ3 fixture source 11",
+        "domain": "example.com",
+        "publicationType": "technical documentation",
+        "tier": "A",
+        "score": 4.2,
+        "recency": "current",
+        "relevance": "direct",
+        "keyClaims": [
+          "Evidence claim from source S11."
+        ],
+        "readStatus": "read",
+        "citedByClaimIds": [
+          "C11"
+        ]
+      },
+      {
+        "id": "S12",
+        "url": "https://example.com/source-12",
+        "title": "SQ3 fixture source 12",
+        "domain": "example.com",
+        "publicationType": "technical documentation",
+        "tier": "B",
+        "score": 4.2,
+        "recency": "current",
+        "relevance": "direct",
+        "keyClaims": [
+          "Evidence claim from source S12."
+        ],
+        "readStatus": "read",
+        "citedByClaimIds": [
+          "C12"
+        ]
+      },
+      {
+        "id": "S13",
+        "url": "https://example.com/source-13",
+        "title": "SQ3 fixture source 13",
+        "domain": "example.com",
+        "publicationType": "technical documentation",
+        "tier": "A",
+        "score": 4.2,
+        "recency": "current",
+        "relevance": "direct",
+        "keyClaims": [
+          "Evidence claim from source S13."
+        ],
+        "readStatus": "read",
+        "citedByClaimIds": [
+          "C13"
+        ]
+      },
+      {
+        "id": "S14",
+        "url": "https://example.com/source-14",
+        "title": "SQ3 fixture source 14",
+        "domain": "example.com",
+        "publicationType": "technical documentation",
+        "tier": "B",
+        "score": 4.2,
+        "recency": "current",
+        "relevance": "direct",
+        "keyClaims": [
+          "Evidence claim from source S14."
+        ],
+        "readStatus": "read",
+        "citedByClaimIds": [
+          "C14"
+        ]
+      },
+      {
+        "id": "S15",
+        "url": "https://example.com/source-15",
+        "title": "SQ3 fixture source 15",
+        "domain": "example.com",
+        "publicationType": "technical documentation",
+        "tier": "A",
+        "score": 4.2,
+        "recency": "current",
+        "relevance": "direct",
+        "keyClaims": [
+          "Evidence claim from source S15."
+        ],
+        "readStatus": "read",
+        "citedByClaimIds": [
+          "C15"
+        ]
+      }
+    ],
+    "synthesis": "SQ3 synthesis cites the fixture evidence [S11] [S12].",
+    "confidence": "high",
+    "conflicts": [],
+    "gaps": [],
+    "refinementQueries": [
+      "Pydantic AI typed agents 2026 refinement"
+    ],
+    "sourceCount": 5
+  },
+  {
+    "subQuestionId": "SQ4",
+    "sources": [
+      {
+        "id": "S16",
+        "url": "https://example.com/source-16",
+        "title": "SQ4 fixture source 16",
+        "domain": "example.com",
+        "publicationType": "technical documentation",
+        "tier": "B",
+        "score": 4.2,
+        "recency": "current",
+        "relevance": "direct",
+        "keyClaims": [
+          "Evidence claim from source S16."
+        ],
+        "readStatus": "read",
+        "citedByClaimIds": [
+          "C16"
+        ]
+      },
+      {
+        "id": "S17",
+        "url": "https://example.com/source-17",
+        "title": "SQ4 fixture source 17",
+        "domain": "example.com",
+        "publicationType": "technical documentation",
+        "tier": "A",
+        "score": 4.2,
+        "recency": "current",
+        "relevance": "direct",
+        "keyClaims": [
+          "Evidence claim from source S17."
+        ],
+        "readStatus": "read",
+        "citedByClaimIds": [
+          "C17"
+        ]
+      },
+      {
+        "id": "S18",
+        "url": "https://example.com/source-18",
+        "title": "SQ4 fixture source 18",
+        "domain": "example.com",
+        "publicationType": "technical documentation",
+        "tier": "B",
+        "score": 4.2,
+        "recency": "current",
+        "relevance": "direct",
+        "keyClaims": [
+          "Evidence claim from source S18."
+        ],
+        "readStatus": "read",
+        "citedByClaimIds": [
+          "C18"
+        ]
+      },
+      {
+        "id": "S19",
+        "url": "https://example.com/source-19",
+        "title": "SQ4 fixture source 19",
+        "domain": "example.com",
+        "publicationType": "technical documentation",
+        "tier": "A",
+        "score": 4.2,
+        "recency": "current",
+        "relevance": "direct",
+        "keyClaims": [
+          "Evidence claim from source S19."
+        ],
+        "readStatus": "read",
+        "citedByClaimIds": [
+          "C19"
+        ]
+      },
+      {
+        "id": "S20",
+        "url": "https://example.com/source-20",
+        "title": "SQ4 fixture source 20",
+        "domain": "example.com",
+        "publicationType": "technical documentation",
+        "tier": "B",
+        "score": 4.2,
+        "recency": "current",
+        "relevance": "direct",
+        "keyClaims": [
+          "Evidence claim from source S20."
+        ],
+        "readStatus": "read",
+        "citedByClaimIds": [
+          "C20"
+        ]
+      }
+    ],
+    "synthesis": "SQ4 synthesis cites the fixture evidence [S16] [S17].",
+    "confidence": "high",
+    "conflicts": [],
+    "gaps": [],
+    "refinementQueries": [
+      "AI agent workflow orchestration frameworks 2026 refinement"
+    ],
+    "sourceCount": 5
+  },
+  {
+    "subQuestionId": "SQ5",
+    "sources": [
+      {
+        "id": "S21",
+        "url": "https://example.com/source-21",
+        "title": "SQ5 fixture source 21",
+        "domain": "example.com",
+        "publicationType": "technical documentation",
+        "tier": "A",
+        "score": 4.2,
+        "recency": "current",
+        "relevance": "direct",
+        "keyClaims": [
+          "Evidence claim from source S21."
+        ],
+        "readStatus": "read",
+        "citedByClaimIds": [
+          "C21"
+        ]
+      },
+      {
+        "id": "S22",
+        "url": "https://example.com/source-22",
+        "title": "SQ5 fixture source 22",
+        "domain": "example.com",
+        "publicationType": "technical documentation",
+        "tier": "B",
+        "score": 4.2,
+        "recency": "current",
+        "relevance": "direct",
+        "keyClaims": [
+          "Evidence claim from source S22."
+        ],
+        "readStatus": "read",
+        "citedByClaimIds": [
+          "C22"
+        ]
+      },
+      {
+        "id": "S23",
+        "url": "https://example.com/source-23",
+        "title": "SQ5 fixture source 23",
+        "domain": "example.com",
+        "publicationType": "technical documentation",
+        "tier": "A",
+        "score": 4.2,
+        "recency": "current",
+        "relevance": "direct",
+        "keyClaims": [
+          "Evidence claim from source S23."
+        ],
+        "readStatus": "read",
+        "citedByClaimIds": [
+          "C23"
+        ]
+      },
+      {
+        "id": "S24",
+        "url": "https://example.com/source-24",
+        "title": "SQ5 fixture source 24",
+        "domain": "example.com",
+        "publicationType": "technical documentation",
+        "tier": "B",
+        "score": 4.2,
+        "recency": "current",
+        "relevance": "direct",
+        "keyClaims": [
+          "Evidence claim from source S24."
+        ],
+        "readStatus": "read",
+        "citedByClaimIds": [
+          "C24"
+        ]
+      },
+      {
+        "id": "S25",
+        "url": "https://example.com/source-25",
+        "title": "SQ5 fixture source 25",
+        "domain": "example.com",
+        "publicationType": "technical documentation",
+        "tier": "A",
+        "score": 4.2,
+        "recency": "current",
+        "relevance": "direct",
+        "keyClaims": [
+          "Evidence claim from source S25."
+        ],
+        "readStatus": "read",
+        "citedByClaimIds": [
+          "C25"
+        ]
+      }
+    ],
+    "synthesis": "SQ5 synthesis cites the fixture evidence [S21] [S22].",
+    "confidence": "high",
+    "conflicts": [],
+    "gaps": [],
+    "refinementQueries": [
+      "typed contracts AI agent frameworks 2026 refinement"
+    ],
+    "sourceCount": 5
+  },
+  {
+    "subQuestionId": "SQ6",
+    "sources": [
+      {
+        "id": "S26",
+        "url": "https://example.com/source-26",
+        "title": "SQ6 fixture source 26",
+        "domain": "example.com",
+        "publicationType": "technical documentation",
+        "tier": "B",
+        "score": 4.2,
+        "recency": "current",
+        "relevance": "direct",
+        "keyClaims": [
+          "Evidence claim from source S26."
+        ],
+        "readStatus": "read",
+        "citedByClaimIds": [
+          "C26"
+        ]
+      },
+      {
+        "id": "S27",
+        "url": "https://example.com/source-27",
+        "title": "SQ6 fixture source 27",
+        "domain": "example.com",
+        "publicationType": "technical documentation",
+        "tier": "A",
+        "score": 4.2,
+        "recency": "current",
+        "relevance": "direct",
+        "keyClaims": [
+          "Evidence claim from source S27."
+        ],
+        "readStatus": "read",
+        "citedByClaimIds": [
+          "C27"
+        ]
+      },
+      {
+        "id": "S28",
+        "url": "https://example.com/source-28",
+        "title": "SQ6 fixture source 28",
+        "domain": "example.com",
+        "publicationType": "technical documentation",
+        "tier": "B",
+        "score": 4.2,
+        "recency": "current",
+        "relevance": "direct",
+        "keyClaims": [
+          "Evidence claim from source S28."
+        ],
+        "readStatus": "read",
+        "citedByClaimIds": [
+          "C28"
+        ]
+      },
+      {
+        "id": "S29",
+        "url": "https://example.com/source-29",
+        "title": "SQ6 fixture source 29",
+        "domain": "example.com",
+        "publicationType": "technical documentation",
+        "tier": "A",
+        "score": 4.2,
+        "recency": "current",
+        "relevance": "direct",
+        "keyClaims": [
+          "Evidence claim from source S29."
+        ],
+        "readStatus": "read",
+        "citedByClaimIds": [
+          "C29"
+        ]
+      },
+      {
+        "id": "S30",
+        "url": "https://example.com/source-30",
+        "title": "SQ6 fixture source 30",
+        "domain": "example.com",
+        "publicationType": "technical documentation",
+        "tier": "B",
+        "score": 4.2,
+        "recency": "current",
+        "relevance": "direct",
+        "keyClaims": [
+          "Evidence claim from source S30."
+        ],
+        "readStatus": "read",
+        "citedByClaimIds": [
+          "C30"
+        ]
+      }
+    ],
+    "synthesis": "SQ6 synthesis cites the fixture evidence [S26] [S27].",
+    "confidence": "high",
+    "conflicts": [],
+    "gaps": [],
+    "refinementQueries": [
+      "AI agent framework observability 2026 refinement"
+    ],
+    "sourceCount": 5
+  }
+]

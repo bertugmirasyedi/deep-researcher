@@ -1,0 +1,132 @@
+{
+  "topic": "latest agentic frameworks",
+  "depth": "deep",
+  "scope": "Discovery-grounded agent framework landscape focusing on workflow control, typed interfaces, and production readiness.",
+  "subQuestions": [
+    {
+      "id": "SQ1",
+      "question": "How does Mastra support deterministic workflow orchestration?",
+      "rationale": "Mastra was discovered as a workflow-oriented framework.",
+      "expectedSourceTypes": [
+        "official docs",
+        "technical analysis"
+      ],
+      "seededByEntityIds": [
+        "E1"
+      ],
+      "seededByDimensionNames": [
+        "workflow orchestration"
+      ],
+      "allNamedEntitiesInQuestion": [
+        "Mastra"
+      ],
+      "initialQueries": [
+        "Mastra workflow orchestration 2026",
+        "Mastra agent workflows production"
+      ]
+    },
+    {
+      "id": "SQ2",
+      "question": "How does LangGraph support graph-state agent orchestration?",
+      "rationale": "LangGraph was discovered as a graph orchestration framework.",
+      "expectedSourceTypes": [
+        "official docs",
+        "technical analysis"
+      ],
+      "seededByEntityIds": [
+        "E2"
+      ],
+      "seededByDimensionNames": [
+        "workflow orchestration"
+      ],
+      "allNamedEntitiesInQuestion": [
+        "LangGraph"
+      ],
+      "initialQueries": [
+        "LangGraph state graph agents 2026",
+        "LangGraph production orchestration"
+      ]
+    },
+    {
+      "id": "SQ3",
+      "question": "How does Pydantic AI support typed agent interfaces?",
+      "rationale": "Pydantic AI was discovered as a typed agent framework.",
+      "expectedSourceTypes": [
+        "official docs",
+        "technical analysis"
+      ],
+      "seededByEntityIds": [
+        "E3"
+      ],
+      "seededByDimensionNames": [
+        "typed agent interfaces"
+      ],
+      "allNamedEntitiesInQuestion": [
+        "Pydantic AI"
+      ],
+      "initialQueries": [
+        "Pydantic AI typed agents 2026",
+        "Pydantic AI production agents"
+      ]
+    },
+    {
+      "id": "SQ4",
+      "question": "Which workflow orchestration capabilities differentiate the discovered frameworks?",
+      "rationale": "The discovery map identified workflow orchestration as a high-signal dimension.",
+      "expectedSourceTypes": [
+        "comparisons",
+        "official docs"
+      ],
+      "seededByEntityIds": [],
+      "seededByDimensionNames": [
+        "workflow orchestration"
+      ],
+      "allNamedEntitiesInQuestion": [],
+      "initialQueries": [
+        "AI agent workflow orchestration frameworks 2026",
+        "agent framework workflow comparison"
+      ]
+    },
+    {
+      "id": "SQ5",
+      "question": "Which typed contracts and validation patterns matter for production agents?",
+      "rationale": "The discovery map identified typed agent interfaces as a high-signal dimension.",
+      "expectedSourceTypes": [
+        "technical docs",
+        "engineering reports"
+      ],
+      "seededByEntityIds": [],
+      "seededByDimensionNames": [
+        "typed agent interfaces"
+      ],
+      "allNamedEntitiesInQuestion": [],
+      "initialQueries": [
+        "typed contracts AI agent frameworks 2026",
+        "agent framework validation patterns"
+      ]
+    },
+    {
+      "id": "SQ6",
+      "question": "Which production observability capabilities are evidenced across the discovered ecosystem?",
+      "rationale": "The discovery map identified production observability as a high-signal dimension.",
+      "expectedSourceTypes": [
+        "technical docs",
+        "production reports"
+      ],
+      "seededByEntityIds": [],
+      "seededByDimensionNames": [
+        "production observability"
+      ],
+      "allNamedEntitiesInQuestion": [],
+      "initialQueries": [
+        "AI agent framework observability 2026",
+        "production readiness agent orchestration frameworks"
+      ]
+    }
+  ],
+  "sourceMinimum": 30,
+  "targetSources": {
+    "min": 30,
+    "max": 42
+  }
+}
