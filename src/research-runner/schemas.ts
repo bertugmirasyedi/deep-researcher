@@ -164,6 +164,32 @@ export const ReviewDecisionSchema = z.object({
 });
 export type ReviewDecision = z.output<typeof ReviewDecisionSchema>;
 
+export const ReviewActionSchema = z.enum(['finalize', 'targeted_repair', 'additional_research', 'replan']);
+export type ReviewAction = z.output<typeof ReviewActionSchema>;
+
+export const ReviewControllerDecisionSchema = z.object({
+  action: ReviewActionSchema,
+  round: z.number().int().min(0),
+  reason: z.string(),
+  failedReviewers: z.array(z.enum(['coverage', 'bias', 'citation'])),
+  requiredActions: z.array(z.string()),
+  repairQueries: z.array(z.string()),
+  newSubQuestions: z.array(SubQuestionSchema).max(3).default([]),
+  replanInstructions: z.array(z.string()).default([]),
+});
+export type ReviewControllerDecision = z.output<typeof ReviewControllerDecisionSchema>;
+
+export const AdaptiveReviewCycleStateSchema = z.object({
+  findings: z.array(SubquestionFindingSchema),
+  draft: DraftReportSchema,
+  reviewResults: z.array(ReviewResultSchema),
+  controllerDecisions: z.array(ReviewControllerDecisionSchema).default([]),
+  iteration: z.number().int().min(0),
+  complete: z.boolean(),
+  repairApplied: z.boolean(),
+});
+export type AdaptiveReviewCycleState = z.output<typeof AdaptiveReviewCycleStateSchema>;
+
 export const FinalReportSchema = z.object({
   topic: z.string(),
   depth: DepthSchema,
@@ -184,6 +210,7 @@ export const WorkflowStateSchema = z.object({
   findings: z.array(SubquestionFindingSchema).default([]),
   draft: DraftReportSchema.optional(),
   reviewResults: z.array(ReviewResultSchema).default([]),
+  controllerDecisions: z.array(ReviewControllerDecisionSchema).default([]),
   repairFinding: SubquestionFindingSchema.optional(),
 });
 export type WorkflowState = z.output<typeof WorkflowStateSchema>;

@@ -11,10 +11,10 @@ Given a research topic, Deep Researcher runs a discovery-first workflow:
 3. **Parallel Research** — Mastra `foreach` fans out OMP ACP researchers with concurrency 4.
 4. **Draft Synthesis** — Writer uses only DiscoveryMap and findings.
 5. **Review Gates** — Coverage, bias, and citation reviewers run in parallel.
-6. **Repair** — One targeted repair round addresses failed review actions.
+6. **Adaptive Review Control** — A controller chooses finalize, targeted repair, additional research, or replan, bounded by `maxReviewRepairRounds`.
 7. **Final Audit + Archive** — Deterministic citation checks and source-minimum gates write `researches/YYYY-MM-DD-<topic-slug>.md`.
 
-The runner uses OMP ACP (`omp acp`) so model/tool execution stays inside OMP and can use the user's Codex subscription, OMP auth, `web_search`, and `read`.
+The runner uses OMP ACP (`omp acp`) so model/tool execution stays inside OMP and can use the user's Codex subscription, OMP auth, `web_search`, and `read`. Post-review control is agent-mediated but bounded by `maxReviewRepairRounds` and deterministic Zod validation.
 
 ## Setup
 

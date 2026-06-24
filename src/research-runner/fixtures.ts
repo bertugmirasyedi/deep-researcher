@@ -7,6 +7,7 @@ import {
   DraftReportSchema,
   FinalReportSchema,
   ResearchPlanSchema,
+  ReviewControllerDecisionSchema,
   ReviewResultSchema,
   SubquestionFindingSchema,
   type DiscoveryMap,
@@ -15,10 +16,14 @@ import {
   type ResearchInput,
   type ResearchPlan,
   type ResearchTaskPayload,
+  type ReviewControllerDecision,
   type ReviewDecision,
   type ReviewResult,
   type SubquestionFinding,
 } from './schemas';
+
+const BASE_FIXTURE = 'agent-frameworks';
+const KNOWN_FIXTURES = new Set([BASE_FIXTURE, 'agent-frameworks-adaptive-review']);
 
 export class FixtureStageRunner implements StageRunner {
   private readonly discovery: DiscoveryMap;
@@ -26,10 +31,12 @@ export class FixtureStageRunner implements StageRunner {
   private readonly findings: SubquestionFinding[];
   private readonly draft: DraftReport;
   private readonly reviews: ReviewResult[];
+  private readonly controllerDecisions: ReviewControllerDecision[];
+  private readonly reviewsAfterAdditionalResearch?: ReviewResult[];
   private readonly final: FinalReport;
 
   constructor(name: string) {
-    if (name !== 'agent-frameworks') {
+    if (!KNOWN_FIXTURES.has(name)) {
       throw new Error(`unknown_fixture:${name}`);
     }
 
@@ -38,6 +45,18 @@ export class FixtureStageRunner implements StageRunner {
     this.findings = SubquestionFindingSchema.array().parse(readFixture(name, 'findings.json'));
     this.draft = DraftReportSchema.parse(readFixture(name, 'draft.json'));
     this.reviews = ReviewResultSchema.array().parse(readFixture(name, 'reviews.json'));
+    this.controllerDecisions = ReviewControllerDecisionSchema.array().parse(readOptionalFixture(name, 'controller-decisions.json') ?? [{
+      action: 'finalize',
+      round: 0,
+      reason: 'fixture reviews accepted',
+      failedReviewers: [],
+      requiredActions: [],
+      repairQueries: [],
+      newSubQuestions: [],
+      replanInstructions: [],
+    }]);
+    const reviewsAfterAdditionalResearch = readOptionalFixture(name, 'reviews-after-additional-research.json');
+    this.reviewsAfterAdditionalResearch = reviewsAfterAdditionalResearch === undefined ? undefined : ReviewResultSchema.array().parse(reviewsAfterAdditionalResearch);
     this.final = FinalReportSchema.parse(readFixture(name, 'final.json'));
   }
 
@@ -68,16 +87,33 @@ export class FixtureStageRunner implements StageRunner {
     return this.draft;
   }
 
-  async runCoverageReview(): Promise<ReviewResult> {
-    return this.reviewFor('coverage');
+  async runCoverageReview(_input: ResearchInput, _discovery: DiscoveryMap, _plan: ResearchPlan, _draft: DraftReport, findings: SubquestionFinding[]): Promise<ReviewResult> {
+    return this.reviewFor('coverage', findings);
   }
 
-  async runBiasReview(): Promise<ReviewResult> {
-    return this.reviewFor('bias');
+  async runBiasReview(_input: ResearchInput, _discovery: DiscoveryMap, _plan: ResearchPlan, _draft: DraftReport, findings: SubquestionFinding[]): Promise<ReviewResult> {
+    return this.reviewFor('bias', findings);
   }
 
-  async runCitationReview(): Promise<ReviewResult> {
-    return this.reviewFor('citation');
+  async runCitationReview(_input: ResearchInput, _discovery: DiscoveryMap, _plan: ResearchPlan, _draft: DraftReport, findings: SubquestionFinding[]): Promise<ReviewResult> {
+    return this.reviewFor('citation', findings);
+  }
+
+  async runReviewController(_input: ResearchInput, _discovery: DiscoveryMap, _plan: ResearchPlan, _draft: DraftReport, _findings: SubquestionFinding[], _reviewResults: ReviewResult[], round: number): Promise<ReviewControllerDecision> {
+    return this.controllerDecisions.find((decision) => decision.round === round) ?? ReviewControllerDecisionSchema.parse({
+      action: 'finalize',
+      round,
+      reason: 'fixture reviews accepted',
+      failedReviewers: [],
+      requiredActions: [],
+      repairQueries: [],
+      newSubQuestions: [],
+      replanInstructions: [],
+    });
+  }
+
+  async runReplanner(): Promise<ResearchPlan> {
+    throw new Error('fixture_unexpected_replan');
   }
 
   async runRepair(_input: ResearchInput, _discovery: DiscoveryMap, _plan: ResearchPlan, _draft: DraftReport, _findings: SubquestionFinding[], decision: ReviewDecision): Promise<SubquestionFinding | null> {
@@ -87,27 +123,43 @@ export class FixtureStageRunner implements StageRunner {
     throw new Error('fixture_unexpected_repair');
   }
 
-  async runFinalWriter(input: ResearchInput): Promise<FinalReport> {
+  async runFinalWriter(input: ResearchInput, _discovery: DiscoveryMap, _plan: ResearchPlan, findings: SubquestionFinding[]): Promise<FinalReport> {
+    const reviews = this.reviewSetFor(findings);
     return {
       ...this.final,
       topic: input.topic,
       depth: input.depth,
       format: input.format,
       outputPath: '',
-      reviewResults: this.reviews,
+      reviewResults: reviews,
     };
   }
 
-  private reviewFor(reviewer: ReviewResult['reviewer']): ReviewResult {
-    const review = this.reviews.find((candidate) => candidate.reviewer === reviewer);
+  private reviewFor(reviewer: ReviewResult['reviewer'], findings: SubquestionFinding[]): ReviewResult {
+    const review = this.reviewSetFor(findings).find((candidate) => candidate.reviewer === reviewer);
     if (!review) {
       throw new Error(`fixture_missing_review:${reviewer}`);
     }
     return review;
   }
+
+  private reviewSetFor(findings: SubquestionFinding[]): ReviewResult[] {
+    if (this.reviewsAfterAdditionalResearch !== undefined && findings.some((finding) => finding.subQuestionId === 'SQ4')) {
+      return this.reviewsAfterAdditionalResearch;
+    }
+    return this.reviews;
+  }
 }
 
 function readFixture(name: string, file: string): unknown {
+  const result = readOptionalFixture(name, file);
+  if (result === undefined) {
+    throw new Error(`fixture_missing_file:${name}/${file}`);
+  }
+  return result;
+}
+
+function readOptionalFixture(name: string, file: string): unknown | undefined {
   const bundleDir = dirname(fileURLToPath(import.meta.url));
   const roots = [
     process.env.MASTRA_PROJECT_ROOT,
@@ -119,13 +171,28 @@ function readFixture(name: string, file: string): unknown {
     join(bundleDir, '..', '..'),
   ].filter((root): root is string => root !== undefined);
 
-  for (const root of roots) {
-    const sourcePath = join(root, 'src', 'research-runner', '__fixtures__', name, file);
-    if (existsSync(sourcePath)) {
-      return JSON.parse(readFileSync(sourcePath, 'utf8'));
+  const sourceNames = name === BASE_FIXTURE ? [name] : [name, BASE_FIXTURE];
+
+  for (const fixtureName of sourceNames) {
+    for (const root of roots) {
+      const sourcePath = join(root, 'src', 'research-runner', '__fixtures__', fixtureName, file);
+      if (existsSync(sourcePath)) {
+        return JSON.parse(readFileSync(sourcePath, 'utf8'));
+      }
     }
   }
 
-  const bundledUrl = new URL(`./__fixtures__/${name}/${file}`, import.meta.url);
-  return JSON.parse(readFileSync(bundledUrl, 'utf8'));
+  for (const fixtureName of sourceNames) {
+    try {
+      const bundledUrl = new URL(`./__fixtures__/${fixtureName}/${file}`, import.meta.url);
+      return JSON.parse(readFileSync(bundledUrl, 'utf8'));
+    } catch (error) {
+      if (error instanceof Error && 'code' in error && error.code === 'ENOENT') {
+        continue;
+      }
+      throw error;
+    }
+  }
+
+  return undefined;
 }

@@ -7,8 +7,10 @@ import {
   DISCOVERY_SYSTEM_PROMPT,
   FINAL_WRITER_SYSTEM_PROMPT,
   PLANNER_SYSTEM_PROMPT,
+  REPLANNER_SYSTEM_PROMPT,
   REPAIR_SYSTEM_PROMPT,
   RESEARCHER_SYSTEM_PROMPT,
+  REVIEW_CONTROLLER_SYSTEM_PROMPT,
   WRITER_SYSTEM_PROMPT,
 } from './prompts';
 import {
@@ -16,6 +18,7 @@ import {
   DraftReportSchema,
   FinalReportSchema,
   ResearchPlanSchema,
+  ReviewControllerDecisionSchema,
   ReviewResultSchema,
   SubquestionFindingSchema,
   type DiscoveryMap,
@@ -24,6 +27,7 @@ import {
   type ResearchInput,
   type ResearchPlan,
   type ResearchTaskPayload,
+  type ReviewControllerDecision,
   type ReviewDecision,
   type ReviewResult,
   type SubquestionFinding,
@@ -37,6 +41,8 @@ export const STAGE_MODEL_CONFIG = {
   coverageReview: { model: 'openai-codex/gpt-5.5', thinkingLevel: 'medium' },
   biasReview: { model: 'openai-codex/gpt-5.5', thinkingLevel: 'medium' },
   citationReview: { model: 'openai-codex/gpt-5.5', thinkingLevel: 'medium' },
+  reviewController: { model: 'openai-codex/gpt-5.5', thinkingLevel: 'medium' },
+  replanner: { model: 'openai-codex/gpt-5.5', thinkingLevel: 'medium' },
   repair: { model: 'openai-codex/gpt-5.5', thinkingLevel: 'minimal' },
   finalWriter: { model: 'openai-codex/gpt-5.5', thinkingLevel: 'medium' },
 } as const;
@@ -49,6 +55,8 @@ export interface StageRunner {
   runCoverageReview(input: ResearchInput, discovery: DiscoveryMap, plan: ResearchPlan, draft: DraftReport, findings: SubquestionFinding[]): Promise<ReviewResult>;
   runBiasReview(input: ResearchInput, discovery: DiscoveryMap, plan: ResearchPlan, draft: DraftReport, findings: SubquestionFinding[]): Promise<ReviewResult>;
   runCitationReview(input: ResearchInput, discovery: DiscoveryMap, plan: ResearchPlan, draft: DraftReport, findings: SubquestionFinding[]): Promise<ReviewResult>;
+  runReviewController(input: ResearchInput, discovery: DiscoveryMap, plan: ResearchPlan, draft: DraftReport, findings: SubquestionFinding[], reviewResults: ReviewResult[], round: number): Promise<ReviewControllerDecision>;
+  runReplanner(input: ResearchInput, discovery: DiscoveryMap, currentPlan: ResearchPlan, findings: SubquestionFinding[], reviewResults: ReviewResult[], decision: ReviewControllerDecision): Promise<ResearchPlan>;
   runRepair(input: ResearchInput, discovery: DiscoveryMap, plan: ResearchPlan, draft: DraftReport, findings: SubquestionFinding[], decision: ReviewDecision): Promise<SubquestionFinding | null>;
   runFinalWriter(input: ResearchInput, discovery: DiscoveryMap, plan: ResearchPlan, findings: SubquestionFinding[], draft: DraftReport, reviews: ReviewResult[]): Promise<FinalReport>;
 }
@@ -158,6 +166,72 @@ Create a DraftReport with claimMap source IDs for every factual claim.`,
 
   async runCitationReview(input: ResearchInput, discovery: DiscoveryMap, plan: ResearchPlan, draft: DraftReport, findings: SubquestionFinding[]): Promise<ReviewResult> {
     return this.runReview('citation', CITATION_AUDIT_SYSTEM_PROMPT, STAGE_MODEL_CONFIG.citationReview, input, discovery, plan, draft, findings);
+  }
+
+  async runReviewController(input: ResearchInput, discovery: DiscoveryMap, plan: ResearchPlan, draft: DraftReport, findings: SubquestionFinding[], reviewResults: ReviewResult[], round: number): Promise<ReviewControllerDecision> {
+    return runOmpJsonAgent({
+      ...STAGE_MODEL_CONFIG.reviewController,
+      id: 'review-controller',
+      name: 'Review Controller',
+      description: 'Decides adaptive post-review workflow action',
+      cwd: this.cwd,
+      systemPrompt: REVIEW_CONTROLLER_SYSTEM_PROMPT,
+      userPrompt: `Input:
+${JSON.stringify(input, null, 2)}
+
+DiscoveryMap:
+${JSON.stringify(discovery, null, 2)}
+
+ResearchPlan:
+${JSON.stringify(plan, null, 2)}
+
+DraftReport:
+${JSON.stringify(draft, null, 2)}
+
+Findings:
+${JSON.stringify(findings, null, 2)}
+
+ReviewResults:
+${JSON.stringify(reviewResults, null, 2)}
+
+Current review round: ${round}
+Max action rounds: ${input.maxReviewRepairRounds}
+If Current review round is greater than or equal to Max action rounds, action must be finalize.
+For action additional_research, include 1-3 newSubQuestions.
+For action replan, include non-empty replanInstructions.`,
+      schema: ReviewControllerDecisionSchema.refine((decision) => decision.round === round, 'review controller decision round must match input round'),
+      schemaName: 'ReviewControllerDecision',
+    });
+  }
+
+  async runReplanner(input: ResearchInput, discovery: DiscoveryMap, currentPlan: ResearchPlan, findings: SubquestionFinding[], reviewResults: ReviewResult[], decision: ReviewControllerDecision): Promise<ResearchPlan> {
+    return runOmpJsonAgent({
+      ...STAGE_MODEL_CONFIG.replanner,
+      id: 'adaptive-replan',
+      name: 'Adaptive Replanner',
+      description: 'Revises plan from review controller decision',
+      cwd: this.cwd,
+      systemPrompt: REPLANNER_SYSTEM_PROMPT,
+      userPrompt: `Input:
+${JSON.stringify(input, null, 2)}
+
+DiscoveryMap:
+${JSON.stringify(discovery, null, 2)}
+
+CurrentPlan:
+${JSON.stringify(currentPlan, null, 2)}
+
+Findings:
+${JSON.stringify(findings, null, 2)}
+
+ReviewResults:
+${JSON.stringify(reviewResults, null, 2)}
+
+ReviewControllerDecision:
+${JSON.stringify(decision, null, 2)}`,
+      schema: ResearchPlanSchema,
+      schemaName: 'ResearchPlan',
+    });
   }
 
   async runRepair(input: ResearchInput, discovery: DiscoveryMap, plan: ResearchPlan, draft: DraftReport, findings: SubquestionFinding[], decision: ReviewDecision): Promise<SubquestionFinding | null> {

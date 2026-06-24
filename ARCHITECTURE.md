@@ -12,7 +12,8 @@ Topic
   -> Mastra foreach(concurrency 4) OMP ACP researchers
   -> OMP ACP writer
   -> parallel OMP ACP reviewers
-  -> OMP ACP repair
+  -> review controller
+  -> bounded adaptive cycle(targeted repair | additional research | replan | finalize)
   -> deterministic audit/archive
   -> researches/
 ```
@@ -21,11 +22,11 @@ Topic
 
 | Layer | Owner | Responsibilities |
 |---|---|---|
-| Control plane | Mastra Workflows | Stage order, typed handoffs, workflow state, foreach concurrency, parallel review fan-out, repair loop, final audit/archive |
+| Control plane | Mastra Workflows | Stage order, typed handoffs, workflow state, foreach concurrency, parallel review fan-out, adaptive review loop, final audit/archive |
 | Model/tool runtime | OMP ACP | OMP auth, Codex model execution, `web_search`, URL/document extraction through `read`, project/user context |
 | Deterministic guards | TypeScript | Zod schemas, discovery-plan validation, source thresholds, citation audit, archive path |
 
-No Mastra supervisor LLM decides the workflow. Each step has an explicit schema and calls an OMP ACP agent for the model/tool work needed at that stage.
+No Mastra supervisor LLM decides the whole workflow. Each step has an explicit schema and calls an OMP ACP agent for the model/tool work needed at that stage; post-review control is delegated to a bounded review controller and validated with Zod.
 
 ## Pipeline Stages
 
@@ -72,9 +73,9 @@ The writer uses only supplied inputs and maps each factual claim to source IDs.
 - Bias review checks incumbent/vendor/model-prior overrepresentation relative to discovery.
 - Citation audit checks missing claims, absent source IDs, and unread/failed sources.
 
-### 5. Repair
+### 5. Review Controller + Adaptive Cycle
 
-One repair round runs only when a review fails and `maxReviewRepairRounds > 0`. The repair researcher addresses failed reviewers' required actions with targeted live search/read evidence and returns `REPAIR1` as an additional finding.
+The review controller chooses `finalize`, `targeted_repair`, `additional_research`, or `replan`. Mastra models the loop with a bounded `.dountil()` cycle capped by `maxReviewRepairRounds`. Additional research adds 1-3 DiscoveryMap-grounded subquestions; replanning cannot mutate already researched subquestion content under the same `SQ` id.
 
 ### 6. Final Audit and Archive
 

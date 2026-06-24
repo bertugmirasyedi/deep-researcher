@@ -21,4 +21,21 @@ describe('fixture workflow', () => {
     expect(readFileSync(result.outputPath, 'utf8')).toContain('Discovery-first plan: yes');
     rmSync(result.outputPath);
   });
+
+  test('adaptive review controller can request an extra discovery-grounded subquestion', async () => {
+    const result = await runDeepResearch({
+      fixture: 'agent-frameworks-adaptive-review',
+      topic: 'latest agentic frameworks',
+      depth: 'quick',
+      format: 'brief',
+      dateIso: '2026-06-24T00:00:00.000Z',
+      maxReviewRepairRounds: 1,
+    });
+
+    expect(result.outputPath).toBe('researches/2026-06-24-latest-agentic-frameworks.md');
+    expect(result.reviewStatus).toBe('passed');
+    expect(result.sourcesConsulted).toBe(20);
+    expect(result.reviewResults.every((review) => review.passed)).toBe(true);
+    rmSync(result.outputPath);
+  });
 });

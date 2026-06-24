@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test';
-import { validatePlanAgainstDiscovery } from '../plan-validation';
+import { validatePlanAgainstDiscovery, validateSubQuestionsAgainstDiscovery } from '../plan-validation';
 import type { DiscoveryMap, ResearchPlan } from '../schemas';
 
 const discovery: DiscoveryMap = {
@@ -61,5 +61,9 @@ describe('validatePlanAgainstDiscovery', () => {
     };
 
     expect(validatePlanAgainstDiscovery(plan, discovery).join('\n')).toContain('LangChain');
+  });
+
+  test('validates discovery-grounded subquestions without depth cardinality', () => {
+    expect(validateSubQuestionsAgainstDiscovery([subQuestion('SQ7', 'Mastra')], discovery)).toEqual([]);
   });
 });

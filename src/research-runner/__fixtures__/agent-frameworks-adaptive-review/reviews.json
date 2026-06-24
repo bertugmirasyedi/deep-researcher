@@ -1,0 +1,33 @@
+[
+  {
+    "reviewer": "coverage",
+    "passed": false,
+    "findings": [
+      "The quick plan omits the workflow orchestration dimension."
+    ],
+    "requiredActions": [
+      "Add one discovery-grounded subquestion on workflow orchestration."
+    ],
+    "targetedQueries": [
+      "AI agent workflow orchestration 2026"
+    ]
+  },
+  {
+    "reviewer": "bias",
+    "passed": true,
+    "findings": [
+      "Fixture bias review passes."
+    ],
+    "requiredActions": [],
+    "targetedQueries": []
+  },
+  {
+    "reviewer": "citation",
+    "passed": true,
+    "findings": [
+      "Fixture citation review passes."
+    ],
+    "requiredActions": [],
+    "targetedQueries": []
+  }
+]

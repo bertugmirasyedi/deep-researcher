@@ -1,0 +1,45 @@
+[
+  {
+    "action": "additional_research",
+    "round": 0,
+    "reason": "coverage review requires a discovery-grounded workflow orchestration subquestion",
+    "failedReviewers": ["coverage"],
+    "requiredActions": [
+      "Add one discovery-grounded subquestion on workflow orchestration."
+    ],
+    "repairQueries": [
+      "AI agent workflow orchestration 2026"
+    ],
+    "newSubQuestions": [
+      {
+        "id": "SQ4",
+        "question": "Which workflow orchestration capabilities differentiate the discovered frameworks?",
+        "rationale": "The discovery map identified workflow orchestration as a high-signal dimension.",
+        "expectedSourceTypes": [
+          "comparisons",
+          "official docs"
+        ],
+        "seededByEntityIds": [],
+        "seededByDimensionNames": [
+          "workflow orchestration"
+        ],
+        "allNamedEntitiesInQuestion": [],
+        "initialQueries": [
+          "AI agent workflow orchestration frameworks 2026",
+          "agent framework workflow comparison"
+        ]
+      }
+    ],
+    "replanInstructions": []
+  },
+  {
+    "action": "finalize",
+    "round": 1,
+    "reason": "post-additional-research reviews passed",
+    "failedReviewers": [],
+    "requiredActions": [],
+    "repairQueries": [],
+    "newSubQuestions": [],
+    "replanInstructions": []
+  }
+]

@@ -143,3 +143,18 @@ Architectural and design decisions with rationale. Append new decisions to the e
   - D013 remains true for fallback/manual OMP task-agent execution but is superseded for canonical `deep` runs.
 - **Rationale**: Mastra gives reproducible stateful orchestration, while OMP ACP preserves the user's paid model/tool runtime and existing project context. Zod validation and deterministic audits prevent model-prior planning and citation drift from silently passing.
 - **Tradeoff**: The repo now has a Bun/TypeScript runner and dependencies. Fixture mode covers the workflow graph without live OMP, network, or model credentials.
+
+### D015: Adaptive review controller with OMP custom structured-output tools
+
+- **Date**: 2026-06-24
+- **Context**: OMP ACP stages needed deterministic schema-shaped outputs, and fixed post-review repair could not respond to missing research or invalid framing.
+- **Decision**:
+  - OMP ACP stages submit final stage outputs through project-local OMP custom tools under `.omp/tools/<name>/index.ts`.
+  - The Mastra ACP adapter uses `AcpAgent.stream(...)` to capture the custom output tool's raw input from ACP tool-call chunks and validates that input with the stage's Zod schema.
+  - Raw/fenced assistant JSON is no longer accepted as successful stage output; failure to call exactly one matching output tool triggers one correction attempt.
+  - A review controller agent decides among `finalize`, `targeted_repair`, `additional_research`, and `replan` after parallel reviews.
+  - Mastra supports `.branch()` and `.dountil()`, but this workflow uses a bounded `.dountil()` adaptive cycle instead of arbitrary jumps to earlier named nodes because branch paths require consistent schemas and arbitrary goto would duplicate or obscure graph state.
+  - `maxReviewRepairRounds` limits all adaptive post-review action rounds.
+  - Changed replanned subquestions must receive fresh SQ ids when prior findings exist for the old id.
+- **Rationale**: Tool-call capture makes stage outputs observable and schema-valid before workflow state changes. The review controller adds adaptivity while the bounded loop preserves deterministic workflow limits.
+- **Tradeoff**: Live OMP runs now depend on project custom tool discovery from the runner cwd.

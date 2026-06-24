@@ -1,6 +1,7 @@
 import { AcpAgent } from '@mastra/acp';
 import { LocalFilesystem, Workspace } from '@mastra/core/workspace';
 import { z } from 'zod';
+import { getStructuredOutputToolName } from './structured-output-tools';
 
 export type OmpThinkingLevel = 'minimal' | 'low' | 'medium' | 'high' | 'xhigh';
 
@@ -143,6 +144,80 @@ function findBalancedObject(text: string): string | null {
   return null;
 }
 
+export type StructuredOutputToolCallChunk = {
+  type: 'tool-call';
+  payload: {
+    toolName: string;
+    args: unknown;
+  };
+};
+
+type StructuredOutputToolResultChunk = {
+  type: 'tool-result';
+  payload: {
+    result?: {
+      details?: {
+        schemaName?: unknown;
+        payload?: unknown;
+      };
+    };
+  };
+};
+
+export class StructuredOutputCaptureError extends Error {
+  constructor(message: string, readonly text: string) {
+    super(message);
+    this.name = 'StructuredOutputCaptureError';
+  }
+}
+
+export function extractStructuredOutputToolInputFromChunks(chunks: unknown[], schemaName: string): unknown {
+  const expectedToolName = getStructuredOutputToolName(schemaName);
+  const matchingCalls = chunks.filter((chunk): chunk is StructuredOutputToolCallChunk => {
+    if (typeof chunk !== 'object' || chunk === null || !('type' in chunk) || !('payload' in chunk)) return false;
+    const candidate = chunk as { type?: unknown; payload?: { toolName?: unknown } };
+    return candidate.type === 'tool-call' && candidate.payload?.toolName === expectedToolName;
+  });
+
+  if (matchingCalls.length === 1) {
+    return matchingCalls[0].payload.args;
+  }
+
+  if (matchingCalls.length > 1) {
+    throw new Error(`structured_output_tool_call_count:${expectedToolName}:${matchingCalls.length}`);
+  }
+
+  const matchingResults = chunks.filter((chunk): chunk is StructuredOutputToolResultChunk => {
+    if (typeof chunk !== 'object' || chunk === null || !('type' in chunk) || !('payload' in chunk)) return false;
+    const candidate = chunk as StructuredOutputToolResultChunk;
+    return candidate.type === 'tool-result' && candidate.payload.result?.details?.schemaName === schemaName;
+  });
+
+  if (matchingResults.length !== 1) {
+    throw new Error(`structured_output_tool_call_count:${expectedToolName}:${matchingResults.length}`);
+  }
+
+  return matchingResults[0].payload.result?.details?.payload;
+}
+
+async function runAcpPromptAndCaptureToolInput(agent: AcpAgent, promptText: string, schemaName: string): Promise<{ text: string; input: unknown }> {
+  const streamResult = await agent.stream(promptText);
+  const chunks: unknown[] = [];
+
+  for await (const chunk of streamResult.fullStream) {
+    chunks.push(chunk);
+  }
+
+  const text = await streamResult.text;
+
+  try {
+    return { text, input: extractStructuredOutputToolInputFromChunks(chunks, schemaName) };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    throw new StructuredOutputCaptureError(message, text);
+  }
+}
+
 export async function runOmpJsonAgent<T>(options: OmpAcpAgentOptions & {
   systemPrompt: string;
   userPrompt: string;
@@ -150,26 +225,24 @@ export async function runOmpJsonAgent<T>(options: OmpAcpAgentOptions & {
   schemaName: string;
 }): Promise<T> {
   const schemaJson = JSON.stringify(z.toJSONSchema(options.schema), null, 2);
-  const promptText = `${options.systemPrompt}\n\n${options.userPrompt}\n\nReturn only JSON matching schema ${options.schemaName}. Do not wrap JSON in Markdown. Do not include commentary. Use OMP built-in tools when they are necessary for this stage, but never modify files, run shell commands, install packages, or change repository state.\n\nSchema ${options.schemaName}:\n${schemaJson}`;
+  const outputToolName = getStructuredOutputToolName(options.schemaName);
+  const promptText = `${options.systemPrompt}\n\n${options.userPrompt}\n\nWhen the stage is complete, call the OMP custom tool ${outputToolName} exactly once with the final ${options.schemaName} object as the tool input. Do not return the JSON as assistant prose. Do not call any other submit_* output tool. After ${outputToolName} succeeds, do not restate the output in prose. Use OMP built-in tools when they are necessary for this stage, but never modify files, run shell commands, install packages, or change repository state.\n\nSchema ${options.schemaName}:\n${schemaJson}`;
   const agent = createOmpAcpAgent(options);
-  const result = await agent.generate(promptText);
-  const rawAnswer = result.text;
 
   try {
-    return options.schema.parse(extractFirstJsonObject(rawAnswer));
+    const captured = await runAcpPromptAndCaptureToolInput(agent, promptText, options.schemaName);
+    return options.schema.parse(captured.input);
   } catch (firstError) {
     const repairAgent = createOmpAcpAgent(options);
     const message = firstError instanceof Error ? firstError.message : String(firstError);
-    const repairResult = await repairAgent.generate(`The previous answer did not match schema ${options.schemaName}.
+    const previousText = firstError instanceof StructuredOutputCaptureError ? firstError.text : '';
+    const correction = await runAcpPromptAndCaptureToolInput(repairAgent, `The previous answer did not call the required OMP custom output tool ${outputToolName} exactly once, or the tool input did not match schema ${options.schemaName}.
 Error: ${message}
-Previous answer:
-${rawAnswer}
+Previous assistant text:
+${previousText}
 
-Schema ${options.schemaName}:
-${schemaJson}
+Call ${outputToolName} exactly once with corrected tool input matching schema ${options.schemaName}. Do not use tools for this correction unless the correction requires re-reading evidence already referenced in the answer.`, options.schemaName);
 
-Return corrected JSON only. Do not use tools for this correction unless the correction requires re-reading evidence already referenced in the answer.`);
-
-    return options.schema.parse(extractFirstJsonObject(repairResult.text));
+    return options.schema.parse(correction.input);
   }
 }

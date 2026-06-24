@@ -2,7 +2,7 @@
 
 The complete pipeline from topic to archived report. See [ARCHITECTURE.md](../ARCHITECTURE.md) for system-level context.
 
-> **Orchestration**: Canonical `deep` runs use the Mastra + OMP ACP runner. Mastra controls stage order, workflow state, foreach concurrency, parallel review gates, repair, audit, and archive. OMP ACP controls model/tool execution with OMP auth, `web_search`, and `read`.
+> **Orchestration**: Canonical `deep` runs use the Mastra + OMP ACP runner. Mastra controls stage order, workflow state, foreach concurrency, parallel review gates, the adaptive review cycle, audit, and archive. OMP ACP controls model/tool execution with OMP auth, `web_search`, and `read`.
 
 ## Stage 0: Discovery Scan
 
@@ -72,11 +72,18 @@ Mastra runs these review steps in parallel:
 - **Bias Review** — Fails when the report overrepresents incumbents, vendor-authored sources, or model-prior framing relative to the DiscoveryMap.
 - **Citation Audit** — Fails when factual claims lack source IDs, cite absent sources, or rely on unread/failed sources.
 
-## Stage 5: One Repair Round
+## Stage 5: Review Controller + Adaptive Review Cycle
 
-**Goal**: Address failed review actions without rewriting unrelated sections.
+**Goal**: Decide the bounded post-review action from reviewer outputs.
 
-If any review fails and repair rounds remain, the runner builds a `ReviewDecision`, de-duplicates targeted queries, and runs a repair OMP ACP researcher. Repair evidence is appended as `REPAIR1`.
+After parallel reviewers finish, a review controller chooses exactly one action:
+
+- `finalize` — reviews pass or no action rounds remain.
+- `targeted_repair` — focused citation, coverage, or bias fixes answerable by targeted searches.
+- `additional_research` — add 1-3 new discovery-grounded subquestions and research them.
+- `replan` — revise invalid or materially incomplete plan framing.
+
+`maxReviewRepairRounds` bounds all non-final actions. Additional subquestions must pass DiscoveryMap grounding validation. Replanning cannot reuse a researched `SQ` id when `question`, `rationale`, or `initialQueries` changed; changed content needs a fresh `SQ` id.
 
 ## Stage 6: Final Audit and Archive
 
