@@ -2,12 +2,13 @@
 
 ## Project
 
-Deep Researcher is a **Mastra workflow runner plus context-and-skills pack** for **Oh My Pi (`omp`)**. It provides a deterministic research runner, an OMP-facing research skill, a fallback project `researcher` task-agent prompt, pipeline documentation, and quality standards.
+Deep Researcher is a **Mastra workflow runner plus context-and-skills pack** for **Oh My Pi (`omp`)**. It provides a deterministic CLI research runner, a prompt-orchestrated OMP TUI skill, stage-specific project agents, pipeline documentation, and quality standards.
 
 The heavy lifting is split between:
 
 - **Mastra Workflows** — deterministic stage order, typed handoffs, workflow state, foreach concurrency, parallel review gates, repair, final audit, and archiving
 - **OMP ACP (`omp acp`)** — model/tool execution through OMP auth, the user's Codex subscription, OMP `web_search`, and OMP `read`
+- **OMP TUI task agents** — prompt-driven stage execution mirroring the Mastra graph through named `.omp/agents/` roles
 - **TypeScript/Zod** — schemas, discovery-plan validation, source thresholds, citation audit, and fixture regression tests
 
 ## Quick Start
@@ -46,29 +47,33 @@ See [ARCHITECTURE.md](ARCHITECTURE.md) for pipeline stages and data flow.
 |Execution plans|[docs/exec-plans/README.md](docs/exec-plans/README.md)|Active/completed plans, tech debt tracker|
 |Report archive|[researches/README.md](researches/README.md)|Saved research reports (`YYYY-MM-DD-<slug>.md`)|
 |Research runner|[src/research-runner/](src/research-runner/)|Mastra + OMP ACP TypeScript runner|
-|Fallback researcher agent|[.omp/agents/researcher.md](.omp/agents/researcher.md)|Fallback/manual OMP task agent|
-|Deep Researcher skill|[.omp/skills/deep-researcher/SKILL.md](.omp/skills/deep-researcher/SKILL.md)|Skill entry point and workflow contract|
+|OMP TUI stage agents|[.omp/agents/](.omp/agents/)|Named discovery, planning, research, writing, review, repair, and finalization roles|
+|Deep Researcher skill|[.omp/skills/deep-researcher/SKILL.md](.omp/skills/deep-researcher/SKILL.md)|Interactive TUI orchestration contract|
 
-## Orchestration with Mastra + OMP ACP
+## Orchestration Paths
 
-**Discovery-first execution is mandatory for canonical `deep`.** The runner performs:
+The project has two distinct execution paths:
 
-1. **Discovery Scan** — neutral search/read evidence before planning
-2. **Evidence-Grounded Plan** — subquestions validated against `DiscoveryMap.entities` and `DiscoveryMap.dimensions`
-3. **Parallel Research** — Mastra `foreach` runs OMP ACP researchers with concurrency 4
-4. **Draft + Reviews** — writer plus parallel coverage, bias, and citation gates
-5. **Repair + Final Audit** — one targeted repair round, deterministic citation audit, archive write
+1. **CLI: Mastra + OMP ACP** — the reproducible runner owns deterministic stage
+   order, typed Zod handoffs, concurrency, adaptive review, final audit, and
+   archive.
+2. **OMP TUI: prompt-orchestrated stage agents** — the `deep-researcher` skill
+   keeps the main TUI agent as coordinator and dispatches matching named agents
+   from `.omp/agents/`. Explicit JSON contracts and coordinator validation mimic
+   the Mastra graph without claiming Mastra execution.
 
-The fallback `.omp/agents/researcher.md` task-agent flow is reserved for runner-unavailable/manual investigations and must still honor DiscoveryMap grounding when supplied.
+Both paths require discovery before planning, 3 quick or 6–8 deep subquestions,
+research concurrency capped at four, parallel coverage/bias/citation gates, one
+bounded adaptive round, citation audit, and archive.
 
 ## Tracking and artifacts
 
 Do **not** create per-run Linear issues for research. Research-run state lives in:
 
 - the active OMP session and runner output
-- Mastra workflow state during execution
-- `agent://<id>` worker output artifacts when fallback/manual OMP task mode is used
-- `history://<id>` transcripts when debugging or auditing fallback workers
+- Mastra workflow state during CLI execution
+- transient `local://` handoffs during interactive TUI execution
+- `agent://<id>` stage outputs and `history://<id>` transcripts
 - the final archived Markdown report under `researches/`
 
 ## Critical Rules

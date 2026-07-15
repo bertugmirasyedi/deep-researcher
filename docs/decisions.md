@@ -158,3 +158,29 @@ Architectural and design decisions with rationale. Append new decisions to the e
   - Changed replanned subquestions must receive fresh SQ ids when prior findings exist for the old id.
 - **Rationale**: Tool-call capture makes stage outputs observable and schema-valid before workflow state changes. The review controller adds adaptivity while the bounded loop preserves deterministic workflow limits.
 - **Tradeoff**: Live OMP runs now depend on project custom tool discovery from the runner cwd.
+
+### D016: Parallel CLI and named-agent OMP TUI workflows
+
+- **Date**: 2026-07-15
+- **Context**: The deterministic Mastra + OMP ACP CLI runner remains useful, but
+  interactive OMP TUI research should execute directly through prompt
+  orchestration rather than shelling out to the runner or relying on one generic
+  researcher role.
+- **Decision**:
+  - Keep the CLI-backed `mastra-omp-acp` workflow unchanged.
+  - Make the `deep-researcher` skill exclusively coordinate the interactive TUI
+    path and label its reports `omp-tui-native`.
+  - Mirror each model-driven Mastra stage with a named project agent under
+    `.omp/agents/`: discovery, planning, subquestion research, draft writing,
+    coverage/bias/citation reviews, review control, replanning, targeted repair,
+    and final writing.
+  - The TUI coordinator passes accepted JSON state through `local://`, requests
+    explicit output fields in every task, validates results, and uses `irc` to
+    correct malformed output from the same agent.
+  - Project custom `submit_*` tools remain an ACP/CLI implementation detail and
+    are not used by the interactive skill.
+- **Rationale**: Named agents preserve stage isolation and make TUI behavior
+  closely resemble the Mastra graph while retaining interactive visibility,
+  subagent transcripts, and direct control in OMP.
+- **Tradeoff**: TUI field validation is coordinator-driven rather than
+  Zod-enforced, so the CLI remains the stronger reproducibility path.

@@ -37,7 +37,7 @@ RL Fine-Tuning (Polar + TRL + GRPO)
 
 | Item | Origin | Priority | Notes |
 |------|--------|----------|-------|
-| Model/thinking sync in researcher agent | D011 | Medium | `.omp/agents/researcher.md` frontmatter should stay aligned with the selected worker model and thinking level |
+| Model/thinking sync in TUI stage agents | D011, D016 | Medium | Every `.omp/agents/*.md` frontmatter model and thinking level should stay aligned with its corresponding runner stage |
 | Legacy Orca-Linear references in historical reports | D013 | Low | Historical `researches/` files are left as-is unless they are promoted into current workflow docs |
 
 ## Related

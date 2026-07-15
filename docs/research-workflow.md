@@ -109,4 +109,4 @@ TypeScript performs deterministic final checks:
 | Source count shortfall | Disclose gaps and set `passed_with_disclosed_gaps` if citations are valid |
 | Citation audit failure | Set `reviewStatus: failed` |
 | OMP ACP model unavailable | Fail loudly; do not switch providers |
-| Runner unavailable | Use fallback/manual researcher agent with discovery-first planning |
+| Interactive TUI execution | Use the `deep-researcher` skill and named `.omp/agents/` stages; label it `omp-tui-native` |

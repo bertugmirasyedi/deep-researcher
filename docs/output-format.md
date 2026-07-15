@@ -78,9 +78,9 @@ Extended Full format with:
 
 | Field | Values | Requirement |
 |---|---|---|
-| `Workflow` | `mastra-omp-acp` or fallback identifier | Canonical deep runner uses `mastra-omp-acp` |
-| `Discovery-first plan` | `yes` or `no` | Canonical deep runner must be `yes` |
-| `Review status` | `passed`, `passed_with_disclosed_gaps`, `failed` | Final deterministic status |
+| `Workflow` | `mastra-omp-acp` or `omp-tui-native` | Label the execution path actually used |
+| `Discovery-first plan` | `yes` or `no` | Both supported deep workflows must be `yes` |
+| `Review status` | `passed`, `passed_with_disclosed_gaps`, `failed` | CLI computes deterministically; TUI coordinator applies the same rules |
 | `Depth` | `quick`, `deep` | No other depth labels are current |
 
 ## Methodology Requirements

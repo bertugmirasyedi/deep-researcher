@@ -2,29 +2,32 @@
 
 ## System Overview
 
-Deep Researcher is a **Mastra workflow runner plus Oh My Pi (`omp`) skill wrapper**. Mastra owns deterministic orchestration; OMP owns model authentication, Codex subscription access, and built-in tools through ACP (`omp acp`).
+Deep Researcher has two execution paths over the same discovery-first research
+contract:
+
+1. **CLI runner** — Mastra owns deterministic orchestration and OMP ACP owns model
+   authentication, Codex execution, `web_search`, and `read`.
+2. **OMP TUI skill** — the main interactive agent owns prompt-driven orchestration
+   and dispatches named stage agents from `.omp/agents/`.
 
 ```text
-Topic
-  -> Mastra workflow
-  -> OMP ACP discovery
-  -> OMP ACP planner
-  -> Mastra foreach(concurrency 4) OMP ACP researchers
-  -> OMP ACP writer
-  -> parallel OMP ACP reviewers
-  -> review controller
-  -> bounded adaptive cycle(targeted repair | additional research | replan | finalize)
-  -> deterministic audit/archive
-  -> researches/
+CLI: Topic -> Mastra graph -> OMP ACP stage agents -> deterministic audit -> archive
+TUI: Topic -> OMP coordinator -> named task agents -> coordinator audit -> archive
 ```
+
+Both paths follow discovery, grounded planning, research fan-out capped at four,
+draft synthesis, parallel coverage/bias/citation gates, one bounded adaptive
+round, final writing, citation audit, and archive.
 
 ## Responsibility Split
 
 | Layer | Owner | Responsibilities |
 |---|---|---|
-| Control plane | Mastra Workflows | Stage order, typed handoffs, workflow state, foreach concurrency, parallel review fan-out, adaptive review loop, final audit/archive |
-| Model/tool runtime | OMP ACP | OMP auth, Codex model execution, `web_search`, URL/document extraction through `read`, project/user context |
-| Deterministic guards | TypeScript | Zod schemas, discovery-plan validation, source thresholds, citation audit, archive path |
+| CLI control plane | Mastra Workflows | Stage order, typed handoffs, workflow state, foreach concurrency, parallel review fan-out, adaptive review loop, final audit/archive |
+| CLI model/tool runtime | OMP ACP | OMP auth, Codex model execution, `web_search`, URL/document extraction through `read`, project/user context |
+| TUI control plane | Main OMP agent + skill | Stage dispatch, JSON handoff validation, local state, bounded fan-out/repair, audit/archive |
+| TUI stage runtime | Named `.omp/agents/` roles | Discovery, planning, research, writing, reviews, controller, repair/replan, final writing |
+| Deterministic CLI guards | TypeScript | Zod schemas, discovery-plan validation, source thresholds, citation audit, archive path |
 
 No Mastra supervisor LLM decides the whole workflow. Each step has an explicit schema and calls an OMP ACP agent for the model/tool work needed at that stage; post-review control is delegated to a bounded review controller and validated with Zod.
 
@@ -81,17 +84,23 @@ The review controller chooses `finalize`, `targeted_repair`, `additional_researc
 
 TypeScript computes unique source count, source-minimum status (`quick >= 5`, `deep >= 30`), deterministic citation failures, review status, required workflow headers, and archive path.
 
-## Fallback OMP Task-Agent Flow
+## OMP TUI Stage-Agent Flow
 
-The project `.omp/agents/researcher.md` remains for fallback/manual mode only: use it when the Mastra + OMP ACP runner is unavailable or for ad-hoc subquestion investigation. Fallback runs must still follow discovery-first planning and must not invent entities absent from the discovery map.
+The interactive `deep-researcher` skill mirrors every model-driven CLI stage with
+a named project agent under `.omp/agents/`. The main TUI agent remains the
+coordinator, passes accepted state through `local://` JSON artifacts, validates
+each agent's explicit JSON field contract, caps research batches at four, runs the
+three review agents in parallel, allows one adaptive round, audits citations, and
+archives the report. This path is prompt-orchestrated and labels reports
+`omp-tui-native`; it does not claim Mastra execution.
 
 ## Technology Choices
 
 | Area | Choice | Why |
 |------|--------|-----|
-| Orchestration | Mastra Workflows | Deterministic graph, typed steps, foreach and parallel primitives |
-| Model/tool execution | OMP ACP | Keeps OMP auth, Codex subscription, built-in `web_search`, and `read` as runtime substrate |
-| Validation | Zod + TypeScript | Reproducible handoff schemas and deterministic gates |
+| Orchestration | Mastra Workflows + OMP TUI skill | Deterministic CLI graph plus a prompt-driven interactive analogue |
+| Model/tool execution | OMP ACP + OMP task agents | Keeps OMP auth, Codex execution, `web_search`, and `read` in both paths |
+| Validation | Zod/TypeScript in CLI; coordinator JSON checks in TUI | Strong deterministic runner guarantees with explicit interactive handoffs |
 | Fixture testing | Bun test fixture runner | Exercises the real workflow graph without OMP, network, or model credentials |
 | Output | Markdown | Universal, versionable, archived under `researches/` |
 

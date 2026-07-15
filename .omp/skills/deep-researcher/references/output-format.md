@@ -5,7 +5,7 @@ Report structure and formatting standards. See parent SKILL.md for workflow summ
 ## Full Format (default)
 
 ```markdown
-Workflow: mastra-omp-acp
+Workflow: omp-tui-native
 Discovery-first plan: yes | no
 Review status: passed | passed_with_disclosed_gaps | failed
 
@@ -58,8 +58,8 @@ Full format extended with:
 
 ## Header Fields
 
-- `Workflow`: canonical deep runner uses `mastra-omp-acp`
-- `Discovery-first plan`: canonical deep runner must be `yes`
+- `Workflow`: interactive skill runs use `omp-tui-native`; the separate CLI runner uses `mastra-omp-acp`
+- `Discovery-first plan`: both deep workflows must be `yes`
 - `Review status`: `passed`, `passed_with_disclosed_gaps`, or `failed`
 - `Depth`: `quick` or `deep`
 
